@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Callipop</string>
+    <string name="accessibility_service_label">AllowRepeatCallers</string>
+    <string name="accessibility_service_desc">This service detects if the volume button is pressed</string>
+    <string name="language_change">sprache wechseln</string>
+    <string name="Settings">Einstellungen</string>
+    <string name="App_Language">App Sprache</string>
+    <string name="RingInDND">Im Modus "Nicht Stören" Klingeln</string>
+    <string name="RingInDND_desc">Gilt für Missedcall Alerts</string>
+    <string name="Allfeat_Tap2Enable">Tippen zum aktivieren</string>
+    <string name="Allfeat_settings">Einstellugen</string>
+    <string name="Allfeat_Info">Info</string>
+    <string name="Allfeat_Share">Teilen</string>
+    <string name="ARC_Title">Widerholende Anrufer Zulassen</string>
+    <string name="ARC_Title_semi">Widerholende</string>
+    <string name="ARC_Volume">Lautstärke</string>
+    <string name="MCA_Title">Nach Verpasstem Anruf kurz klingen</string>
+    <string name="QS_Title">Ringer Modus wechseln</string>
+</resources>

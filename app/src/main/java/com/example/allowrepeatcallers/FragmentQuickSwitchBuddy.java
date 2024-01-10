@@ -1,0 +1,336 @@
+package com.example.allowrepeatcallers;
+
+import static android.content.ContentValues.TAG;
+import static android.content.Context.NOTIFICATION_SERVICE;
+
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
+import android.media.AudioManager;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
+public class FragmentQuickSwitchBuddy extends Fragment {
+    Switch TapToEnable;
+    TextView FeatTitle;
+    ImageView share;
+    String EnabledColor="#1A4314";
+    String DisabledColor="#72435C";
+    String RingerDisabledColor="#E4E5E8";
+    String RingerEnabledColor="#F79489";
+    ImageView diagnosis;
+    ImageView infoButton;
+    String EnabledText="Tap To Disable";
+    String DisabledText="Tap To Enable";
+    ImageView imgdnd;
+    ImageView imgbell;
+    ImageView imgvibrate;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.quickswitch, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Context context=requireContext();
+        TapToEnable=(Switch) getView().findViewById(R.id.TapToEnable);
+        imgbell=(ImageView) getView().findViewById(R.id.imgbell);
+        imgdnd=(ImageView)getView().findViewById(R.id.imgdnd);
+        imgvibrate=(ImageView) getView().findViewById(R.id.imgvibrate);
+        FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
+        infoButton=(ImageView) getView().findViewById(R.id.infoButton);
+        diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
+        share=(ImageView)  getView().findViewById(R.id.share);
+        utilityHelpers.adjustTitleTextSize(FeatTitle,context);
+        int softwaretype=utilityHelpers.loadIntFromMemory(context,"SOFTWARETYPE",0);
+        if(softwaretype==1) {
+
+            feat_quickSwitch.featureActivated = utilityHelpers.loadBooleanFromMemory(context, "IS_QUICKSWITCH_ACTIVATED");
+            checkAccessibilityPermission(context);
+            if (feat_quickSwitch.featureActivated) {
+                TapToEnable.setChecked(true);
+                adjustInterfaceButton(EnabledColor, EnabledText);
+            } else {
+                TapToEnable.setChecked(false);
+                adjustInterfaceButton(DisabledColor, DisabledText);
+            }
+
+            FeatTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    userTap();
+
+                }
+            });
+            TapToEnable.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    userTap();
+                }
+            });
+
+        }
+        else{
+            FeatTitle.setText("PRO\nDEMO");
+            adjustInterfaceButton(DisabledColor,DisabledText);
+        }
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                    String shareMessage= "\nLet me recommend you this application\n\n";
+                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" +"\n\n";
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch(Exception e) {
+                    //e.toString();
+                }
+            }
+        });
+        diagnosis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, settings.class);
+                FragmentQuickSwitchBuddy.this.startActivity(intent);
+            }
+        });
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                postInfoDialog();
+            }
+        });
+
+        BroadcastReceiver receiver=new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                int mode=am.getRingerMode();
+                if(mode==AudioManager.RINGER_MODE_NORMAL){
+                    imgbell.setColorFilter(Color.parseColor(RingerEnabledColor));
+                    imgdnd.setColorFilter(Color.parseColor(RingerDisabledColor));
+                    imgvibrate.setColorFilter(Color.parseColor(RingerDisabledColor));
+                    Toast.makeText(context, " Ringer mode normal ", Toast.LENGTH_SHORT).show();
+                }
+                else if(mode==(AudioManager.RINGER_MODE_VIBRATE)){
+                    imgbell.setColorFilter(Color.parseColor(RingerDisabledColor));
+                    imgdnd.setColorFilter(Color.parseColor(RingerDisabledColor));
+                    imgvibrate.setColorFilter(Color.parseColor(RingerEnabledColor));
+                    Toast.makeText(context, " Ringer mode vibrate ", Toast.LENGTH_SHORT).show();
+                }
+                else if(mode==(AudioManager.RINGER_MODE_SILENT)){
+                    imgbell.setColorFilter(Color.parseColor(RingerDisabledColor));
+                    imgdnd.setColorFilter(Color.parseColor(RingerEnabledColor));
+                    imgvibrate.setColorFilter(Color.parseColor(RingerDisabledColor));
+                    Toast.makeText(context, " Ringer mode silent ", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        };
+        IntentFilter filter=new IntentFilter(
+                AudioManager.RINGER_MODE_CHANGED_ACTION);
+       context.registerReceiver(receiver,filter);
+
+
+    }
+
+    private void checkAccessibilityPermission(Context context) {
+        int accessibilityEnabled;
+        NotificationManager notificationManager =
+                (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (!notificationManager.isNotificationPolicyAccessGranted()) {
+            TapToEnable.setChecked(false);
+            adjustInterfaceButton(DisabledColor,DisabledText);
+            feat_quickSwitch.featureActivated=false;
+        }
+        else {
+            try {
+                accessibilityEnabled = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED);
+            } catch (Settings.SettingNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            if (accessibilityEnabled != 0) {
+                feat_quickSwitch.featureActivated = true;
+                TapToEnable.setChecked(true);
+                adjustInterfaceButton(EnabledColor, EnabledText);
+            } else {
+                TapToEnable.setChecked(false);
+                adjustInterfaceButton(DisabledColor, DisabledText);
+                feat_quickSwitch.featureActivated = false;
+                //start a dialog box
+            }
+        }
+    }
+
+
+    private void userTap() {
+        int accessibilityEnabled;
+        NotificationManager tap_notificationManager =
+                (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        Context context=requireContext();
+        if(feat_quickSwitch.featureActivated){
+            feat_quickSwitch.featureActivated=false;
+            utilityHelpers.saveBooleanToMemory(context,"IS_QUICKSWITCH_ACTIVATED",feat_quickSwitch.featureActivated);
+            Toast.makeText(context, " Feature disable saved ", Toast.LENGTH_SHORT).show();
+            TapToEnable.setChecked(false);
+            adjustInterfaceButton(DisabledColor,DisabledText);
+        }
+        else{
+
+            if (!tap_notificationManager.isNotificationPolicyAccessGranted()) {
+                TapToEnable.setChecked(false);
+                adjustInterfaceButton(DisabledColor,DisabledText);
+                feat_quickSwitch.featureActivated=false;
+                utilityHelpers.saveBooleanToMemory(context,"IS_QUICKSWITCH_ACTIVATED",feat_quickSwitch.featureActivated);
+                Dialog_requestDND();
+            } else {
+                processAccessibilityPermission(context);
+
+            }
+        }
+
+    }
+
+    private void processAccessibilityPermission(Context context) {
+        int accessibilityEnabled;
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED);
+        } catch (Settings.SettingNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        if (accessibilityEnabled!=0) {
+            feat_quickSwitch.featureActivated = true;
+            utilityHelpers.saveBooleanToMemory(context, "IS_QUICKSWITCH_ACTIVATED", feat_quickSwitch.featureActivated);
+            Toast.makeText(context, " Feature Enable saved ", Toast.LENGTH_SHORT).show();
+            TapToEnable.setChecked(true);
+            adjustInterfaceButton(EnabledColor,EnabledText);
+        } else {
+            TapToEnable.setChecked(false);
+            adjustInterfaceButton(DisabledColor,DisabledText);
+            feat_quickSwitch.featureActivated=false;
+            utilityHelpers.saveBooleanToMemory(context,"IS_QUICKSWITCH_ACTIVATED",feat_quickSwitch.featureActivated);
+            Dialog_requestACCESSIBILITY(context);
+            //start a dialog box
+        }
+    }
+
+    private void Dialog_requestDND() {
+        NotificationManager policy_notificationManager =
+                (NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE);
+        if (!policy_notificationManager.isNotificationPolicyAccessGranted()) {
+            try {
+                //start a dialog box
+                AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
+                noti_alertbuilder.setMessage("To use this app DND permisions are needed . Press continue to provide these in the app settings menu").setPositiveButton("continue", noti_alert_dialogClickListener)
+                        .setNegativeButton("cancel", noti_alert_dialogClickListener);
+                AlertDialog alertDialog = noti_alertbuilder.create();
+                alertDialog.show();
+            } catch (Exception e) {
+
+                // Log.e(TAG, " Exception on dialog  " + e);
+                Toast.makeText(requireContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+    DialogInterface.OnClickListener noti_alert_dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    Intent intent = new Intent(
+                            android.provider.Settings
+                                    .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+
+                    startActivity(intent);
+                    //Yes button clicked
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    TapToEnable.setChecked(false);
+                    adjustInterfaceButton(DisabledColor,DisabledText);
+                    //No button clicked
+                    //smsReceiver.DND_OverridePermission=false;
+                    break;
+            }
+        }
+    };
+
+    DialogInterface.OnClickListener requestACCESSIBILITY_dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    //Yes button clicked
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    TapToEnable.setChecked(false);
+                    adjustInterfaceButton(DisabledColor,DisabledText);
+                    //No button clicked
+                    //smsReceiver.DND_OverridePermission=false;
+                    break;
+            }
+        }
+    };
+
+    private void Dialog_requestACCESSIBILITY(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("To use this feature, the app needs access to the volume buttons of the device. This is managed by the Accessibility permission.\nPress continue to provide these in the settings menu.\n" +
+                        "\nThis permission is only needed to access the volume buttons and no other information is used or created.\n\nYour privacy is most important and you can disable this feature or permission anytime.").setPositiveButton("continue", requestACCESSIBILITY_dialogClickListener)
+                .setNegativeButton("cancel", requestACCESSIBILITY_dialogClickListener);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+
+    private void postInfoDialog() {
+        Context context=requireContext();
+        try {
+            //start a dialog box
+            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(context);
+            noti_alertbuilder.setMessage("Quickly change ringer modes by double pressing volume buttons when the screen is on");
+            AlertDialog alertDialog = noti_alertbuilder.create();
+            alertDialog.show();
+        } catch (Exception e) {
+
+            Log.e(TAG, " Exception on dialog  " + e);
+            Toast.makeText(getContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void adjustInterfaceButton(String ipColor, String ipText) {
+        TapToEnable.setText(ipText);
+        TapToEnable.setTextColor(Color.parseColor(ipColor));
+        FeatTitle.setTextColor(Color.parseColor(ipColor));
+    }
+
+
+
+
+
+}

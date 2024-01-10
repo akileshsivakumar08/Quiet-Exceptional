@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Callipop</string>
+    <string name="accessibility_service_label">AllowRepeatCallers</string>
+    <string name="accessibility_service_desc">This service detects if the volume button is pressed</string>
+    <string name="language_change">change</string>
+    <string name="Settings">Settings</string>
+    <string name="App_Language">App Language</string>
+    <string name="RingInDND">Ring in Do Not Disturb Mode</string>
+    <string name="RingInDND_desc">This applies to the feature Missedcall Alerts</string>
+    <string name="Allfeat_Tap2Enable">Tap to Enable</string>
+    <string name="Allfeat_settings">Settings</string>
+    <string name="Allfeat_Info">Info</string>
+    <string name="Allfeat_Share">Share</string>
+    <string name="ARC_Title">Allow Repeat Callers</string>
+    <string name="ARC_Title_semi">Allow</string>
+    <string name="ARC_Volume">Volume</string>
+    <string name="MCA_Title">Alert Missed Calls</string>
+    <string name="QS_Title">Quick Switch</string>
+</resources>
