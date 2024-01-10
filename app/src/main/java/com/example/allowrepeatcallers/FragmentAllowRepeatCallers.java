@@ -27,6 +27,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -218,7 +220,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
                 (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
         if(feat_RepeatCaller.featureActivated){
             feat_RepeatCaller.missedList.clear();
-            callReceiver_RepeatCaller.notificationIDcounter=0;
+            feat_RepeatCaller.notificationIDcounter=0;
             tap_notificationManager.cancelAll();
             utilityHelpers.saveStringSetToMemory(context,"STRINGSET_MISSEDLIST",feat_RepeatCaller.missedList);
 

@@ -202,7 +202,9 @@ public class utilityHelpers {
     public static MediaPlayer playtune(Context context) {
         Toast.makeText(context,"Playing Ringtext",Toast.LENGTH_LONG).show();
         mp = MediaPlayer.create(context, ringtones.ringtoneUri);
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         if(!mp.isPlaying()){
+            utilityHelpers.turnSpeakerON(am);
             mp.start();
         }
         return mp;

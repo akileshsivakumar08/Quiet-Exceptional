@@ -21,9 +21,24 @@ public class feat_RepeatCaller {
     public static String[] permissions= {Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG,Manifest.permission.POST_NOTIFICATIONS};
     public static boolean upToDown;
     public static int nullCount;
+    public static int notificationIDcounter;
     // public static NotificationManager notificationManager;
 
+    public static void nullifyMissedElement(int numberID,NotificationManager notificationManager) {
+        int notiid = numberID + 1;
+        if (255 != numberID) {
 
+            feat_RepeatCaller.missedList.set(numberID, "null");
+            feat_RepeatCaller.nullCount = feat_RepeatCaller.nullCount + 1;
+            if (feat_RepeatCaller.nullCount == feat_RepeatCaller.missedList.size()) {
+                feat_RepeatCaller.missedList.clear();
+                feat_RepeatCaller.nullCount = 0;
+            }
+
+            notificationManager.cancel(notiid);
+            feat_RepeatCaller.notificationIDcounter--;
+        }
+    }
     public static void addToMissedList(String p_logName,String p_logNumber,String text) {
         //create buddy with phone number and name
         //Add to missed list

@@ -41,7 +41,6 @@ import java.util.UUID;
 public class callReceiver_RepeatCaller extends BroadcastReceiver {
     private static final UUID ID = null;
     private static String mLastState;
-    public static int notificationIDcounter;
     public static NotificationManager notificationManager;
     private static final String CHANNEL_ID = "Missed Call Notification";
     private static String logNumber;
@@ -81,14 +80,12 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                                 getCurrentSettings(context);
 
                                 if (feat_RepeatCaller.isNumberRepeatCaller(number)) {
-                                    Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-                                    ringtones.ringtone = RingtoneManager.getRingtone(context, ringtoneUri);
+                                    ringtones.initRingtoneProperties(context);
 
                                         if ((!ringtones.ringtone.isPlaying())) {
                                                 error = "Ringer Mode is silent";
-                                                ringtones.Current_MediaVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+
                                                 int seekbarVolume=utilityHelpers.loadIntFromMemory(context,"ARC_VOLUME",ringtones.Current_MediaVolume);
-                                                utilityHelpers.turnSpeakerON(am);
                                                 am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
 
                                                 mp = utilityHelpers.playtune(context);
@@ -101,27 +98,12 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                                 }
                             }
                         } else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-                            //NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
                             feat_RepeatCaller.stateRINGING = false;
                             handleReset(context);
                             int numberID = utilityHelpers.listLoopSearch(number, feat_RepeatCaller.missedList);
-                            int notiid = numberID + 1;
-                            Toast.makeText(context, "offhook" + notiid, Toast.LENGTH_SHORT).show();
-                            if (255 != numberID) {
-                            /*class_Buddy nullBuddy=new class_Buddy(null,null,null);
-                            feat_RepeatCaller.missedList.set(numberID,nullBuddy);*/
-                                feat_RepeatCaller.missedList.set(numberID, "null");
-                                feat_RepeatCaller.nullCount = feat_RepeatCaller.nullCount + 1;
-                                if (feat_RepeatCaller.nullCount == feat_RepeatCaller.missedList.size()) {
-                                    feat_RepeatCaller.missedList.clear();
-                                    feat_RepeatCaller.nullCount = 0;
-                                }
+                            feat_RepeatCaller.nullifyMissedElement(numberID,notificationManager);
 
-                                notificationManager.cancel(notiid);
-                                callReceiver_RepeatCaller.notificationIDcounter--;
 
-                            }
-                            //Toast.makeText(context, "offhook"+feat_RepeatCaller.missedList.size(), Toast.LENGTH_SHORT).show();
                             flow = "Offhook";
                             utilityHelpers.saveStringToMemory(context, "errorStr", flow);
                             utilityHelpers.saveStringSetToMemory(context, "STRINGSET_MISSEDLIST", feat_RepeatCaller.missedList);
@@ -132,37 +114,26 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                                 if (feat_RepeatCaller.featureActivated) {
                                     error = "ID:feature Activated";
                                     String logType = getLastCallLog(context);
-                                    // Toast.makeText(context, "Obtained last call log", Toast.LENGTH_SHORT).show();
-
-                                    if (logType.equals("3")) {
-                                        Toast.makeText(context, "MissedList Size is" + (feat_RepeatCaller.missedList.size()), Toast.LENGTH_SHORT).show();
+                                    if (logType.equals(MISSED_TYPE)) {
                                         error = "ID:missedcall detected";
                                         flow = error;
                                         utilityHelpers.saveStringToMemory(context, "errorStr", flow);
                                         if (!(feat_RepeatCaller.isNumberRepeatCaller(number))) {
                                             error = "ID:number is repeat caller";
                                             feat_RepeatCaller.addToMissedList(logName, logNumber, "Missed");
-                                            //NotificationManager post_notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
                                             NotificationManager post_notificationManager = notificationManager;
                                             error = "ID:Created Notification Channel";
-                                            int notificationID = ++notificationIDcounter;
-                                            String NotiString;
-                                            if (logName == null) {
-                                                NotiString = logNumber;
-                                            } else {
-                                                NotiString = logName;
-                                            }
+                                            int notificationID = ++feat_RepeatCaller.notificationIDcounter;
+                                            String NotiString=getNotificationTitleString();
+
 
                                             Notification notification = utilityHelpers.buildNotification(NotiString, "Swipe or press Stop to mute next Call", notificationID, context);
-                                       /* NotificationManager manager = null;
-                                        manager = context.getSystemService(NotificationManager.class);*/
+
                                             post_notificationManager.notify(notificationID, notification);
-                                            Toast.makeText(context, "Added " + logNumber + " to missedlist", Toast.LENGTH_SHORT).show();
                                             flow = "Posted Notification";
                                             utilityHelpers.saveStringToMemory(context, "errorStr", flow);
                                             utilityHelpers.saveStringSetToMemory(context, "STRINGSET_MISSEDLIST", feat_RepeatCaller.missedList);
                                         } else {
-                                            //Toast.makeText(context, "Matchfound in list", Toast.LENGTH_SHORT).show();
                                             flow = "Repeated Missed Call";
                                             utilityHelpers.saveStringToMemory(context, "errorStr", flow);
                                         }
@@ -170,8 +141,6 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                                 }
                             }
                         }
-               // }
-
                 }
             }
             } catch(Exception e){
@@ -180,6 +149,16 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                 utilityHelpers.saveStringToMemory(context,"errorStr",error);
                 feat_RepeatCaller.missedList.clear();
             }
+    }
+
+    private String getNotificationTitleString() {
+        String title_string;
+        if (logName == null) {
+            title_string = logNumber;
+        } else {
+            title_string = logName;
+        }
+        return title_string;
     }
 
     private void matchActiveNotificationsWithMissedList(Context context) {
@@ -193,15 +172,8 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
     }
 
 
-  /*  private void addToMissedList(String p_logName,String p_logNumber,String text) {
-        //create buddy with phone number and name
-        //Add to missed list
-        class_Buddy missedBuddy=new class_Buddy(p_logName,p_logNumber,text);
-        missedList.add(missedBuddy);
-    }*/
-
     private String getLastCallLog(Context context) {
-       // Toast.makeText(context,"sleeping", Toast.LENGTH_SHORT).show();
+        String stringType;
         try {
             sleep(200);
         } catch (InterruptedException e) {
@@ -218,60 +190,29 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
         else if(utilityHelpers.sortOrder.equals("firstTime")){
             cursorCallLogs.moveToFirst();
         }
-        //cursorCallLogs.moveToLast();
-        String stringType = cursorCallLogs.getString(cursorCallLogs.getColumnIndex(CallLog.Calls.TYPE));
-        logNumber = cursorCallLogs.getString(cursorCallLogs.getColumnIndex(CallLog.Calls.NUMBER));
-        logName = cursorCallLogs.getString(cursorCallLogs.getColumnIndex(CallLog.Calls.CACHED_NAME));
-        //Toast.makeText(context,logNumber+ stringType +" and "+ MISSED_TYPE, Toast.LENGTH_SHORT).show();
+        int index_type=cursorCallLogs.getColumnIndex(CallLog.Calls.TYPE);
+        int index_number=cursorCallLogs.getColumnIndex(CallLog.Calls.NUMBER);
+        int index_name=cursorCallLogs.getColumnIndex(CallLog.Calls.CACHED_NAME);
+        if((index_type>0)&&(index_name>0)&&(index_number>0)) {
+            stringType = cursorCallLogs.getString(index_type);
+            logNumber = cursorCallLogs.getString(index_number);
+            logName = cursorCallLogs.getString(index_name);
+        }
+        else{
+            stringType = null;
+            logNumber = null;
+            logName = null;
+            Toast.makeText(context,"Negative column index", Toast.LENGTH_SHORT).show();
+        }
         return stringType;
     }
 
-    /*private Notification buildNotification(String title, String content, int notificationID,Context context) {
-        callReceiver_RepeatCaller.error="ID:building notification";
-
-        Intent stopIntent = new Intent(context.getApplicationContext(), StopCountdownReceiver.class);
-        stopIntent.setAction("STOP_SERVICE");
-        stopIntent.putExtra("TIMERID",notificationID);
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), notificationID, stopIntent, PendingIntent.FLAG_IMMUTABLE);
-        return new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(content)
-                .setDeleteIntent(stopPendingIntent)
-                .setSmallIcon(R.drawable.baseline_account_circle_24)
-                .addAction(R.drawable.baseline_account_circle_24,"Stop",stopPendingIntent)
-                .build();
-    }*/
     private void handleReset(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if(!(feat_RepeatCaller.repeatCallerRingActivated.equals("NULL"))){
                 ringtones.myRingerisplaying=false;
-                if((feat_RepeatCaller.repeatCallerRingActivated.equals("VIBRATE"))){
-                    ringtones.stopPlayingRingtone();
-                    resetRingerSettings(context);
-                }
-                else if((feat_RepeatCaller.repeatCallerRingActivated.equals("SILENT"))){
                     AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                     am.setStreamVolume(AudioManager.STREAM_MUSIC, ringtones.Current_MediaVolume, 0);
                     utilityHelpers.stoptune(context,mp);
-                }
-
-                feat_RepeatCaller.repeatCallerRingActivated="NULL";
-            }
-        }
     }
-
-    private void resetRingerSettings(Context context) {
-        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        am.setRingerMode(feat_RepeatCaller.ringerMode);
-        am.setStreamVolume(AudioManager.STREAM_RING,feat_RepeatCaller.Current_RingVolume,0);
-        if(feat_RepeatCaller.ringerMode==AudioManager.RINGER_MODE_SILENT){
-            NotificationManager Notimanager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-            Notimanager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
-            am.setStreamVolume(AudioManager.STREAM_RING, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-        }
-    }
-
-
 
     private void getCurrentSettings(Context context) {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);

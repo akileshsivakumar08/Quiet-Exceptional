@@ -1,5 +1,7 @@
 package com.example.allowrepeatcallers;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -24,5 +26,11 @@ public class ringtones {
             ringtones.ringtone.stop();
             myRingerisplaying=false;
         }
+    }
+    public static void initRingtoneProperties(Context context){
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        ringtones.ringtone = RingtoneManager.getRingtone(context, ringtoneUri);
+        ringtones.Current_MediaVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
     }
 }
