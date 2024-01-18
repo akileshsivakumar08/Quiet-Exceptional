@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
                 new TabLayoutMediator.TabConfigurationStrategy() {
                     @Override
                     public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-
                     }
                 });
         tabLayoutMediator.attach();

@@ -50,10 +50,20 @@ public class FragmentAllowRepeatCallers extends Fragment {
     String DisabledText="Tap To Enable";
     SeekBar seekbar_ARC;
     Switch overridednd;
+    ImageView testSoundImage;
+    TextView testSound;
+    feat_RepeatCaller GUIobj_RepeatCaller;
+    int pingvolume;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.allowrepeatcallers, container, false);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Toast.makeText(getContext(), " created ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -71,12 +81,12 @@ public class FragmentAllowRepeatCallers extends Fragment {
         seekbar_ARC=(SeekBar) getView().findViewById(R.id.seekBar_ARC);
 
 
+
         //load managers
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
-
+        GUIobj_RepeatCaller=new feat_RepeatCaller(context);
         //load from memory
         int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        feat_RepeatCaller.featureActivated=utilityHelpers.loadBooleanFromMemory(context,"FEAT_REPEATCALLER_ACTIVE");
         int lastSetMediaVolume=utilityHelpers.loadIntFromMemory(context,"ARC_VOLUME",currVolume);
 
 
@@ -89,15 +99,15 @@ public class FragmentAllowRepeatCallers extends Fragment {
         utilityHelpers.adjustTitleTextSize(FeatTitle2,context);
 
 
+        if (utilityHelpers.ispermissionpending(context, GUIobj_RepeatCaller.permissions)) {
+            process_featureState(false,context);
 
-
-
-
+        }
 
         seekbar_ARC.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int pingvolume=i;
+                pingvolume=i;
                 utilityHelpers.saveIntToMemory(context,"ARC_VOLUME",pingvolume);
             }
 
@@ -108,7 +118,11 @@ public class FragmentAllowRepeatCallers extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                ringtones testSound = new ringtones(context, 0);
+                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                int seekbarVolume = utilityHelpers.loadIntFromMemory(context, "ARC_VOLUME", testSound.getCurrent_MediaVolume());
+                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
+                testSound.playShorttune(context);
             }
         });
         diagnosis.setOnClickListener(new View.OnClickListener(){
@@ -159,7 +173,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
         });
 
 
-        if(feat_RepeatCaller.featureActivated){
+        if(GUIobj_RepeatCaller.isFeatureActivated()){
             //checkLogFormat();
             process_featureState(true,context);
         }
@@ -218,11 +232,9 @@ public class FragmentAllowRepeatCallers extends Fragment {
         Context context=requireContext();
         NotificationManager tap_notificationManager =
                 (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        if(feat_RepeatCaller.featureActivated){
-            feat_RepeatCaller.missedList.clear();
-            feat_RepeatCaller.notificationIDcounter=0;
-            tap_notificationManager.cancelAll();
-            utilityHelpers.saveStringSetToMemory(context,"STRINGSET_MISSEDLIST",feat_RepeatCaller.missedList);
+        if(GUIobj_RepeatCaller.isFeatureActivated()){
+            GUIobj_RepeatCaller.clearAndSaveMissedList(context);
+            GUIobj_RepeatCaller.clearNotifications(tap_notificationManager);
 
             process_featureState(false,context);
         }
@@ -233,7 +245,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
                 process_featureState(false,context);
                 Dialog_requestDND();
             } else {
-                if (!utilityHelpers.ispermissionpending(context, feat_RepeatCaller.permissions)) {
+                if (!utilityHelpers.ispermissionpending(context, GUIobj_RepeatCaller.permissions)) {
 
                     utilityHelpers.checkLogFormat(context);
                     process_featureState(true,context);
@@ -243,7 +255,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
                     boolean BP_permission_already_requested=utilityHelpers.loadBooleanFromMemory(context, "BABY_PING_PERMISSIONREQUESTED");
                     boolean permission_already_requested=((ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (permission_already_requested == false) {
-                        String[] pend = utilityHelpers.getpendingpermissions(context, feat_RepeatCaller.permissions);
+                        String[] pend = utilityHelpers.getpendingpermissions(context, GUIobj_RepeatCaller.permissions);
                         requestPermissions(pend, PERMISSION_CODE_POSTNOTIFICATIONS);
                     } else if (permission_already_requested == true) {
                         try {
@@ -265,8 +277,8 @@ public class FragmentAllowRepeatCallers extends Fragment {
     }
 
     private void process_featureState(boolean state,Context context) {
-        feat_RepeatCaller.featureActivated = state;
-        utilityHelpers.saveBooleanToMemory(context,"FEAT_REPEATCALLER_ACTIVE",feat_RepeatCaller.featureActivated);
+        GUIobj_RepeatCaller.setFeatureActivated(state);
+        utilityHelpers.saveBooleanToMemory(context,"FEAT_REPEATCALLER_ACTIVE",state);
         TapToEnable.setChecked(state);
         seekbar_ARC.setEnabled(state);
         if(state){
@@ -345,7 +357,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
                     process_featureState(true,context);
                     permission_already_requested=true;
                     utilityHelpers.saveBooleanToMemory(context,"REPEATCALLER_PERMISSIONREQUESTED",permission_already_requested);
-
+                    utilityHelpers.checkLogFormat(context);
 
                 }
 

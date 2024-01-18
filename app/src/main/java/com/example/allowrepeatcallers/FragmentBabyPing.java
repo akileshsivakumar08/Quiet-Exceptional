@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class FragmentBabyPing extends Fragment {
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
     SeekBar seekbar;
+    feat_BabyPing obj_AMC;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.babyping, container, false);
@@ -61,21 +63,17 @@ public class FragmentBabyPing extends Fragment {
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         seekbar.setMax(maxMusicVolume);
+        obj_AMC=new feat_BabyPing(context);
 
         // Set the current volume of the SeekBar to the current volume of the MediaPlayer:
         int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         int lastSetMediaVolume=utilityHelpers.loadIntFromMemory(context,"BABYPINGVOLUME",currVolume);
         seekbar.setProgress(lastSetMediaVolume);
-        feat_BabyPing.featureActivated=utilityHelpers.loadBooleanFromMemory(context,"IS_BABYPING_ACTIVATED");
-        if(feat_BabyPing.featureActivated){
-            TapToEnable.setChecked(true);
-            adjustInterfaceButton(EnabledColor,EnabledText);
-            seekbar.setEnabled(true);
+        if(obj_AMC.isFeatureActivated()){
+            process_featureState(true,context);
         }
         else{
-            TapToEnable.setChecked(false);
-            adjustInterfaceButton(DisabledColor,DisabledText);
-            seekbar.setEnabled(false);
+            process_featureState(false,context);
         }
 
         share.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +108,11 @@ public class FragmentBabyPing extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                ringtones testSound = new ringtones(context, 0);
+                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                int seekbarVolume = utilityHelpers.loadIntFromMemory(context, "BABYPINGVOLUME", testSound.getCurrent_MediaVolume());
+                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
+                testSound.playShorttune(context);
 
             }
         });
@@ -142,8 +145,22 @@ public class FragmentBabyPing extends Fragment {
 
 
 
+    }
+
+    private void process_featureState(boolean state,Context context) {
+        obj_AMC.setFeatureActivated(state);
+        utilityHelpers.saveBooleanToMemory(context,"IS_BABYPING_ACTIVATED",state);
+        TapToEnable.setChecked(state);
+        seekbar.setEnabled(state);
+        if(state){
+            adjustInterfaceButton(EnabledColor,EnabledText);
+        }
+        else{
+            adjustInterfaceButton(DisabledColor,DisabledText);
+        }
 
     }
+
 
     private void postInfoDialog() {
         Context context=requireContext();
@@ -168,24 +185,16 @@ public class FragmentBabyPing extends Fragment {
 
     private void userTap() {
         Context context=requireContext();
-        if(feat_BabyPing.featureActivated){
-            feat_BabyPing.featureActivated=false;
-            utilityHelpers.saveBooleanToMemory(context,"IS_BABYPING_ACTIVATED",feat_BabyPing.featureActivated);
-            Toast.makeText(context, " Feature disable saved ", Toast.LENGTH_SHORT).show();
-            TapToEnable.setChecked(false);
-            adjustInterfaceButton(DisabledColor,DisabledText);
-            seekbar.setEnabled(false);
+        if(obj_AMC.isFeatureActivated()){
+            process_featureState(false,context);
 
         }
         else{
                 if (!utilityHelpers.ispermissionpending(context, feat_BabyPing.permissions)) {
-                    feat_BabyPing.featureActivated = true;
-                    utilityHelpers.saveBooleanToMemory(context, "IS_BABYPING_ACTIVATED", feat_BabyPing.featureActivated);
+                    process_featureState(true,context);
                     utilityHelpers.checkLogFormat(context);
                     Toast.makeText(context, " Feature Enable saved ", Toast.LENGTH_SHORT).show();
-                    TapToEnable.setChecked(true);
-                    adjustInterfaceButton(EnabledColor,EnabledText);
-                    seekbar.setEnabled(true);
+
                 } else {
                     boolean ARC_permission_already_requested= utilityHelpers.loadBooleanFromMemory(context, "REPEATCALLER_PERMISSIONREQUESTED");
                     boolean BP_permission_already_requested=utilityHelpers.loadBooleanFromMemory(context, "BABY_PING_PERMISSIONREQUESTED");
@@ -246,23 +255,15 @@ public class FragmentBabyPing extends Fragment {
                     } else {
                         // Permission Denied
                         Toast.makeText(context, "denied", Toast.LENGTH_SHORT).show();
-                        feat_BabyPing.featureActivated=false;
+                        process_featureState(false,context);
                         feat_BabyPing.permission_already_requested=true;
-                        TapToEnable.setChecked(false);
-                        adjustInterfaceButton(DisabledColor,DisabledText);
-                        seekbar.setEnabled(false);
-                        utilityHelpers.saveBooleanToMemory(context,"IS_BABYPING_ACTIVATED",feat_BabyPing.featureActivated);
                         utilityHelpers.saveBooleanToMemory(context,"BABY_PING_PERMISSIONREQUESTED",feat_BabyPing.permission_already_requested);
 
                         break;
 
                     }
-                    feat_BabyPing.featureActivated=true;
-                    TapToEnable.setChecked(true);
+                    process_featureState(true,context);
                     feat_BabyPing.permission_already_requested=true;
-                    seekbar.setEnabled(true);
-                    adjustInterfaceButton(EnabledColor,EnabledText);
-                    utilityHelpers.saveBooleanToMemory(context,"IS_BABYPING_ACTIVATED",feat_BabyPing.featureActivated);
                     utilityHelpers.saveBooleanToMemory(context,"BABY_PING_PERMISSIONREQUESTED",feat_BabyPing.permission_already_requested);
 
 

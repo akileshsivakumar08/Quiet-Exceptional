@@ -40,7 +40,7 @@ import java.util.Set;
 
 public class utilityHelpers {
     public static final String SHARED_PREFS = "sharedPrefs";
-    public static MediaPlayer mp;
+
     public static final String CHANNEL_ID = "Missed Call Notification";
     public static String sortOrder;
 
@@ -61,7 +61,7 @@ public class utilityHelpers {
         cursorCallLogs = context.getContentResolver().query(uriCallLogs, null, null, null);
         cursorCallLogs.moveToLast();
         int columnIndex=cursorCallLogs.getColumnIndex(CallLog.Calls.DATE);
-        if(columnIndex>0) {
+        if(columnIndex>=0) {
             String logDate = cursorCallLogs.getString(columnIndex);
             long lastTime = Long.parseLong(logDate);
             cursorCallLogs.moveToFirst();
@@ -163,14 +163,6 @@ public class utilityHelpers {
         editor.commit();
 
     }
-    public static void saveStringSetToMemory(Context context,String DataID,ArrayList<String> stringdata){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Set<String> stringSet = new HashSet<>(stringdata);
-        editor.putStringSet(DataID,stringSet);
-        editor.commit();
-
-    }
     public static boolean loadBooleanFromMemory(Context context,String DataID){
         boolean variable;
         SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPrefs", MODE_PRIVATE);
@@ -189,30 +181,7 @@ public class utilityHelpers {
         variable=sharedPreferences.getString(DataID,"null");
         return variable;
     }
-    public static ArrayList<String>  loadStringSetFromMemory(Context context,String DataID){
-        Set<String> stringSet;
-        ArrayList<String> stringList=new ArrayList<String>();
-        SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        stringSet=sharedPreferences.getStringSet(DataID,null);
-        if(stringSet!=null) {
-            stringList = new ArrayList<>(stringSet);
-        }
-        return stringList;
-    }
-    public static MediaPlayer playtune(Context context) {
-        Toast.makeText(context,"Playing Ringtext",Toast.LENGTH_LONG).show();
-        mp = MediaPlayer.create(context, ringtones.ringtoneUri);
-        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        if(!mp.isPlaying()){
-            utilityHelpers.turnSpeakerON(am);
-            mp.start();
-        }
-        return mp;
-    }
-    public static void stoptune(Context context,MediaPlayer mp){
-        mp.stop();
-        mp.reset();
-    }
+
     public static void turnSpeakerON(AudioManager am) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             AudioDeviceInfo[] audioDevices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS);

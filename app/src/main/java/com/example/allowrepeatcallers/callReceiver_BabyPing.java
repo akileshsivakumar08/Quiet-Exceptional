@@ -1,5 +1,6 @@
 package com.example.allowrepeatcallers;
 
+import static android.provider.CallLog.Calls.MISSED_TYPE;
 import static java.lang.Thread.sleep;
 
 import android.app.NotificationManager;
@@ -20,37 +21,27 @@ import androidx.annotation.NonNull;
 public class callReceiver_BabyPing extends BroadcastReceiver {
     public static NotificationManager notificationManager;
     public static MediaPlayer mp;
+
     @Override
     public void onReceive(Context context, @NonNull Intent intent) {
+        feat_BabyPing obj_AMC=new feat_BabyPing(context);
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
         String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
         if (number != null) {
-            int dndstatus = notificationManager.getCurrentInterruptionFilter();
-            boolean overridednd_bool = utilityHelpers.loadBooleanFromMemory(context, "OVERRIDE_DND");
-            boolean overriden = false;
-            if ((overridednd_bool)) {
-                overriden = true;
-            } else if ((!overridednd_bool)) {
-                if (dndstatus == NotificationManager.INTERRUPTION_FILTER_ALL) {
-                    overriden = true;
-                } else {
-                    overriden = false;
-                }
-            }
-            if (overriden) {
+            boolean overridden=obj_AMC.isDNDOverridden(context);
+            if (overridden) {
                 if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                    feat_BabyPing.featureActivated = utilityHelpers.loadBooleanFromMemory(context, "IS_BABYPING_ACTIVATED");
-                    if (feat_BabyPing.featureActivated) {
+                    if (obj_AMC.isFeatureActivated()) {
                         String logType = getLastCallLog(context);
-                        if (logType.equals("3")) {
+                        if (logType.equals(String.valueOf(MISSED_TYPE))) {
                                 int Current_MediaVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
                                 utilityHelpers.turnSpeakerON(am);
                                 int setVolume = utilityHelpers.loadIntFromMemory(context, "BABYPINGVOLUME", Current_MediaVolume);
                                 am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
-
-                                playtune(context, Current_MediaVolume);
+                                ringtones shorttune=new ringtones(context,2);
+                                shorttune.playShorttune(context);
                                 //am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
                         }
                     }
@@ -59,6 +50,10 @@ public class callReceiver_BabyPing extends BroadcastReceiver {
             }
         }
     }
+
+
+
+
     private String getLastCallLog(Context context) {
         // Toast.makeText(context,"sleeping", Toast.LENGTH_SHORT).show();
         try {
@@ -82,20 +77,5 @@ public class callReceiver_BabyPing extends BroadcastReceiver {
         //Toast.makeText(context,logNumber+ stringType +" and "+ MISSED_TYPE, Toast.LENGTH_SHORT).show();
         return stringType;
     }
-    private void playtune(Context context,int Current_MediaVolume) {
-        Toast.makeText(context,"Playing Ringtext",Toast.LENGTH_LONG).show();
-        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
-        mp = MediaPlayer.create(context, R.raw.nokia_sms);
-        if(!mp.isPlaying()){
-            mp.start();
-        }
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mp.stop();
-                am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
-            }
-        });
-    }
 }

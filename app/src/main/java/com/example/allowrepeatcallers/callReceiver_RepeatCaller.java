@@ -2,40 +2,24 @@ package com.example.allowrepeatcallers;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.NOTIFICATION_SERVICE;
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.provider.CallLog.Calls.MISSED_TYPE;
 
-import static java.lang.System.currentTimeMillis;
-import static java.lang.System.err;
 import static java.lang.Thread.sleep;
 
-import android.annotation.SuppressLint;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.CallLog;
-import android.service.notification.StatusBarNotification;
-import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class callReceiver_RepeatCaller extends BroadcastReceiver {
@@ -48,18 +32,17 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
     public static String error;
     public static String flow;
     public static String mode;
-    public static MediaPlayer mp;
+    ringtones repeatCaller_Ringtone;
+    public static MediaPlayer local_mp;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        feat_RepeatCaller obj_RepeatCaller=new feat_RepeatCaller(context);
         try {
-
-            boolean featureActivated = utilityHelpers.loadBooleanFromMemory(context, "FEAT_REPEATCALLER_ACTIVE");
+            if (!utilityHelpers.ispermissionpending(context, obj_RepeatCaller.permissions)) {
             notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
-
-            if (featureActivated) {
+            if (obj_RepeatCaller.isFeatureActivated()) {
 
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
@@ -67,30 +50,28 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
 
 
                 if (number != null) {
+                    repeatCaller_Ringtone=new ringtones(context,obj_RepeatCaller.getFeat_ID());
                     error = "Number not null";
                     mLastState = state;
                     Log.e(TAG, state);
-                    feat_RepeatCaller.missedList = utilityHelpers.loadStringSetFromMemory(context, "STRINGSET_MISSEDLIST");
-                    matchActiveNotificationsWithMissedList(context);
+                    obj_RepeatCaller.matchActiveNotificationsWithMissedList(context,notificationManager);
                         if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                             error = "ringing";
-                            feat_RepeatCaller.stateRINGING = true;
+                            obj_RepeatCaller.setStateRINGING(true);
                             if ((AudioManager.RINGER_MODE_NORMAL != am.getRingerMode())) {
                                 error = "Ringer mode not normal";
-                                getCurrentSettings(context);
 
-                                if (feat_RepeatCaller.isNumberRepeatCaller(number)) {
-                                    ringtones.initRingtoneProperties(context);
+                                if (obj_RepeatCaller.isNumberRepeatCaller(number)) {
 
-                                        if ((!ringtones.ringtone.isPlaying())) {
+                                        if (!(repeatCaller_Ringtone.isRingtonePlaying())) {
                                                 error = "Ringer Mode is silent";
 
-                                                int seekbarVolume=utilityHelpers.loadIntFromMemory(context,"ARC_VOLUME",ringtones.Current_MediaVolume);
+                                                int seekbarVolume=utilityHelpers.loadIntFromMemory(context,"ARC_VOLUME",repeatCaller_Ringtone.getCurrent_MediaVolume());
                                                 am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
 
-                                                mp = utilityHelpers.playtune(context);
+                                                local_mp=repeatCaller_Ringtone.playLongtune(context);
                                                 flow = "Play Tune Silent";
-                                                feat_RepeatCaller.repeatCallerRingActivated = "SILENT";
+                                                obj_RepeatCaller.setRepeatCallerRingActivated(true);
                                         } else {
                                             error = "Ringtone was null";
                                         }
@@ -98,32 +79,33 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                                 }
                             }
                         } else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-                            feat_RepeatCaller.stateRINGING = false;
-                            handleReset(context);
-                            int numberID = utilityHelpers.listLoopSearch(number, feat_RepeatCaller.missedList);
-                            feat_RepeatCaller.nullifyMissedElement(numberID,notificationManager);
+                            obj_RepeatCaller.setStateRINGING(false);
+                            handleReset(context,obj_RepeatCaller);
+                            int numberID = utilityHelpers.listLoopSearch(number, obj_RepeatCaller.getMissedList());
+                            obj_RepeatCaller.nullifyMissedElement(numberID,notificationManager);
 
 
                             flow = "Offhook";
                             utilityHelpers.saveStringToMemory(context, "errorStr", flow);
-                            utilityHelpers.saveStringSetToMemory(context, "STRINGSET_MISSEDLIST", feat_RepeatCaller.missedList);
+                            obj_RepeatCaller.saveMissedListToMemory(context);
                         } else if ((state.equals(TelephonyManager.EXTRA_STATE_IDLE))) {
                             error = "ID:phone state is idle";
-                            handleReset(context);
-                            if ((feat_RepeatCaller.stateRINGING)) {
-                                if (feat_RepeatCaller.featureActivated) {
+                            handleReset(context,obj_RepeatCaller);
+                            if ((obj_RepeatCaller.isStateRINGING())) {
+                                if (obj_RepeatCaller.isFeatureActivated()) {
                                     error = "ID:feature Activated";
                                     String logType = getLastCallLog(context);
-                                    if (logType.equals(MISSED_TYPE)) {
+                                    if (logType.equals(String.valueOf(MISSED_TYPE))) {
                                         error = "ID:missedcall detected";
                                         flow = error;
                                         utilityHelpers.saveStringToMemory(context, "errorStr", flow);
-                                        if (!(feat_RepeatCaller.isNumberRepeatCaller(number))) {
+                                        if (!(obj_RepeatCaller.isNumberRepeatCaller(number))) {
                                             error = "ID:number is repeat caller";
-                                            feat_RepeatCaller.addToMissedList(logName, logNumber, "Missed");
+                                            obj_RepeatCaller.addToMissedList(logName, logNumber, "Missed");
                                             NotificationManager post_notificationManager = notificationManager;
                                             error = "ID:Created Notification Channel";
-                                            int notificationID = ++feat_RepeatCaller.notificationIDcounter;
+                                            feat_RepeatCaller.notificationIDcounter=feat_RepeatCaller.notificationIDcounter+1;
+                                            int notificationID = feat_RepeatCaller.notificationIDcounter;
                                             String NotiString=getNotificationTitleString();
 
 
@@ -132,7 +114,7 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                                             post_notificationManager.notify(notificationID, notification);
                                             flow = "Posted Notification";
                                             utilityHelpers.saveStringToMemory(context, "errorStr", flow);
-                                            utilityHelpers.saveStringSetToMemory(context, "STRINGSET_MISSEDLIST", feat_RepeatCaller.missedList);
+                                            obj_RepeatCaller.saveMissedListToMemory(context);
                                         } else {
                                             flow = "Repeated Missed Call";
                                             utilityHelpers.saveStringToMemory(context, "errorStr", flow);
@@ -143,11 +125,12 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                         }
                 }
             }
-            } catch(Exception e){
+            }
+        } catch(Exception e){
                 Log.e(TAG, " Exception on receive CALL  " + e);
                 Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
                 utilityHelpers.saveStringToMemory(context,"errorStr",error);
-                feat_RepeatCaller.missedList.clear();
+                obj_RepeatCaller.clearAndSaveMissedList(context);
             }
     }
 
@@ -161,15 +144,7 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
         return title_string;
     }
 
-    private void matchActiveNotificationsWithMissedList(Context context) {
-        StatusBarNotification[] activeNotifications = notificationManager.getActiveNotifications();
 
-        int numberOfActiveNotifications = activeNotifications.length;
-        if ((numberOfActiveNotifications == 0) && (feat_RepeatCaller.missedList.size() > 0)) {
-            feat_RepeatCaller.missedList.clear();
-            utilityHelpers.saveStringSetToMemory(context, "STRINGSET_MISSEDLIST", feat_RepeatCaller.missedList);
-        }
-    }
 
 
     private String getLastCallLog(Context context) {
@@ -207,19 +182,15 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
         return stringType;
     }
 
-    private void handleReset(Context context) {
-                ringtones.myRingerisplaying=false;
+    private void handleReset(Context context,feat_RepeatCaller obj_RepeatCaller) {
+        repeatCaller_Ringtone.setMyRingerisplaying(false);
+                if(obj_RepeatCaller.isRepeatCallerRingActivated()) {
                     AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                    am.setStreamVolume(AudioManager.STREAM_MUSIC, ringtones.Current_MediaVolume, 0);
-                    utilityHelpers.stoptune(context,mp);
+                    am.setStreamVolume(AudioManager.STREAM_MUSIC, ringtones.getCurrent_MediaVolume(), 0);
+                    repeatCaller_Ringtone.stoptune(context,local_mp);
+                    obj_RepeatCaller.setRepeatCallerRingActivated(false);
+                }
     }
-
-    private void getCurrentSettings(Context context) {
-        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        feat_RepeatCaller.ringerMode=am.getRingerMode();
-        feat_RepeatCaller.Current_RingVolume = am.getStreamVolume(AudioManager.STREAM_RING);
-    }
-
 
 
 
