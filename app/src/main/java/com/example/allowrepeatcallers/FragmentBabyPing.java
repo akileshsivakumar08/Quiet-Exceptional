@@ -24,6 +24,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -201,7 +203,8 @@ public class FragmentBabyPing extends Fragment {
                     boolean permission_already_requested=((ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (permission_already_requested == false) {
                         String[] pend = utilityHelpers.getpendingpermissions(context, feat_BabyPing.permissions);
-                        requestPermissions(pend, PERMISSION_CODE_POSTNOTIFICATIONS);
+                        //requestPermissions(pend, PERMISSION_CODE_POSTNOTIFICATIONS);
+                        requestPermissionLauncher.launch(pend);
                     } else if (permission_already_requested == true) {
                         try {
                             //start a dialog box
@@ -221,6 +224,23 @@ public class FragmentBabyPing extends Fragment {
 
         }
     }
+
+    private ActivityResultLauncher<String[]> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
+                Context context =requireContext();
+                boolean permission_already_requested=false;
+                permission_already_requested=true;
+                utilityHelpers.saveBooleanToMemory(context,"BABY_PING_PERMISSIONREQUESTED",permission_already_requested);
+                if(isGranted.containsValue(false)){
+                    process_featureState(false,context);
+
+                }
+                else{
+                    process_featureState(true,context);
+                    utilityHelpers.checkLogFormat(context);
+                }
+            });
+
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override

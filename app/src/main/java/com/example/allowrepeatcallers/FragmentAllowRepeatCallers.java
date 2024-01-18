@@ -33,6 +33,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
+
 public class FragmentAllowRepeatCallers extends Fragment {
     TextView FeatTitle;
     TextView FeatTitle2;
@@ -256,7 +259,8 @@ public class FragmentAllowRepeatCallers extends Fragment {
                     boolean permission_already_requested=((ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (permission_already_requested == false) {
                         String[] pend = utilityHelpers.getpendingpermissions(context, GUIobj_RepeatCaller.permissions);
-                        requestPermissions(pend, PERMISSION_CODE_POSTNOTIFICATIONS);
+                       // requestPermissions(pend, PERMISSION_CODE_POSTNOTIFICATIONS);
+                        requestPermissionLauncher.launch(pend);
                     } else if (permission_already_requested == true) {
                         try {
                             //start a dialog box
@@ -275,6 +279,23 @@ public class FragmentAllowRepeatCallers extends Fragment {
             }
         }
     }
+
+    private ActivityResultLauncher<String[]> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
+                Context context =requireContext();
+                boolean permission_already_requested=false;
+                permission_already_requested=true;
+                utilityHelpers.saveBooleanToMemory(context,"REPEATCALLER_PERMISSIONREQUESTED",permission_already_requested);
+                    if(isGranted.containsValue(false)){
+                        process_featureState(false,context);
+
+                    }
+                    else{
+                        process_featureState(true,context);
+                        utilityHelpers.checkLogFormat(context);
+                    }
+            });
+
 
     private void process_featureState(boolean state,Context context) {
         GUIobj_RepeatCaller.setFeatureActivated(state);
