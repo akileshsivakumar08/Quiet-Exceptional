@@ -19,7 +19,7 @@
         android:id="@+id/tablayout"
         android:layout_width="313dp"
         android:layout_height="46dp"
-        android:layout_marginTop="530dp"
+        android:layout_marginTop="540dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/pager"

@@ -107,7 +107,7 @@ public class utilityHelpers {
 
 
     //public static int listLoopSearch(String number, List<class_Buddy> myList) {
-    public static int listLoopSearch(String number, List<String> myList) {
+    public static int listLoopSearchObj(String number, List<class_Buddy> myList) {
         Boolean MatchfoundinList = false;
         int i=0;
         if (!(myList.isEmpty())) {
@@ -117,6 +117,31 @@ public class utilityHelpers {
                 Log.d("myTag", "Looping");
 
                // if ((PhoneNumberUtils.compare(number, myList.get(i).getBuddy_PhNo()))) {
+                if ((PhoneNumberUtils.compare(number, myList.get(i).getBuddy_PhNo()))) {
+                    MatchfoundinList = true;
+                    callReceiver_RepeatCaller.error="ID:Match is found";
+                    Log.d("myTag", "Match found");
+                    break;
+                }
+            }
+
+        }
+        if(MatchfoundinList==false){
+            callReceiver_RepeatCaller.error="ID:No Match found or list is empty";
+            i=255;
+        }
+        return i;
+    }
+    public static int listLoopSearchString(String number, List<String> myList) {
+        Boolean MatchfoundinList = false;
+        int i=0;
+        if (!(myList.isEmpty())) {
+            Log.d("myTag", "Object list obtained from Memory");
+            callReceiver_RepeatCaller.error="ID:list is not empty";
+            for (i = 0; i < myList.size(); i++) {
+                Log.d("myTag", "Looping");
+
+                // if ((PhoneNumberUtils.compare(number, myList.get(i).getBuddy_PhNo()))) {
                 if ((PhoneNumberUtils.compare(number, myList.get(i)))) {
                     MatchfoundinList = true;
                     callReceiver_RepeatCaller.error="ID:Match is found";

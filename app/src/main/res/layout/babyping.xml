@@ -97,7 +97,7 @@
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
-        android:layout_height="19dp"
+        android:layout_height="wrap_content"
         android:text="@string/Allfeat_settings"
         android:textColor="#EF7C8E"
         app:layout_constraintEnd_toEndOf="@+id/Diagnosis"

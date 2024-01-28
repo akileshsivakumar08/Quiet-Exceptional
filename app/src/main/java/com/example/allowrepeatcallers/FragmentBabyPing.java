@@ -200,7 +200,8 @@ public class FragmentBabyPing extends Fragment {
                 } else {
                     boolean ARC_permission_already_requested= utilityHelpers.loadBooleanFromMemory(context, "REPEATCALLER_PERMISSIONREQUESTED");
                     boolean BP_permission_already_requested=utilityHelpers.loadBooleanFromMemory(context, "BABY_PING_PERMISSIONREQUESTED");
-                    boolean permission_already_requested=((ARC_permission_already_requested)||(BP_permission_already_requested));
+                    boolean SILEXCEPT_permission_already_requested= utilityHelpers.loadBooleanFromMemory(context, "SILEXCEPT_PERMISSIONREQUESTED");
+                    boolean permission_already_requested=((SILEXCEPT_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (permission_already_requested == false) {
                         String[] pend = utilityHelpers.getpendingpermissions(context, feat_BabyPing.permissions);
                         //requestPermissions(pend, PERMISSION_CODE_POSTNOTIFICATIONS);

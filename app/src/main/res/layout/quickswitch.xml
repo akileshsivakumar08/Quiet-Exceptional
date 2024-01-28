@@ -135,7 +135,7 @@
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
-        android:layout_height="19dp"
+        android:layout_height="wrap_content"
         android:text="@string/Settings"
         android:textColor="#2F435A"
         app:layout_constraintEnd_toEndOf="@+id/Diagnosis"

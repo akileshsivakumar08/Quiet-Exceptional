@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Callipop</string>
+    <string name="app_name">Quiet Exceptional</string>
     <string name="accessibility_service_label">AllowRepeatCallers</string>
     <string name="accessibility_service_desc">This service detects if the volume button is pressed</string>
     <string name="language_change">sprache wechseln</string>

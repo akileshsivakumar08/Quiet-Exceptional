@@ -20,6 +20,8 @@ public class MyPagerAdapter extends FragmentStateAdapter {
                 return new FragmentBabyPing();
             case 2:
                 return new FragmentQuickSwitchBuddy();
+            case 3:
+                return new FragmentsilentExceptions();
             default:
                 throw new IllegalArgumentException("Invalid position: " + position);
         }
@@ -27,6 +29,6 @@ public class MyPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 }

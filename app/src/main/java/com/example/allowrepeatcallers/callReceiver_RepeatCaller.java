@@ -81,7 +81,7 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                         } else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                             obj_RepeatCaller.setStateRINGING(false);
                             handleReset(context,obj_RepeatCaller);
-                            int numberID = utilityHelpers.listLoopSearch(number, obj_RepeatCaller.getMissedList());
+                            int numberID = utilityHelpers.listLoopSearchString (number, obj_RepeatCaller.getMissedList());
                             obj_RepeatCaller.nullifyMissedElement(numberID,notificationManager);
 
 
@@ -143,7 +143,6 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
         }
         return title_string;
     }
-
 
 
 

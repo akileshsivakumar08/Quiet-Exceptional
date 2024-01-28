@@ -105,7 +105,7 @@ public class myAccessibilityService extends AccessibilityService {
                                     } else if (AudioManager.RINGER_MODE_VIBRATE == am.getRingerMode()) {
                                        // am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                                         //am.setStreamVolume(AudioManager.STREAM_RING, 0, 2);
-                                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+                                        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY);
                                         Toast.makeText(this, "set to silent", Toast.LENGTH_SHORT).show();
 
                                     }

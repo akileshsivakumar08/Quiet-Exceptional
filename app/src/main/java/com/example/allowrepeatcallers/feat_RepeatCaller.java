@@ -86,7 +86,7 @@ class feat_RepeatCaller {
     boolean isNumberRepeatCaller(String number) {
         Boolean MatchfoundinList;
         Boolean repeatCaller;
-        int numberID =utilityHelpers.listLoopSearch(number,missedList);
+        int numberID =utilityHelpers.listLoopSearchString(number,missedList);
         if(numberID==255){
             MatchfoundinList=false;
         }
