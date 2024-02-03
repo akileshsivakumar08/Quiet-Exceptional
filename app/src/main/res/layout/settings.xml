@@ -99,6 +99,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#808080" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#808080" />
+            <TextView
+                android:id="@+id/getmissedlist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="View Active Missed Calls"
+                android:textColor="#525252"
+                android:textSize="16sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#808080" />
         </LinearLayout>
 
 

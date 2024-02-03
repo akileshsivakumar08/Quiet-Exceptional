@@ -66,7 +66,6 @@ public class FragmentAllowRepeatCallers extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(getContext(), " created ", Toast.LENGTH_SHORT).show();
     }
 
     @Override

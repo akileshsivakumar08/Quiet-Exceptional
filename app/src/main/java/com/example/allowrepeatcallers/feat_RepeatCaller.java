@@ -4,9 +4,13 @@ import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.service.notification.StatusBarNotification;
+
+import androidx.work.OneTimeWorkRequest;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +38,7 @@ class feat_RepeatCaller {
     }
 
     private final int feat_ID=1;
+    public OneTimeWorkRequest tenMinuteDelete;
 
     public boolean isStateRINGING() {
         return stateRINGING;
@@ -58,6 +63,7 @@ class feat_RepeatCaller {
     public feat_RepeatCaller(Context context) {
         featureActivated = utilityHelpers.loadBooleanFromMemory(context, "FEAT_REPEATCALLER_ACTIVE");
         missedList = loadMissedListFromMemory(context);
+
     }
     // public static NotificationManager notificationManager;
 
@@ -70,10 +76,11 @@ class feat_RepeatCaller {
             if (nullCount == missedList.size()) {
                 missedList.clear();
                 nullCount = 0;
+                notificationIDcounter=0;
             }
 
             notificationManager.cancel(notiid);
-            notificationIDcounter--;
+            //notificationIDcounter--;
         }
     }
     void addToMissedList(String p_logName,String p_logNumber,String text) {

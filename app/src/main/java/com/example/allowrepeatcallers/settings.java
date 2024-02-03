@@ -20,11 +20,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class settings extends AppCompatActivity {
     TextView testNotification;
     TextView testCallLog;
     TextView troubleshoot;
     Switch overridednd;
+    TextView getMissedList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -34,6 +37,7 @@ public class settings extends AppCompatActivity {
         testNotification=findViewById(R.id.testNotification);
         testCallLog=findViewById(R.id.testCallLog);
         overridednd=findViewById(R.id.overridednd);
+        getMissedList=findViewById(R.id.getmissedlist);
         boolean overridechecked=utilityHelpers.loadBooleanFromMemory(context,"OVERRIDE_DND");
         if(overridechecked){
             overridednd.setChecked(true);
@@ -42,6 +46,24 @@ public class settings extends AppCompatActivity {
         else{
             overridednd.setChecked(false);
         }
+        getMissedList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                feat_RepeatCaller obj_getmissedlist=new feat_RepeatCaller(context);
+                String string_missedList="\n";
+                ArrayList<String>local_missedList=obj_getmissedlist.getMissedList();
+                if(local_missedList.size()==0){
+                    string_missedList="No Active Missed Calls";
+                }
+                for(int i=0;i<local_missedList.size();i++){
+                    string_missedList=string_missedList+local_missedList.get(i)+"\n";
+                }
+                AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(settings.this);
+                noti_alertbuilder.setMessage(string_missedList);
+                AlertDialog alertDialog = noti_alertbuilder.create();
+                alertDialog.show();
+            }
+        });
         testCallLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
