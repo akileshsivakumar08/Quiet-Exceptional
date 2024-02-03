@@ -6,40 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFBF2">
 
-    <Button
-        android:id="@+id/testNotification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Test Notification"
-        app:layout_constraintEnd_toEndOf="@+id/troubleshoot"
-        app:layout_constraintHorizontal_bias="0.541"
-        app:layout_constraintStart_toStartOf="@+id/troubleshoot"
-        app:layout_constraintTop_toBottomOf="@+id/troubleshoot" />
 
-    <Button
-        android:id="@+id/testCallLog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test CallLog"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/testNotification"
-        app:layout_constraintHorizontal_bias="0.363"
-        app:layout_constraintStart_toStartOf="@+id/testNotification"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.737" />
-
-    <Button
-        android:id="@+id/troubleshoot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Troubleshoot"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.824" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -96,6 +63,38 @@
                 android:textColor="#525252"
                 android:textSize="16sp" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#808080" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#3B3B3B"
+                android:padding="8dp"
+                android:text="Troubleshoot"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/testCallLog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Test CallLog"
+                android:textColor="#525252"
+                android:textSize="16sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#808080" />
+            <TextView
+                android:id="@+id/testNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Test Notification"
+                android:textColor="#525252"
+                android:textSize="16sp" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

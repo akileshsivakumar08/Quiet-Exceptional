@@ -14,15 +14,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class settings extends AppCompatActivity {
-    Button testNotification;
-    Button testCallLog;
-    Button troubleshoot;
+    TextView testNotification;
+    TextView testCallLog;
+    TextView troubleshoot;
     Switch overridednd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,6 @@ public class settings extends AppCompatActivity {
         Context context=getApplicationContext();
         testNotification=findViewById(R.id.testNotification);
         testCallLog=findViewById(R.id.testCallLog);
-        troubleshoot=findViewById(R.id.troubleshoot);
         overridednd=findViewById(R.id.overridednd);
         boolean overridechecked=utilityHelpers.loadBooleanFromMemory(context,"OVERRIDE_DND");
         if(overridechecked){
@@ -90,23 +90,7 @@ public class settings extends AppCompatActivity {
                 post_notificationManager.notify(notificationID, notification);
             }
         });
-        troubleshoot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    //start a dialog box
-                    String err_post=utilityHelpers.loadStringFromMemory(getApplicationContext(),"errorStr");
-                    AlertDialog.Builder troubleshoot_alertbuilder = new AlertDialog.Builder(settings.this);
-                    troubleshoot_alertbuilder.setMessage(err_post);
-                    AlertDialog alertDialog = troubleshoot_alertbuilder.create();
-                    alertDialog.show();
-                } catch (Exception e) {
 
-                    Log.e(TAG, " Exception on dialog  " + e);
-                    Toast.makeText(getApplicationContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         overridednd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

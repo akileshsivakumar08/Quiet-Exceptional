@@ -21,7 +21,7 @@ class feat_RepeatCaller {
     }
 
     private static boolean repeatCallerRingActivated=false;
-    public String[] permissions= {Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG,Manifest.permission.POST_NOTIFICATIONS};
+    public static String[] permissions= {Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG,Manifest.permission.POST_NOTIFICATIONS};
     private static int nullCount;
     public static int notificationIDcounter=0;
 

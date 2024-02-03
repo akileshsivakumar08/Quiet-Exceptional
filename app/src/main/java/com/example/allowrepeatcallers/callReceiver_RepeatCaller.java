@@ -39,6 +39,8 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         feat_RepeatCaller obj_RepeatCaller=new feat_RepeatCaller(context);
         try {
+            if (!utilityHelpers.ispermissionpending(context, feat_RepeatCaller.permissions)) {
+
             if (!utilityHelpers.ispermissionpending(context, obj_RepeatCaller.permissions)) {
             notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
@@ -50,79 +52,81 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
 
 
                 if (number != null) {
-                    repeatCaller_Ringtone=new ringtones(context,obj_RepeatCaller.getFeat_ID());
+                    repeatCaller_Ringtone = new ringtones(context, obj_RepeatCaller.getFeat_ID());
                     error = "Number not null";
                     mLastState = state;
                     Log.e(TAG, state);
-                    obj_RepeatCaller.matchActiveNotificationsWithMissedList(context,notificationManager);
-                        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                            error = "ringing";
-                            obj_RepeatCaller.setStateRINGING(true);
-                            if ((AudioManager.RINGER_MODE_NORMAL != am.getRingerMode())) {
-                                error = "Ringer mode not normal";
 
-                                if (obj_RepeatCaller.isNumberRepeatCaller(number)) {
+                    obj_RepeatCaller.matchActiveNotificationsWithMissedList(context, notificationManager);
+                    if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                        error = "ringing";
+                        obj_RepeatCaller.setStateRINGING(true);
+                        if ((AudioManager.RINGER_MODE_NORMAL != am.getRingerMode())) {
+                            error = "Ringer mode not normal";
 
-                                        if (!(repeatCaller_Ringtone.isRingtonePlaying())) {
-                                                error = "Ringer Mode is silent";
+                            if (obj_RepeatCaller.isNumberRepeatCaller(number)) {
 
-                                                int seekbarVolume=utilityHelpers.loadIntFromMemory(context,"ARC_VOLUME",repeatCaller_Ringtone.getCurrent_MediaVolume());
-                                                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
+                                if (!(repeatCaller_Ringtone.isRingtonePlaying())) {
+                                    error = "Ringer Mode is silent";
 
-                                                local_mp=repeatCaller_Ringtone.playLongtune(context);
-                                                flow = "Play Tune Silent";
-                                                obj_RepeatCaller.setRepeatCallerRingActivated(true);
-                                        } else {
-                                            error = "Ringtone was null";
-                                        }
-                                    utilityHelpers.saveStringToMemory(context, "errorStr", flow);
+                                    int seekbarVolume = utilityHelpers.loadIntFromMemory(context, "ARC_VOLUME", repeatCaller_Ringtone.getCurrent_MediaVolume());
+                                    am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
+
+                                    local_mp = repeatCaller_Ringtone.playLongtune(context);
+                                    flow = "Play Tune Silent";
+                                    obj_RepeatCaller.setRepeatCallerRingActivated(true);
+                                } else {
+                                    error = "Ringtone was null";
                                 }
+                                utilityHelpers.saveStringToMemory(context, "errorStr", flow);
                             }
-                        } else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-                            obj_RepeatCaller.setStateRINGING(false);
-                            handleReset(context,obj_RepeatCaller);
-                            int numberID = utilityHelpers.listLoopSearchString (number, obj_RepeatCaller.getMissedList());
-                            obj_RepeatCaller.nullifyMissedElement(numberID,notificationManager);
+                        }
+                    } else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                        obj_RepeatCaller.setStateRINGING(false);
+                        handleReset(context, obj_RepeatCaller);
+                        int numberID = utilityHelpers.listLoopSearchString(number, obj_RepeatCaller.getMissedList());
+                        obj_RepeatCaller.nullifyMissedElement(numberID, notificationManager);
 
 
-                            flow = "Offhook";
-                            utilityHelpers.saveStringToMemory(context, "errorStr", flow);
-                            obj_RepeatCaller.saveMissedListToMemory(context);
-                        } else if ((state.equals(TelephonyManager.EXTRA_STATE_IDLE))) {
-                            error = "ID:phone state is idle";
-                            handleReset(context,obj_RepeatCaller);
-                            if ((obj_RepeatCaller.isStateRINGING())) {
-                                if (obj_RepeatCaller.isFeatureActivated()) {
-                                    error = "ID:feature Activated";
-                                    String logType = getLastCallLog(context);
-                                    if (logType.equals(String.valueOf(MISSED_TYPE))) {
-                                        error = "ID:missedcall detected";
-                                        flow = error;
+                        flow = "Offhook";
+                        utilityHelpers.saveStringToMemory(context, "errorStr", flow);
+                        obj_RepeatCaller.saveMissedListToMemory(context);
+                    } else if ((state.equals(TelephonyManager.EXTRA_STATE_IDLE))) {
+                        error = "ID:phone state is idle";
+                        handleReset(context, obj_RepeatCaller);
+                        if ((obj_RepeatCaller.isStateRINGING())) {
+                            if (obj_RepeatCaller.isFeatureActivated()) {
+                                error = "ID:feature Activated";
+                                String logType = getLastCallLog(context);
+                                if (logType.equals(String.valueOf(MISSED_TYPE))) {
+                                    error = "ID:missedcall detected";
+                                    flow = error;
+                                    utilityHelpers.saveStringToMemory(context, "errorStr", flow);
+                                    if (!(obj_RepeatCaller.isNumberRepeatCaller(number))) {
+                                        error = "ID:number is repeat caller";
+                                        obj_RepeatCaller.addToMissedList(logName, logNumber, "Missed");
+                                        NotificationManager post_notificationManager = notificationManager;
+                                        error = "ID:Created Notification Channel";
+                                        feat_RepeatCaller.notificationIDcounter = feat_RepeatCaller.notificationIDcounter + 1;
+                                        int notificationID = feat_RepeatCaller.notificationIDcounter;
+                                        String NotiString = getNotificationTitleString();
+
+
+                                        Notification notification = utilityHelpers.buildNotification(NotiString, "Swipe or press Stop to mute next Call", notificationID, context);
+
+                                        post_notificationManager.notify(notificationID, notification);
+                                        flow = "Posted Notification";
                                         utilityHelpers.saveStringToMemory(context, "errorStr", flow);
-                                        if (!(obj_RepeatCaller.isNumberRepeatCaller(number))) {
-                                            error = "ID:number is repeat caller";
-                                            obj_RepeatCaller.addToMissedList(logName, logNumber, "Missed");
-                                            NotificationManager post_notificationManager = notificationManager;
-                                            error = "ID:Created Notification Channel";
-                                            feat_RepeatCaller.notificationIDcounter=feat_RepeatCaller.notificationIDcounter+1;
-                                            int notificationID = feat_RepeatCaller.notificationIDcounter;
-                                            String NotiString=getNotificationTitleString();
-
-
-                                            Notification notification = utilityHelpers.buildNotification(NotiString, "Swipe or press Stop to mute next Call", notificationID, context);
-
-                                            post_notificationManager.notify(notificationID, notification);
-                                            flow = "Posted Notification";
-                                            utilityHelpers.saveStringToMemory(context, "errorStr", flow);
-                                            obj_RepeatCaller.saveMissedListToMemory(context);
-                                        } else {
-                                            flow = "Repeated Missed Call";
-                                            utilityHelpers.saveStringToMemory(context, "errorStr", flow);
-                                        }
+                                        obj_RepeatCaller.saveMissedListToMemory(context);
+                                    } else {
+                                        flow = "Repeated Missed Call";
+                                        utilityHelpers.saveStringToMemory(context, "errorStr", flow);
                                     }
                                 }
                             }
                         }
+                    }
+                }
                 }
             }
             }

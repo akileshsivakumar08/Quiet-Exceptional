@@ -19,8 +19,10 @@ public class callReceiver_Exceptionally extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        feat_silentExceptions obj_silentExceptions=new feat_silentExceptions(context);
+
         try {
+            if (!utilityHelpers.ispermissionpending(context, feat_silentExceptions.permissions)) {
+                feat_silentExceptions obj_silentExceptions=new feat_silentExceptions(context);
             if (obj_silentExceptions.isFeatureActivated()) {
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
@@ -52,6 +54,7 @@ public class callReceiver_Exceptionally extends BroadcastReceiver {
                     } else if ((state.equals(TelephonyManager.EXTRA_STATE_IDLE))) {
                         handleReset(context, obj_silentExceptions);
                     }
+                }
                 }
             }
         }catch (Exception e) {

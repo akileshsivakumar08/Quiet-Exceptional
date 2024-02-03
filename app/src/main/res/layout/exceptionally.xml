@@ -4,17 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFBF2"
+    android:background="#eae2e0"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="290dp"
-        android:layout_height="356dp"
+    <View
+        android:id="@+id/view1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/FeatTitle"
+        android:background="#e7b7c8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_face_retouching_natural_24"
-        app:tint="#808080" />
+        app:layout_constraintWidth_percent="0.33"/>
+    <View
+        android:id="@+id/view2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/FeatTitle"
+        android:background="#e5c8a5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.33" />
+
 
     <ImageView
         android:id="@+id/share"
@@ -52,7 +63,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/infoButton"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/baseline_build_circle_24"
+        app:srcCompat="@drawable/baseline_settings_24"
         app:tint="#424651" />
 
     <TextView
@@ -71,7 +82,7 @@
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
-        android:layout_height="19dp"
+        android:layout_height="wrap_content"
         android:text="Settings"
         android:textColor="#424651"
         app:layout_constraintEnd_toEndOf="parent"

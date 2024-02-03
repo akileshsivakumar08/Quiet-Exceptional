@@ -15,13 +15,14 @@ public class MyPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new FragmentAllowRepeatCallers();
+                return new FragmentsilentExceptions();
+
             case 1:
                 return new FragmentBabyPing();
             case 2:
                 return new FragmentQuickSwitchBuddy();
             case 3:
-                return new FragmentsilentExceptions();
+                return new FragmentAllowRepeatCallers();
             default:
                 throw new IllegalArgumentException("Invalid position: " + position);
         }

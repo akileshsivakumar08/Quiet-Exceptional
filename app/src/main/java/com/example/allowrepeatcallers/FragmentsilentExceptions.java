@@ -105,7 +105,7 @@ public class FragmentsilentExceptions extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 pingvolume=i;
-                utilityHelpers.saveIntToMemory(context,"ARC_VOLUME",pingvolume);
+                utilityHelpers.saveIntToMemory(context,"SILEXCEPT_VOLUME",pingvolume);
             }
 
             @Override
@@ -301,7 +301,7 @@ public class FragmentsilentExceptions extends Fragment {
 
     private void process_featureState(boolean state,Context context) {
         GUIobj_silentExceptions.setFeatureActivated(state);
-        utilityHelpers.saveBooleanToMemory(context,"FEAT_REPEATCALLER_ACTIVE",state);
+        utilityHelpers.saveBooleanToMemory(context,"FEAT_SILEXCEPT_ACTIVE",state);
         TapToEnable.setChecked(state);
         seekBar_silExcept.setEnabled(state);
         manageContacts.setEnabled(state);

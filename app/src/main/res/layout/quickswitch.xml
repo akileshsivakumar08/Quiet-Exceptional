@@ -108,7 +108,7 @@
         android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/infoButton"
-        app:srcCompat="@drawable/baseline_build_circle_24"
+        app:srcCompat="@drawable/baseline_settings_24"
         app:tint="#2F435A" />
 
     <TextView

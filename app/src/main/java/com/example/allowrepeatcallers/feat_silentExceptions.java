@@ -20,7 +20,7 @@ class feat_silentExceptions{
     private final int feat_ID=1;
      private boolean featureActivated=false;
     public static ArrayList<class_Buddy> silExceptList = new ArrayList<>();
-    public String[] permissions= {android.Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS};
+    public static String[] permissions= {android.Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,Manifest.permission.READ_CALL_LOG};
 
     public int getFeat_ID() {
         return feat_ID;
@@ -49,7 +49,7 @@ public void addTosilExceptList(class_Buddy buddy){
     }
 
     public feat_silentExceptions(Context context) {
-         featureActivated = utilityHelpers.loadBooleanFromMemory(context, "FEAT_REPEATCALLER_ACTIVE");
+         featureActivated = utilityHelpers.loadBooleanFromMemory(context, "FEAT_SILEXCEPT_ACTIVE");
          loadsilExceptListFromMemory(context);
      }
 

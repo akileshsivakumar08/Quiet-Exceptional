@@ -37,9 +37,9 @@ public class FragmentBabyPing extends Fragment {
     ImageView infoButton;
     Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
     final int PERMISSION_CODE_POSTNOTIFICATIONS=1;
-    String EnabledColor="#51A7AD";
+    String EnabledColor="#2C5E1A";
     ImageView pony;
-    String DisabledColor="#69124A";
+    String DisabledColor="#72435C";
     ImageView share;
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";

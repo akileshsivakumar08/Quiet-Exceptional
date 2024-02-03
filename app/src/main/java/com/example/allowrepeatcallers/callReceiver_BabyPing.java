@@ -24,6 +24,7 @@ public class callReceiver_BabyPing extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, @NonNull Intent intent) {
+        if (!utilityHelpers.ispermissionpending(context, feat_BabyPing.permissions)) {
         feat_BabyPing obj_AMC=new feat_BabyPing(context);
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -34,15 +35,17 @@ public class callReceiver_BabyPing extends BroadcastReceiver {
             if (overridden) {
                 if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                     if (obj_AMC.isFeatureActivated()) {
-                        String logType = getLastCallLog(context);
-                        if (logType.equals(String.valueOf(MISSED_TYPE))) {
+
+                            String logType = getLastCallLog(context);
+                            if (logType.equals(String.valueOf(MISSED_TYPE))) {
                                 int Current_MediaVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
                                 utilityHelpers.turnSpeakerON(am);
                                 int setVolume = utilityHelpers.loadIntFromMemory(context, "BABYPINGVOLUME", Current_MediaVolume);
                                 am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
-                                ringtones shorttune=new ringtones(context,2);
+                                ringtones shorttune = new ringtones(context, 2);
                                 shorttune.playShorttune(context);
                                 //am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
+                            }
                         }
                     }
                     //  Toast.makeText(context, "This a toast message", Toast.LENGTH_LONG).show();
