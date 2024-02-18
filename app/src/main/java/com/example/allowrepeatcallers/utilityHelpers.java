@@ -43,6 +43,8 @@ public class utilityHelpers {
 
     public static final String CHANNEL_ID = "Missed Call Notification";
     public static String sortOrder;
+    private static final String MEMCODE_SORTORDER="UPTODOWN";
+
 
     public static void adjustTitleTextSize(TextView text,Context context){
         Configuration config = context.getResources().getConfiguration();
@@ -241,4 +243,34 @@ public class utilityHelpers {
         }
     }
 
+    public static String getSortOrder(Context context) {
+        String sortOrder=utilityHelpers.loadStringFromMemory(context,MEMCODE_SORTORDER);
+        return sortOrder;
+    }
+
+    public static boolean isDNDOverriden(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        int dndstatus = notificationManager.getCurrentInterruptionFilter();
+        boolean ring = false;
+
+        boolean overridednd_bool = loadBooleanFromMemory(context, "OVERRIDE_DND");
+
+         /*
+        Override    ON  ON  OFF OFF
+        DND State   ON  OFF ON  OFF
+        Result      T   T   F   T
+        True: Ring Device
+        False: Dont Ring device
+        * */
+        if (overridednd_bool) {
+            ring = true;
+        } else if ((!overridednd_bool)) {
+            if (dndstatus == NotificationManager.INTERRUPTION_FILTER_ALL) {
+                ring = true;
+            } else {
+                ring = false;
+            }
+        }
+        return ring;
+    }
 }

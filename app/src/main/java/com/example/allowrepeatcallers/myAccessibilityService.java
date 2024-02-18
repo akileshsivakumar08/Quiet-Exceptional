@@ -21,7 +21,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
 public class myAccessibilityService extends AccessibilityService {
-
+    feat_quickSwitch obj_QS;
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
 
@@ -34,6 +34,7 @@ public class myAccessibilityService extends AccessibilityService {
 
     @Override
     protected boolean onKeyEvent(KeyEvent event) {
+        obj_QS=new feat_quickSwitch(getApplicationContext());
         Context context = getApplicationContext();
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -44,8 +45,8 @@ public class myAccessibilityService extends AccessibilityService {
             throw new RuntimeException(e);
         }
         if (accessEnabled != 0) {
-            feat_quickSwitch.featureActivated = utilityHelpers.loadBooleanFromMemory(context, "IS_QUICKSWITCH_ACTIVATED");
-            if (feat_quickSwitch.featureActivated){
+            obj_QS.setFeatureActivated(utilityHelpers.loadBooleanFromMemory(context, "IS_QUICKSWITCH_ACTIVATED"));
+            if (obj_QS.isFeatureActivated()){
                 int action, keycode;
 
             action = event.getAction();

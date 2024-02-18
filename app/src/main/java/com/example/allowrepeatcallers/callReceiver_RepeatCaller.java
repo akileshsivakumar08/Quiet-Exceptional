@@ -20,6 +20,11 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
+import java.time.Duration;
 import java.util.UUID;
 
 public class callReceiver_RepeatCaller extends BroadcastReceiver {
@@ -87,7 +92,6 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                         int numberID = utilityHelpers.listLoopSearchString(number, obj_RepeatCaller.getMissedList());
                         obj_RepeatCaller.nullifyMissedElement(numberID, notificationManager);
 
-
                         flow = "Offhook";
                         utilityHelpers.saveStringToMemory(context, "errorStr", flow);
                         obj_RepeatCaller.saveMissedListToMemory(context);
@@ -115,6 +119,14 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                                         Notification notification = utilityHelpers.buildNotification(NotiString, "Swipe or press Stop to mute next Call", notificationID, context);
 
                                         post_notificationManager.notify(notificationID, notification);
+                                        Data inputData = new Data.Builder()
+                                                .putInt("NOTIID",notificationID)
+                                                .build();
+                                        obj_RepeatCaller.tenMinuteDelete=new OneTimeWorkRequest.Builder(manageWork_AllowRepeatCallers.class)
+                                                .setInitialDelay(Duration.ofMinutes(3))
+                                                .setInputData(inputData)
+                                                .build();
+                                        WorkManager.getInstance(context).enqueue(obj_RepeatCaller.tenMinuteDelete);
                                         flow = "Posted Notification";
                                         utilityHelpers.saveStringToMemory(context, "errorStr", flow);
                                         obj_RepeatCaller.saveMissedListToMemory(context);
@@ -161,11 +173,11 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
         Uri uriCallLogs = Uri.parse("content://call_log/calls");
         Cursor cursorCallLogs = null;
         cursorCallLogs = context.getContentResolver().query(uriCallLogs, null, null, null);
-        utilityHelpers.sortOrder=utilityHelpers.loadStringFromMemory(context,"UPTODOWN");
-        if (utilityHelpers.sortOrder.equals("lastTime")) {
+        String sortOrder=utilityHelpers.getSortOrder(context);
+        if (sortOrder.equals("lastTime")) {
             cursorCallLogs.moveToLast();
         }
-        else if(utilityHelpers.sortOrder.equals("firstTime")){
+        else if(sortOrder.equals("firstTime")){
             cursorCallLogs.moveToFirst();
         }
         int index_type=cursorCallLogs.getColumnIndex(CallLog.Calls.TYPE);

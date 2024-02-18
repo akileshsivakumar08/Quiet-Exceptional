@@ -26,8 +26,6 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class LoadContactsActivity extends AppCompatActivity {
-    private static final int RESULT_PICK_CONTACT = 1;
-    public static final String SHARED_PREFS = "sharedPrefs";
 
     ListView listview;
     feat_silentExceptions obj_LoadContacts;
@@ -36,14 +34,11 @@ public class LoadContactsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final int RESULT_PICK_CONTACT =1;
         context=getApplicationContext();
         getSupportActionBar().setTitle( "Your Contacts");
         ArrayList<class_Buddy> obj_BuddyLocal;
         obj_LoadContacts=new feat_silentExceptions(context);
 
-
-        obj_LoadContacts.loadsilExceptListFromMemory(context);
         setContentView(R.layout.activity_load_contacts);
         refreshlistview(obj_LoadContacts.getSilExceptList());
         FloatingActionButton AddButton = findViewById(R.id.add_fab);
@@ -125,9 +120,9 @@ public class LoadContactsActivity extends AppCompatActivity {
     private void storeData(Intent data) {
         class_Buddy buddy;
         buddy=contactPicked(data);
-        feat_silentExceptions.loadsilExceptListFromMemory(context);
-        boolean check=checkrepeatcontact(obj_LoadContacts.getSilExceptList(),buddy);
-        if (check==true) {
+
+        boolean check=obj_LoadContacts.isnumberinList(buddy.getBuddy_PhNo());
+        if (!check) {
             obj_LoadContacts.addTosilExceptList(buddy);
             obj_LoadContacts.saveDataToMemory(context);
 
@@ -138,17 +133,6 @@ public class LoadContactsActivity extends AppCompatActivity {
         }
     }
 
-
- /*   @Override
-    protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        class_Buddy buddy;
-        if (resultCode == RESULT_OK) {
-            storeData(data);
-        } else {
-            Toast.makeText(this, "Failed To pick contact", Toast.LENGTH_SHORT).show();
-        }
-    }*/
 
 
     private boolean checkrepeatcontact(ArrayList<class_Buddy> obj_BuddyLocal, class_Buddy buddy) {

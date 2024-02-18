@@ -14,11 +14,14 @@ import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -36,23 +39,21 @@ import androidx.fragment.app.Fragment;
 
 public class FragmentsilentExceptions extends Fragment {
     TextView FeatTitle;
-    TextView FeatTitle2;
     private static final String CHANNEL_ID = "Missed Call Notification";
     ImageView diagnosis;
     SwitchCompat TapToEnable;
-    ImageView infoButton;
     Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
     final int PERMISSION_CODE_POSTNOTIFICATIONS=1;
-    String EnabledColor="#2C5E1A";
+    String EnabledColor="#064663";
     ImageView share;
     String DisabledColor="#72435C";
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
+    int blinknumber=3;
     SeekBar seekBar_silExcept;
-    ImageView testSoundImage;
-    TextView testSound;
     Button manageContacts;
     feat_silentExceptions GUIobj_silentExceptions;
+    ImageView starimage;
     int pingvolume;
 
     @Override
@@ -63,7 +64,15 @@ public class FragmentsilentExceptions extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(getContext(), " created ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Context context=getContext();
+        starimage=(ImageView) getView().findViewById(R.id.starimage);
+        Animation starrotate = AnimationUtils.loadAnimation(context, R.anim.starrotate);
+        starimage.startAnimation(starrotate);
     }
 
     @Override
@@ -72,21 +81,18 @@ public class FragmentsilentExceptions extends Fragment {
         Context context=requireContext();
         utilityHelpers.createNotificationChannel(context);
         //load GUI Elements
-        TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
-        diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
-        infoButton=(ImageView) getView().findViewById(R.id.infoButton);
-        share=(ImageView)  getView().findViewById(R.id.share);
+        TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
+
         seekBar_silExcept=(SeekBar) getView().findViewById(R.id.seekBar_silExcept);
         manageContacts=(Button) getView().findViewById(R.id.manageContacts);
-
 
         //load managers
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         GUIobj_silentExceptions=new feat_silentExceptions(context);
         //load from memory
         int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        int lastSetMediaVolume=utilityHelpers.loadIntFromMemory(context,"SILEXCEPT_VOLUME",currVolume);
+        int lastSetMediaVolume=GUIobj_silentExceptions.getExceptionallyVolume(context);
 
 
         //initiate GUI Elements
@@ -96,8 +102,7 @@ public class FragmentsilentExceptions extends Fragment {
         seekBar_silExcept.setProgress(lastSetMediaVolume);
         utilityHelpers.adjustTitleTextSize(FeatTitle,context);
 
-
-        if (utilityHelpers.ispermissionpending(context, GUIobj_silentExceptions.permissions)) {
+        if (utilityHelpers.ispermissionpending(context, feat_silentExceptions.permissions)) {
             process_featureState(false,context);
         }
 
@@ -105,7 +110,7 @@ public class FragmentsilentExceptions extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 pingvolume=i;
-                utilityHelpers.saveIntToMemory(context,"SILEXCEPT_VOLUME",pingvolume);
+                GUIobj_silentExceptions.saveVolume(context,pingvolume);
             }
 
             @Override
@@ -117,18 +122,12 @@ public class FragmentsilentExceptions extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 ringtones testSound = new ringtones(context, 0);
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                int seekbarVolume = utilityHelpers.loadIntFromMemory(context, "ARC_VOLUME", ringtones.getCurrent_MediaVolume());
+                int seekbarVolume = GUIobj_silentExceptions.getExceptionallyVolume(context);
                 am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
                 testSound.playShorttune(context);
             }
         });
-        diagnosis.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, settings.class);
-                FragmentsilentExceptions.this.startActivity(intent);
-            }
-        });
+
         FeatTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,29 +144,7 @@ public class FragmentsilentExceptions extends Fragment {
                 userTap();
             }
         });
-        infoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                postInfoDialog();
-            }
-        });
 
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("text/plain");
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                    String shareMessage= "\nLet me recommend you this application\n\n";
-                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" +"\n\n";
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                    startActivity(Intent.createChooser(shareIntent, "choose one"));
-                } catch(Exception e) {
-                    //e.toString();
-                }
-            }
-        });
         manageContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -176,18 +153,14 @@ public class FragmentsilentExceptions extends Fragment {
             }
         });
 
-        if(GUIobj_silentExceptions.isFeatureActivated()){
-            //checkLogFormat();
-            process_featureState(true,context);
-        }
-        else{
-            process_featureState(false,context);
-        }
+        //checkLogFormat();
+        process_featureState(GUIobj_silentExceptions.isFeatureActivated(context),context);
 
 
 
 
     }
+
 
 
     private void postInfoDialog() {
@@ -236,7 +209,7 @@ public class FragmentsilentExceptions extends Fragment {
         Context context=requireContext();
         NotificationManager tap_notificationManager =
                 (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        if(GUIobj_silentExceptions.isFeatureActivated()){
+        if(GUIobj_silentExceptions.isFeatureActivated(context)){
             process_featureState(false,context);
         }
         else{
@@ -246,7 +219,7 @@ public class FragmentsilentExceptions extends Fragment {
                 process_featureState(false,context);
                 Dialog_requestDND();
             } else {
-                if (!utilityHelpers.ispermissionpending(context, GUIobj_silentExceptions.permissions)) {
+                if (!utilityHelpers.ispermissionpending(context, feat_silentExceptions.permissions)) {
 
                     process_featureState(true,context);
 
@@ -256,8 +229,7 @@ public class FragmentsilentExceptions extends Fragment {
                     boolean BP_permission_already_requested=utilityHelpers.loadBooleanFromMemory(context, "BABY_PING_PERMISSIONREQUESTED");
                     boolean permission_already_requested=((SILEXCEPT_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (!permission_already_requested) {
-                        String[] pend = utilityHelpers.getpendingpermissions(context, GUIobj_silentExceptions.permissions);
-                       // requestPermissions(pend, PERMISSION_CODE_POSTNOTIFICATIONS);
+                        String[] pend = utilityHelpers.getpendingpermissions(context, feat_silentExceptions.permissions);
                         requestPermissionLauncher.launch(pend);
                     } else if (permission_already_requested) {
                         permissionAlreadyRequested_RequestDialog(context);
@@ -300,8 +272,7 @@ public class FragmentsilentExceptions extends Fragment {
 
 
     private void process_featureState(boolean state,Context context) {
-        GUIobj_silentExceptions.setFeatureActivated(state);
-        utilityHelpers.saveBooleanToMemory(context,"FEAT_SILEXCEPT_ACTIVE",state);
+        GUIobj_silentExceptions.setFeatureActivated(context,state);
         TapToEnable.setChecked(state);
         seekBar_silExcept.setEnabled(state);
         manageContacts.setEnabled(state);

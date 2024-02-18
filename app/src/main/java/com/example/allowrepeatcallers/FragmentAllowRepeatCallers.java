@@ -31,6 +31,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import java.lang.reflect.Array;
@@ -42,17 +43,17 @@ public class FragmentAllowRepeatCallers extends Fragment {
     private static final String CHANNEL_ID = "Missed Call Notification";
     ImageView diagnosis;
     Button firstMissedCall;
-    Switch TapToEnable;
+    SwitchCompat TapToEnable;
     ImageView infoButton;
     Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
     final int PERMISSION_CODE_POSTNOTIFICATIONS=1;
-    String EnabledColor="#2C5E1A";
+    String EnabledColor="#FFD369";
     ImageView share;
     String DisabledColor="#72435C";
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
     SeekBar seekbar_ARC;
-    Switch overridednd;
+    SwitchCompat overridednd;
     ImageView testSoundImage;
     TextView testSound;
     feat_RepeatCaller GUIobj_RepeatCaller;
@@ -66,7 +67,6 @@ public class FragmentAllowRepeatCallers extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(getContext(), " created ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -75,12 +75,12 @@ public class FragmentAllowRepeatCallers extends Fragment {
         Context context=requireContext();
         utilityHelpers.createNotificationChannel(context);
         //load GUI Elements
-        TapToEnable=(Switch) getView().findViewById(R.id.TapToEnable);
-        diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
+        TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
+
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
+        /*diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
         infoButton=(ImageView) getView().findViewById(R.id.infoButton);
-        share=(ImageView)  getView().findViewById(R.id.share);
-        FeatTitle2=(TextView) getView().findViewById(R.id.FeatTitle2);
+        share=(ImageView)  getView().findViewById(R.id.share);*/
         seekbar_ARC=(SeekBar) getView().findViewById(R.id.seekBar_ARC);
 
 
@@ -99,7 +99,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
         seekbar_ARC.setMax(maxMusicVolume);
         seekbar_ARC.setProgress(lastSetMediaVolume);
         utilityHelpers.adjustTitleTextSize(FeatTitle,context);
-        utilityHelpers.adjustTitleTextSize(FeatTitle2,context);
+        //utilityHelpers.adjustTitleTextSize(FeatTitle2,context);
 
 
         if (utilityHelpers.ispermissionpending(context, GUIobj_RepeatCaller.permissions)) {
@@ -125,33 +125,10 @@ public class FragmentAllowRepeatCallers extends Fragment {
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 int seekbarVolume = utilityHelpers.loadIntFromMemory(context, "ARC_VOLUME", testSound.getCurrent_MediaVolume());
                 am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
-                testSound.playShorttune(context);
+                 testSound.playShorttune(context);
             }
         });
-        diagnosis.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, settings.class);
-                FragmentAllowRepeatCallers.this.startActivity(intent);
-            }
-        });
-        FeatTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userTap();
-
-            }
-        });
-
-
-
-        TapToEnable.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userTap();
-            }
-        });
-        infoButton.setOnClickListener(new View.OnClickListener() {
+       /* infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 postInfoDialog();
@@ -174,6 +151,30 @@ public class FragmentAllowRepeatCallers extends Fragment {
                 }
             }
         });
+        diagnosis.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, settings.class);
+                FragmentAllowRepeatCallers.this.startActivity(intent);
+            }
+        });*/
+        FeatTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userTap();
+
+            }
+        });
+
+
+
+        TapToEnable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userTap();
+            }
+        });
+
 
 
         if(GUIobj_RepeatCaller.isFeatureActivated()){

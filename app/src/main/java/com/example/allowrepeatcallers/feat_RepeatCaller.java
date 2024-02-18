@@ -1,12 +1,18 @@
 package com.example.allowrepeatcallers;
 
+import static android.provider.Settings.System.getString;
+
 import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.service.notification.StatusBarNotification;
+
+import androidx.work.OneTimeWorkRequest;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +21,12 @@ class feat_RepeatCaller {
     private static ArrayList<String> missedList=new ArrayList<>();
     private static boolean stateRINGING=false;
     private boolean featureActivated=false;
+
+    public static String getDescription() {
+        return description;
+    }
+
+    private static String description= String.valueOf(R.string.ARC_description);
 
     public void setFeatureActivated(boolean featureActivated) {
         this.featureActivated = featureActivated;
@@ -34,6 +46,7 @@ class feat_RepeatCaller {
     }
 
     private final int feat_ID=1;
+    public OneTimeWorkRequest tenMinuteDelete;
 
     public boolean isStateRINGING() {
         return stateRINGING;
@@ -58,6 +71,8 @@ class feat_RepeatCaller {
     public feat_RepeatCaller(Context context) {
         featureActivated = utilityHelpers.loadBooleanFromMemory(context, "FEAT_REPEATCALLER_ACTIVE");
         missedList = loadMissedListFromMemory(context);
+        description=context.getString(R.string.ARC_description);
+
     }
     // public static NotificationManager notificationManager;
 
@@ -70,10 +85,11 @@ class feat_RepeatCaller {
             if (nullCount == missedList.size()) {
                 missedList.clear();
                 nullCount = 0;
+                notificationIDcounter=0;
             }
 
             notificationManager.cancel(notiid);
-            notificationIDcounter--;
+            //notificationIDcounter--;
         }
     }
     void addToMissedList(String p_logName,String p_logNumber,String text) {
