@@ -9,82 +9,69 @@
 
 
     <View
+        android:id="@+id/rightLine"
         android:layout_width="300dp"
         android:layout_height="12dp"
         android:layout_above="@+id/FeatTitle"
-        android:layout_marginTop="40dp"
-        android:background="#424651"
+        android:layout_marginTop="35dp"
+        android:background="#2F435A"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <View
+        android:id="@+id/leftLine"
         android:layout_width="300dp"
         android:layout_height="12dp"
         android:layout_above="@+id/FeatTitle"
-        android:layout_marginBottom="50dp"
-        android:background="#424651"
+        android:layout_marginBottom="35dp"
+        android:background="#2F435A"
         app:layout_constraintBottom_toTopOf="@+id/FeatTitle"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!--
+
     <ImageView
         android:id="@+id/infoButton"
-        android:layout_width="64dp"
-        android:layout_height="49dp"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/baseline_info_24"
-        app:tint="#EF7C8E"
-        android:layout_marginBottom="40dp"/>
-
-
-    <TextView
-        android:id="@+id/FeatTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="left"
-        android:text="@string/MCA_Title"
-        android:textColor="#DDE1ED"
-        android:textSize="75dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.349" />
-
-    <ImageView
-        android:id="@+id/share"
-        android:layout_width="66dp"
-        android:layout_height="46dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/infoButton"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="40dp"
-        app:srcCompat="@drawable/baseline_share_24"
-        app:tint="#EF7C8E" />
+        app:tint="#2F435A" />
 
     <ImageView
         android:id="@+id/Diagnosis"
-        android:layout_width="64dp"
-        android:layout_height="49dp"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
         android:layout_marginStart="60dp"
         android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/infoButton"
         app:srcCompat="@drawable/baseline_settings_24"
-        app:tint="#EF7C8E" />
+        app:tint="#2F435A" />
+<ImageView
+        android:id="@+id/share"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/infoButton"
+        app:srcCompat="@drawable/baseline_share_24"
+        app:tint="#2F435A" />
+
+
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:text="Info"
-        android:textColor="#EF7C8E"
+        android:layout_below="@id/infoButton"
+        android:text="@string/Allfeat_Info"
+        android:textColor="#2F435A"
         app:layout_constraintEnd_toEndOf="@+id/infoButton"
         app:layout_constraintStart_toStartOf="@+id/infoButton"
         app:layout_constraintTop_toBottomOf="@+id/infoButton" />
@@ -94,10 +81,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Allfeat_Share"
-        android:textColor="#EF7C8E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.157"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="#2F435A"
+        app:layout_constraintEnd_toEndOf="@+id/share"
+        app:layout_constraintStart_toStartOf="@+id/share"
         app:layout_constraintTop_toBottomOf="@+id/share" />
 
     <TextView
@@ -105,13 +91,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Allfeat_settings"
-        android:textColor="#EF7C8E"
+        android:textColor="#2F435A"
         app:layout_constraintEnd_toEndOf="@+id/Diagnosis"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/Diagnosis"
         app:layout_constraintTop_toBottomOf="@+id/Diagnosis" />
+        -->
 
-    <Switch
+    <TextView
+        android:id="@+id/FeatTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="start"
+        android:text="@string/MCA_Title"
+        android:textColor="#2F435A"
+        android:textSize="75sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2" />
+
+
+
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/TapToEnable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -132,21 +137,11 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ping Volume"
-        android:textColor="#EF7C8E"
-        app:layout_constraintEnd_toEndOf="@+id/seekBar"
-        app:layout_constraintStart_toStartOf="@+id/seekBar"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
-
-    <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0%"
-        android:textColor="#EF7C8E"
+        android:textColor="#999999"
         app:layout_constraintEnd_toEndOf="@+id/seekBar"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@+id/seekBar"
@@ -157,7 +152,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="100%"
-        android:textColor="#EF7C8E"
+        android:textColor="#999999"
         app:layout_constraintEnd_toEndOf="@+id/seekBar"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="@+id/seekBar"

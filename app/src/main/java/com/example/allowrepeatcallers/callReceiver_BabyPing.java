@@ -31,16 +31,15 @@ public class callReceiver_BabyPing extends BroadcastReceiver {
         String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
         String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
         if (number != null) {
-            boolean overridden=obj_AMC.isDNDOverridden(context);
-            if (overridden) {
+            boolean ringDevice=utilityHelpers.isDNDOverriden(context);
+            if (ringDevice) {
                 if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                     if (obj_AMC.isFeatureActivated()) {
 
                             String logType = getLastCallLog(context);
                             if (logType.equals(String.valueOf(MISSED_TYPE))) {
-                                int Current_MediaVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
                                 utilityHelpers.turnSpeakerON(am);
-                                int setVolume = utilityHelpers.loadIntFromMemory(context, "BABYPINGVOLUME", Current_MediaVolume);
+                                int setVolume =obj_AMC.getPingVolume(context);
                                 am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
                                 ringtones shorttune = new ringtones(context, 2);
                                 shorttune.playShorttune(context);
@@ -68,11 +67,12 @@ public class callReceiver_BabyPing extends BroadcastReceiver {
         Uri uriCallLogs = Uri.parse("content://call_log/calls");
         Cursor cursorCallLogs = null;
         cursorCallLogs = context.getContentResolver().query(uriCallLogs, null, null, null);
-        utilityHelpers.sortOrder=utilityHelpers.loadStringFromMemory(context,"UPTODOWN");
-        if (utilityHelpers.sortOrder.equals("lastTime")) {
+        String sortOrder=utilityHelpers.getSortOrder(context);
+
+        if (sortOrder.equals("lastTime")) {
             cursorCallLogs.moveToLast();
         }
-        else if(utilityHelpers.sortOrder.equals("firstTime")){
+        else if(sortOrder.equals("firstTime")){
             cursorCallLogs.moveToFirst();
         }
         //cursorCallLogs.moveToLast();

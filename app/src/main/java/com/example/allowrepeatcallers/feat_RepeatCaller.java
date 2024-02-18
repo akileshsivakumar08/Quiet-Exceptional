@@ -1,5 +1,7 @@
 package com.example.allowrepeatcallers;
 
+import static android.provider.Settings.System.getString;
+
 import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -19,6 +21,12 @@ class feat_RepeatCaller {
     private static ArrayList<String> missedList=new ArrayList<>();
     private static boolean stateRINGING=false;
     private boolean featureActivated=false;
+
+    public static String getDescription() {
+        return description;
+    }
+
+    private static String description= String.valueOf(R.string.ARC_description);
 
     public void setFeatureActivated(boolean featureActivated) {
         this.featureActivated = featureActivated;
@@ -63,6 +71,7 @@ class feat_RepeatCaller {
     public feat_RepeatCaller(Context context) {
         featureActivated = utilityHelpers.loadBooleanFromMemory(context, "FEAT_REPEATCALLER_ACTIVE");
         missedList = loadMissedListFromMemory(context);
+        description=context.getString(R.string.ARC_description);
 
     }
     // public static NotificationManager notificationManager;

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,9 +17,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,21 +28,24 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 public class FragmentBabyPing extends Fragment {
     TextView FeatTitle;
     ImageView diagnosis;
-    Switch TapToEnable;
+    SwitchCompat TapToEnable;
     ImageView infoButton;
     Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
     final int PERMISSION_CODE_POSTNOTIFICATIONS=1;
-    String EnabledColor="#2C5E1A";
+    String EnabledColor="#1A4314";
     ImageView pony;
     String DisabledColor="#72435C";
     ImageView share;
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
+    View leftLine;
+    View rightLine;
     SeekBar seekbar;
     feat_BabyPing obj_AMC;
     @Override
@@ -51,25 +54,50 @@ public class FragmentBabyPing extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Context context=getContext();
+       /* leftLine=(View) getView().findViewById(R.id.leftLine);
+        rightLine=(View) getView().findViewById(R.id.rightLine);
+        Animation anima_scaleleft = AnimationUtils.loadAnimation(context, R.anim.scale_fromleft);
+        Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
+        leftLine.startAnimation(anima_scaleleft);
+        rightLine.startAnimation(anima_scaleright);*/
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context=requireContext();
         utilityHelpers.createNotificationChannel(context);
-        TapToEnable=(Switch) getView().findViewById(R.id.TapToEnable);
-        diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
+        TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
+
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
-        infoButton=(ImageView) getView().findViewById(R.id.infoButton);
+
         seekbar=(SeekBar) getView().findViewById(R.id.seekBar);
+       /* diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
         share=(ImageView)  getView().findViewById(R.id.share);
+        infoButton=(ImageView) getView().findViewById(R.id.infoButton);*/
+        leftLine=(View) getView().findViewById(R.id.leftLine);
+        rightLine=(View) getView().findViewById(R.id.rightLine);
         utilityHelpers.adjustTitleTextSize(FeatTitle,context);
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         seekbar.setMax(maxMusicVolume);
         obj_AMC=new feat_BabyPing(context);
 
+        Animation anima_scaleleft = AnimationUtils.loadAnimation(context, R.anim.scale_fromleft);
+        Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
+        leftLine.startAnimation(anima_scaleleft);
+        rightLine.startAnimation(anima_scaleright);
         // Set the current volume of the SeekBar to the current volume of the MediaPlayer:
-        int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        int lastSetMediaVolume=utilityHelpers.loadIntFromMemory(context,"BABYPINGVOLUME",currVolume);
+        int lastSetMediaVolume=obj_AMC.getPingVolume(context);
         seekbar.setProgress(lastSetMediaVolume);
         if(obj_AMC.isFeatureActivated()){
             process_featureState(true,context);
@@ -78,29 +106,13 @@ public class FragmentBabyPing extends Fragment {
             process_featureState(false,context);
         }
 
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("text/plain");
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                    String shareMessage= "\nLet me recommend you this application\n\n";
-                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" +"\n\n";
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                    startActivity(Intent.createChooser(shareIntent, "choose one"));
-                } catch(Exception e) {
-                    //e.toString();
-                }
-            }
-        });
 
 
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 int pingvolume=i;
-                utilityHelpers.saveIntToMemory(context,"BABYPINGVOLUME",pingvolume);
+                obj_AMC.saveVolume(context,pingvolume);
             }
 
             @Override
@@ -112,19 +124,13 @@ public class FragmentBabyPing extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 ringtones testSound = new ringtones(context, 0);
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                int seekbarVolume = utilityHelpers.loadIntFromMemory(context, "BABYPINGVOLUME", testSound.getCurrent_MediaVolume());
+                int seekbarVolume = obj_AMC.getPingVolume(context);
                 am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
                 testSound.playShorttune(context);
 
             }
         });
-        diagnosis.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, settings.class);
-                FragmentBabyPing.this.startActivity(intent);
-            }
-        });
+
         FeatTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,20 +144,11 @@ public class FragmentBabyPing extends Fragment {
                 userTap();
             }
         });
-        infoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                postInfoDialog();
-            }
-        });
-
-
 
     }
 
     private void process_featureState(boolean state,Context context) {
-        obj_AMC.setFeatureActivated(state);
-        utilityHelpers.saveBooleanToMemory(context,"IS_BABYPING_ACTIVATED",state);
+        obj_AMC.setFeatureActivated(context,state);
         TapToEnable.setChecked(state);
         seekbar.setEnabled(state);
         if(state){
@@ -204,7 +201,6 @@ public class FragmentBabyPing extends Fragment {
                     boolean permission_already_requested=((SILEXCEPT_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (permission_already_requested == false) {
                         String[] pend = utilityHelpers.getpendingpermissions(context, feat_BabyPing.permissions);
-                        //requestPermissions(pend, PERMISSION_CODE_POSTNOTIFICATIONS);
                         requestPermissionLauncher.launch(pend);
                     } else if (permission_already_requested == true) {
                         try {
@@ -229,9 +225,7 @@ public class FragmentBabyPing extends Fragment {
     private ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
                 Context context =requireContext();
-                boolean permission_already_requested=false;
-                permission_already_requested=true;
-                utilityHelpers.saveBooleanToMemory(context,"BABY_PING_PERMISSIONREQUESTED",permission_already_requested);
+                obj_AMC.setPermissionRequested(context);
                 if(isGranted.containsValue(false)){
                     process_featureState(false,context);
 
@@ -277,19 +271,16 @@ public class FragmentBabyPing extends Fragment {
                         // Permission Denied
                         Toast.makeText(context, "denied", Toast.LENGTH_SHORT).show();
                         process_featureState(false,context);
-                        feat_BabyPing.permission_already_requested=true;
-                        utilityHelpers.saveBooleanToMemory(context,"BABY_PING_PERMISSIONREQUESTED",feat_BabyPing.permission_already_requested);
 
                         break;
 
                     }
                     process_featureState(true,context);
-                    feat_BabyPing.permission_already_requested=true;
-                    utilityHelpers.saveBooleanToMemory(context,"BABY_PING_PERMISSIONREQUESTED",feat_BabyPing.permission_already_requested);
-
 
                 }
 
+                feat_BabyPing.permission_already_requested=true;
+                obj_AMC.setPermissionRequested(context);
                 break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);

@@ -5,9 +5,11 @@ import static android.content.ContentValues.TAG;
 import static java.lang.Thread.sleep;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
@@ -28,6 +30,7 @@ import android.provider.CallLog;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,33 +39,57 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.net.URISyntaxException;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     ImageView infoButton;
     public final int SoftwareType=1;
+    public DrawerLayout drawerLayout;
+    MyPagerAdapter adapter;
+    ImageView diagnosis;
+    ImageView share;
+    public ActionBarDrawerToggle actionBarDrawerToggle;
+    public static int currentFragmentPosition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context=getApplicationContext();
         setContentView(R.layout.activity_main);
-
         TabLayout pagerTabLayout;
         pagerTabLayout=findViewById(R.id.tablayout);
         utilityHelpers.saveIntToMemory(context,"SOFTWARETYPE",SoftwareType);
-        //infoButton=findViewById(R.id.infoButton);
+        diagnosis = (ImageView) findViewById(R.id.Diagnosis);
+        infoButton=(ImageView) findViewById(R.id.infoButton);
+        share=(ImageView)  findViewById(R.id.share);
+
+
         if ((ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG)== PackageManager.PERMISSION_GRANTED)){
             utilityHelpers.checkLogFormat(context);
         }
 
         ViewPager2 viewPager = findViewById(R.id.pager);
-        MyPagerAdapter adapter = new MyPagerAdapter(this);
+        adapter = new MyPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
+        pagerTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                currentFragmentPosition = tab.getPosition();
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
 
         TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(pagerTabLayout, viewPager,
                 new TabLayoutMediator.TabConfigurationStrategy() {
@@ -72,33 +99,108 @@ public class MainActivity extends AppCompatActivity {
                 });
         tabLayoutMediator.attach();
 
+        drawerLayout = findViewById(R.id.my_drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                if(id==R.id.privacy)
+                {
+
+                    String url = "https://stackoverflow.com/questions/24261224/android-open-url-onclick-certain-button";
+
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                }
+
+
+                return true;
+
+            }
+        });
+
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
+
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String description="";
+                switch(currentFragmentPosition){
+                    case 0:
+                        description=feat_silentExceptions.getDescription();
+                        break;
+                    case 1:
+                        description=feat_BabyPing.getDescription();
+                        break;
+                    case 2:
+                        description=feat_RepeatCaller.getDescription();
+                        break;
+                    case 3:
+                        description=feat_RepeatCaller.getDescription();
+                        break;
+                }
+                postInfoDialog(description);
+            }
+        });
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                    String shareMessage= "\nLet me recommend you this application\n\n";
+                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" +"\n\n";
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch(Exception e) {
+                    //e.toString();
+                }
+            }
+        });
+        diagnosis.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, settings.class);
+                startActivity(intent);
+            }
+        });
 
 
     }
 
-    /*public void changeLanguage(View view) {
-        // Toggle between English and German
-        Configuration config = getResources().getConfiguration();
-        if(config.getLocales().get(0).getLanguage().contains("en")){
-            config.setLocale(new Locale("de"));
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
         }
-        else{
-            config.setLocale(new Locale("en"));
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void postInfoDialog(String description) {
+        try {
+            //start a dialog box
+            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(this);
+            noti_alertbuilder.setMessage(description);
+            AlertDialog alertDialog = noti_alertbuilder.create();
+            alertDialog.show();
+        } catch (Exception e) {
+
+            Log.e(TAG, " Exception on dialog  " + e);
+            Toast.makeText(getApplicationContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
         }
-
-        //getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-        Context context = getApplicationContext().createConfigurationContext(config);
-        //config.updateFrom(config);
-        //getResources();
-        super.attachBaseContext(context);
-
-        // Restart the activity to apply the new language
-        //recreate();
-    }*/
-  /*  @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(newBase);
-    }*/
-
+    }
 
 }

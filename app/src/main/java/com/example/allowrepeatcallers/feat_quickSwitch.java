@@ -1,5 +1,7 @@
 package com.example.allowrepeatcallers;
 
+import android.content.Context;
+
 public class feat_quickSwitch {
 
     public static int upcounter;
@@ -10,5 +12,20 @@ public class feat_quickSwitch {
     public static long oldtime;
     public static int call_upcounter;
     public static int call_downcounter;
-    public static boolean featureActivated;
+    private boolean featureActivated;
+    private static String description;
+
+    public boolean isFeatureActivated() {
+        return featureActivated;
+    }
+
+    public void setFeatureActivated(boolean featureActivatedlocal) {
+        featureActivated = featureActivatedlocal;
+        //utilityHelpers.saveBooleanToMemory(context,"IS_QUICKSWITCH_ACTIVATED",featureActivated);
+    }
+
+    public feat_quickSwitch(Context context) {
+        featureActivated = utilityHelpers.loadBooleanFromMemory(context, "FEAT_QUICKSWITCH_ACTIVE");
+        description=context.getString(R.string.QS_description);
+    }
 }

@@ -16,4 +16,6 @@
     <string name="ARC_Volume">Lautstärke</string>
     <string name="MCA_Title">Nach Verpasstem Anruf kurz klingen</string>
     <string name="QS_Title">Ringer Modus wechseln</string>
+    <string name="PC_Title">Prio Kontakte</string>
+    <string name="TapVolumeTest">Lautstärke Testen</string>
 </resources>

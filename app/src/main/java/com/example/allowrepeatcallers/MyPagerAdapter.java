@@ -9,7 +9,7 @@ public class MyPagerAdapter extends FragmentStateAdapter {
     public MyPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
-    private int currentFragmentPosition = -1;
+
     @NonNull
     @Override
     public Fragment createFragment(int position) {

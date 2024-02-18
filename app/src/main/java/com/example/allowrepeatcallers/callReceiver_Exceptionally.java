@@ -23,7 +23,7 @@ public class callReceiver_Exceptionally extends BroadcastReceiver {
         try {
             if (!utilityHelpers.ispermissionpending(context, feat_silentExceptions.permissions)) {
                 feat_silentExceptions obj_silentExceptions=new feat_silentExceptions(context);
-            if (obj_silentExceptions.isFeatureActivated()) {
+            if (obj_silentExceptions.isFeatureActivated(context)) {
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
                 String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
@@ -35,11 +35,10 @@ public class callReceiver_Exceptionally extends BroadcastReceiver {
                         Toast.makeText(context, "Ringing", Toast.LENGTH_SHORT).show();
                         if ((AudioManager.RINGER_MODE_NORMAL != am.getRingerMode())) {
                             getCurrentSettings(context);
-                            Boolean MatchfoundinList = feat_silentExceptions.loadlistAndSearch(context, number);
+                            Boolean MatchfoundinList = obj_silentExceptions.isnumberinList( number);
                             if (MatchfoundinList) {
                                 if (!(exceptionally_Ringtone.isRingtonePlaying())) {
-
-                                    int seekbarVolume = utilityHelpers.loadIntFromMemory(context, "SILEXCEPT_VOLUME", ringtones.getCurrent_MediaVolume());
+                                    int seekbarVolume=obj_silentExceptions.getExceptionallyVolume(context);
                                     am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
 
                                     local_mp = exceptionally_Ringtone.playLongtune(context);

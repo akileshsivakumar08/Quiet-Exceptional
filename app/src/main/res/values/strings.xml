@@ -12,8 +12,16 @@
     <string name="Allfeat_Info">Info</string>
     <string name="Allfeat_Share">Share</string>
     <string name="ARC_Title">Allow Repeat Callers</string>
+    <string name="ARC_description"> Device Rings on Successive calls, if a call was missed in Silent or Vibrate Mode.\n\nNotifications can be dismissed to disable the ringing.</string>
     <string name="ARC_Title_semi">Allow</string>
     <string name="ARC_Volume">Volume</string>
     <string name="MCA_Title">Alert Missed Calls</string>
+    <string name="MCA_description">Device makes a short sound after a missed call</string>
     <string name="QS_Title">Quick Switch</string>
+    <string name="QS_description">Quickly change ringer modes by double pressing volume buttons when the screen is on</string>
+    <string name="PC_Title">Prio Contacts</string>
+    <string name="PC_description">Device Rings on if a call is received from marked Contacts, if the device is in silent or Vibrate mode.</string>
+    <string name="TapVolumeTest">Tap Here To Test Volume</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
 </resources>

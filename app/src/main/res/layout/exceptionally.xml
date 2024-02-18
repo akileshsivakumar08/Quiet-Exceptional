@@ -4,109 +4,97 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eae2e0"
+    android:background="#FFFBF2"
     tools:context=".MainActivity">
 
-    <View
-        android:id="@+id/view1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/FeatTitle"
-        android:background="#e7b7c8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.33"/>
-    <View
-        android:id="@+id/view2"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/FeatTitle"
-        android:background="#e5c8a5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.33" />
-
-
     <ImageView
-        android:id="@+id/share"
-        android:layout_width="66dp"
-        android:layout_height="46dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/starimage"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="-100dp"
+        android:rotation="-20"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.139"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.922"
-        app:srcCompat="@drawable/baseline_share_24"
-        app:tint="#424651" />
+        app:srcCompat="@drawable/baseline_star_border_24"
+        app:tint="#FFBF60" />
+
+    <!--
 
     <ImageView
         android:id="@+id/infoButton"
-        android:layout_width="64dp"
-        android:layout_height="49dp"
-        app:layout_constraintBottom_toBottomOf="@+id/share"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/share"
-        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/baseline_info_24"
-        app:tint="#424651" />
+        app:tint="#2F435A"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/share"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/infoButton"
+        app:srcCompat="@drawable/baseline_share_24"
+        app:tint="#2F435A" />
 
     <ImageView
         android:id="@+id/Diagnosis"
-        android:layout_width="64dp"
-        android:layout_height="49dp"
-        app:layout_constraintBottom_toBottomOf="@+id/infoButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.827"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/infoButton"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/baseline_settings_24"
-        app:tint="#424651" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Share"
-        android:textColor="#424651"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.17"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/share"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Settings"
-        android:textColor="#424651"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.838"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Diagnosis" />
+        app:layout_constraintStart_toEndOf="@+id/infoButton"
+        app:srcCompat="@drawable/baseline_settings_24"
+        app:tint="#2F435A" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
         android:text="Info"
-        android:textColor="#424651"
+        android:textColor="#2F435A"
         app:layout_constraintEnd_toEndOf="@+id/infoButton"
         app:layout_constraintStart_toStartOf="@+id/infoButton"
         app:layout_constraintTop_toBottomOf="@+id/infoButton" />
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Allfeat_Share"
+        android:textColor="#2F435A"
+        app:layout_constraintEnd_toEndOf="@+id/share"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/share"
+        app:layout_constraintTop_toBottomOf="@+id/share" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Settings"
+        android:textColor="#2F435A"
+        app:layout_constraintEnd_toEndOf="@+id/Diagnosis"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/Diagnosis"
+        app:layout_constraintTop_toBottomOf="@+id/Diagnosis" />
+
+-->
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/TapToEnable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tap to Enable"
+        android:text="@string/Allfeat_Tap2Enable"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -121,9 +109,9 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:fontFamily="sans-serif-medium"
-        android:text="Prio\nCallers"
+        android:text="@string/PC_Title"
         android:textColor="#424651"
-        android:textSize="75dp"
+        android:textSize="75sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -141,16 +129,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TapToEnable" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:text="@string/ARC_Volume"
-        app:layout_constraintEnd_toEndOf="@+id/seekBar_silExcept"
-        app:layout_constraintStart_toStartOf="@+id/seekBar_silExcept"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar_silExcept" />
 
     <TextView
         android:id="@+id/textView9"
@@ -181,6 +159,8 @@
         android:textColor="#C5C5C5"
         app:layout_constraintEnd_toEndOf="@+id/seekBar_silExcept"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

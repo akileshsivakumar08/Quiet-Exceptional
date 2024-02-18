@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_doorbell_24"
-        app:tint="#E4E5E8" />
+        app:tint="#E4E5E8"/>
 
     <ImageView
         android:id="@+id/imgdnd"
@@ -48,7 +48,7 @@
         app:srcCompat="@drawable/baseline_vibration_24"
         app:tint="#E4E5E8" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/TapToEnable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,18 +60,7 @@
         app:layout_constraintTop_toBottomOf="@+id/FeatTitle"
         tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml" />
 
-    <ImageView
-        android:id="@+id/infoButton"
-        android:layout_width="64dp"
-        android:layout_height="49dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/baseline_info_24"
-        app:tint="#2F435A"
-        tools:ignore="MissingConstraints" />
+
 
     <TextView
         android:id="@+id/FeatTitle"
@@ -81,7 +70,7 @@
         android:text="@string/QS_Title"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="75dp"
+        android:textSize="75sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,10 +78,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.35" />
 
+    <!--
+    <ImageView
+        android:id="@+id/infoButton"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/baseline_info_24"
+        app:tint="#2F435A"
+        tools:ignore="MissingConstraints" />
+
     <ImageView
         android:id="@+id/share"
-        android:layout_width="66dp"
-        android:layout_height="46dp"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
         android:layout_marginEnd="60dp"
         android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -102,8 +105,8 @@
 
     <ImageView
         android:id="@+id/Diagnosis"
-        android:layout_width="64dp"
-        android:layout_height="49dp"
+        android:layout_width="65dp"
+        android:layout_height="45dp"
         android:layout_marginStart="60dp"
         android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -115,7 +118,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Info"
+        android:text="@string/Allfeat_Info"
         android:textColor="#2F435A"
         app:layout_constraintEnd_toEndOf="@+id/infoButton"
         app:layout_constraintStart_toStartOf="@+id/infoButton"
@@ -143,6 +146,7 @@
         app:layout_constraintStart_toStartOf="@+id/Diagnosis"
         app:layout_constraintTop_toBottomOf="@+id/Diagnosis" />
 
+    -->
 
 
 

@@ -16,16 +16,23 @@ class feat_silentExceptions{
     public static int Current_RingVolume;
     public static boolean silentExceptionActivated;
     private static boolean silentExceptionRingActivated;
-    public static final String MEMORYSTRING = "text";
+    private static final String MEMCODE_ACTIVATEFEAT="FEAT_SILEXCEPT_ACTIVE";
+    private static final String MEMCODE_EXCEPTLIST="STRINGSET_EXCEPTLIST";
+    private static final String MEMCODE_VOLUME="SILEXCEPT_VOLUME";
     private final int feat_ID=1;
-     private boolean featureActivated=false;
+
+    public void saveVolume(Context context,int inputVolume){
+        utilityHelpers.saveIntToMemory(context,MEMCODE_VOLUME,inputVolume);
+    }
+    private boolean featureActivated=false;
+    public static String description;
     public static ArrayList<class_Buddy> silExceptList = new ArrayList<>();
     public static String[] permissions= {android.Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,Manifest.permission.READ_CALL_LOG};
 
     public int getFeat_ID() {
         return feat_ID;
     }
-public void addTosilExceptList(class_Buddy buddy){
+    public void addTosilExceptList(class_Buddy buddy){
     silExceptList.add(buddy);
 }
      public boolean isSilentExceptionRingActivated() {
@@ -33,39 +40,49 @@ public void addTosilExceptList(class_Buddy buddy){
      }
 
      public void setSilentExceptionRingActivated(boolean silentExceptionRingActivated) {
-         this.silentExceptionRingActivated = silentExceptionRingActivated;
+         feat_silentExceptions.silentExceptionRingActivated = silentExceptionRingActivated;
      }
 
     public ArrayList<class_Buddy> getSilExceptList() {
         return silExceptList;
     }
 
-    public boolean isFeatureActivated() {
+
+    public feat_silentExceptions(Context context) {
+        featureActivated = utilityHelpers.loadBooleanFromMemory(context, MEMCODE_ACTIVATEFEAT);
+        loadsilExceptListFromMemory(context);
+        description=context.getString(R.string.PC_description);
+     }
+    public boolean isFeatureActivated(Context context) {
+        featureActivated= utilityHelpers.loadBooleanFromMemory(context, MEMCODE_ACTIVATEFEAT);
         return featureActivated;
     }
 
-    public void setFeatureActivated(boolean featureActivated) {
+    public void setFeatureActivated(Context context,boolean featureActivated) {
         this.featureActivated = featureActivated;
+        utilityHelpers.saveBooleanToMemory(context,MEMCODE_ACTIVATEFEAT,featureActivated);
+    }
+    public static String getDescription() {
+        return description;
     }
 
-    public feat_silentExceptions(Context context) {
-         featureActivated = utilityHelpers.loadBooleanFromMemory(context, "FEAT_SILEXCEPT_ACTIVE");
-         loadsilExceptListFromMemory(context);
-     }
+    private String getMEMCODE_ACTIVATEFEAT() {
+        return MEMCODE_ACTIVATEFEAT;
+    }
 
-     public static void loadsilExceptListFromMemory(Context context) {
+
+    public static void loadsilExceptListFromMemory(Context context) {
          Gson gson = new Gson();
-         String String_ExceptList = utilityHelpers.loadStringFromMemory(context,"STRINGSET_EXCEPTLIST");
-         if(!String_ExceptList.equals("null")) {
+         String String_ExceptList = utilityHelpers.loadStringFromMemory(context,MEMCODE_EXCEPTLIST);
+        if(!String_ExceptList.equals("null")) {
              silExceptList = gson.fromJson(String_ExceptList, new TypeToken<List<class_Buddy>>() {
              }.getType());
          }
      }
 
-     public static Boolean loadlistAndSearch(Context context, String senderNum) {
+     public Boolean isnumberinList( String senderNum) {
         boolean MatchfoundinList=false;
 
-        loadsilExceptListFromMemory(context);
         int numberID = utilityHelpers.listLoopSearchObj(senderNum,silExceptList);
         if(numberID==255){
             MatchfoundinList=false;
@@ -75,6 +92,7 @@ public void addTosilExceptList(class_Buddy buddy){
         }
         return MatchfoundinList;
     }
+
 
     public void deletebuddy(int id,Context context){
         loadsilExceptListFromMemory(context);
@@ -86,10 +104,13 @@ public void addTosilExceptList(class_Buddy buddy){
     public void saveDataToMemory(Context context) {
         Gson gson = new Gson();
         String Json_ExceptList = gson.toJson(silExceptList);
-        utilityHelpers.saveStringToMemory(context,"STRINGSET_EXCEPTLIST",Json_ExceptList);
+        utilityHelpers.saveStringToMemory(context,MEMCODE_EXCEPTLIST,Json_ExceptList);
     }
 
 
-
+    public int getExceptionallyVolume(Context context) {
+        int seekbarVolume=utilityHelpers.loadIntFromMemory(context, MEMCODE_VOLUME, ringtones.getCurrent_MediaVolume());
+        return seekbarVolume;
+    }
 }
 

@@ -173,11 +173,11 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
         Uri uriCallLogs = Uri.parse("content://call_log/calls");
         Cursor cursorCallLogs = null;
         cursorCallLogs = context.getContentResolver().query(uriCallLogs, null, null, null);
-        utilityHelpers.sortOrder=utilityHelpers.loadStringFromMemory(context,"UPTODOWN");
-        if (utilityHelpers.sortOrder.equals("lastTime")) {
+        String sortOrder=utilityHelpers.getSortOrder(context);
+        if (sortOrder.equals("lastTime")) {
             cursorCallLogs.moveToLast();
         }
-        else if(utilityHelpers.sortOrder.equals("firstTime")){
+        else if(sortOrder.equals("firstTime")){
             cursorCallLogs.moveToFirst();
         }
         int index_type=cursorCallLogs.getColumnIndex(CallLog.Calls.TYPE);
