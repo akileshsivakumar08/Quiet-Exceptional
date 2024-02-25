@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     i.setData(Uri.parse(url));
                     startActivity(i);
                 }
-                if(id==R.id.terms)
+                else if(id==R.id.terms)
                 {
 
                     String url = "https://sites.google.com/view/quietexceptional/terms-and-conditions?authuser=9";
@@ -127,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
                     i.setData(Uri.parse(url));
                     startActivity(i);
                 }
+                else if(id==R.id.troubleshoot)
+                {
+                    Intent intent = new Intent(context, troubleshoot.class);
+                            startActivity(intent);
+                        }
 
 
                 return true;

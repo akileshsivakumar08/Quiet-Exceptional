@@ -4,6 +4,7 @@
     <string name="accessibility_service_desc">This service detects if the volume button is pressed</string>
     <string name="language_change">change</string>
     <string name="Settings">Settings</string>
+    <string name="troubleshoot">Troubleshoot</string>
     <string name="App_Language">App Language</string>
     <string name="RingInDND">Ring in Do Not Disturb Mode</string>
     <string name="RingInDND_desc">This applies to the feature Missedcall Alerts</string>

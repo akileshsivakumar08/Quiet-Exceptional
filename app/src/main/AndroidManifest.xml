@@ -36,7 +36,9 @@
             android:screenOrientation="portrait" >
 
         </activity>
-
+        <activity
+            android:name=".troubleshoot"
+            android:exported="true" />
         <service android:name=".myAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:label="@string/accessibility_service_label"
