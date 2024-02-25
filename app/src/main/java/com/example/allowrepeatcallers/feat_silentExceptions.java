@@ -19,6 +19,7 @@ class feat_silentExceptions{
     private static final String MEMCODE_ACTIVATEFEAT="FEAT_SILEXCEPT_ACTIVE";
     private static final String MEMCODE_EXCEPTLIST="STRINGSET_EXCEPTLIST";
     private static final String MEMCODE_VOLUME="SILEXCEPT_VOLUME";
+    private static final String MEMCODE_PERMISSIONREQUESTED="SILEXCEPT_PERMISSIONREQUESTED";
     private final int feat_ID=1;
 
     public void saveVolume(Context context,int inputVolume){
@@ -43,6 +44,11 @@ class feat_silentExceptions{
          feat_silentExceptions.silentExceptionRingActivated = silentExceptionRingActivated;
      }
 
+    public int getPingVolume(Context context) {
+        int pingVolume=utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME,ringtones.getCurrent_MediaVolume());
+        return pingVolume;
+    }
+
     public ArrayList<class_Buddy> getSilExceptList() {
         return silExceptList;
     }
@@ -66,9 +72,6 @@ class feat_silentExceptions{
         return description;
     }
 
-    private String getMEMCODE_ACTIVATEFEAT() {
-        return MEMCODE_ACTIVATEFEAT;
-    }
 
 
     public static void loadsilExceptListFromMemory(Context context) {
@@ -111,6 +114,13 @@ class feat_silentExceptions{
     public int getExceptionallyVolume(Context context) {
         int seekbarVolume=utilityHelpers.loadIntFromMemory(context, MEMCODE_VOLUME, ringtones.getCurrent_MediaVolume());
         return seekbarVolume;
+    }
+    public static boolean loadBOOL_Permission_already_requested(Context context){
+        boolean Permission_already_requested=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_PERMISSIONREQUESTED);
+        return Permission_already_requested;
+    }
+    public void setPermissionRequested(Context context) {
+        utilityHelpers.saveBooleanToMemory(context,MEMCODE_PERMISSIONREQUESTED,true);
     }
 }
 

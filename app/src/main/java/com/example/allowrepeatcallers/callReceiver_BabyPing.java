@@ -34,7 +34,7 @@ public class callReceiver_BabyPing extends BroadcastReceiver {
             boolean ringDevice=utilityHelpers.isDNDOverriden(context);
             if (ringDevice) {
                 if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                    if (obj_AMC.isFeatureActivated()) {
+                    if (obj_AMC.isFeatureActivated(context)) {
 
                             String logType = getLastCallLog(context);
                             if (logType.equals(String.valueOf(MISSED_TYPE))) {

@@ -22,13 +22,33 @@ class feat_RepeatCaller {
     private static boolean stateRINGING=false;
     private boolean featureActivated=false;
 
+    private static final String MEMCODE_VOLUME="ARC_VOLUME";
+    private static final String MEMCODE_PERMISSIONREQUESTED="REPEATCALLER_PERMISSIONREQUESTED";
+
     public static String getDescription() {
         return description;
     }
 
+    public int getPingVolume(Context context) {
+        int pingVolume=utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME,ringtones.getCurrent_MediaVolume());
+        return pingVolume;
+    }
+    public void saveVolume(Context context,int inputVolume){
+        utilityHelpers.saveIntToMemory(context,MEMCODE_VOLUME,inputVolume);
+    }
+
     private static String description= String.valueOf(R.string.ARC_description);
 
-    public void setFeatureActivated(boolean featureActivated) {
+    public static boolean loadBOOL_Permission_already_requested(Context context) {
+        boolean Permission_already_requested=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_PERMISSIONREQUESTED);
+        return Permission_already_requested;
+    }
+    public void setPermissionRequested(Context context) {
+        utilityHelpers.saveBooleanToMemory(context,MEMCODE_PERMISSIONREQUESTED,true);
+    }
+
+    public void setFeatureActivated(Context context,boolean featureActivated) {
+        utilityHelpers.saveBooleanToMemory(context,"FEAT_REPEATCALLER_ACTIVE",featureActivated);
         this.featureActivated = featureActivated;
     }
 

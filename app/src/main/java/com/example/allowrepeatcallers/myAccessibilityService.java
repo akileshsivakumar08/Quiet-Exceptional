@@ -45,8 +45,7 @@ public class myAccessibilityService extends AccessibilityService {
             throw new RuntimeException(e);
         }
         if (accessEnabled != 0) {
-            obj_QS.setFeatureActivated(utilityHelpers.loadBooleanFromMemory(context, "IS_QUICKSWITCH_ACTIVATED"));
-            if (obj_QS.isFeatureActivated()){
+            if (obj_QS.isFeatureActivated(context)){
                 int action, keycode;
 
             action = event.getAction();

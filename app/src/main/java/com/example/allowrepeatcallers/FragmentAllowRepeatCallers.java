@@ -52,10 +52,8 @@ public class FragmentAllowRepeatCallers extends Fragment {
     String DisabledColor="#72435C";
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
+    TextView taptotestvolume;
     SeekBar seekbar_ARC;
-    SwitchCompat overridednd;
-    ImageView testSoundImage;
-    TextView testSound;
     feat_RepeatCaller GUIobj_RepeatCaller;
     int pingvolume;
 
@@ -78,6 +76,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
         TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
 
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
+        taptotestvolume=(TextView) getView().findViewById(R.id.taptotestvolume);
         /*diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
         infoButton=(ImageView) getView().findViewById(R.id.infoButton);
         share=(ImageView)  getView().findViewById(R.id.share);*/
@@ -89,8 +88,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         GUIobj_RepeatCaller=new feat_RepeatCaller(context);
         //load from memory
-        int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        int lastSetMediaVolume=utilityHelpers.loadIntFromMemory(context,"ARC_VOLUME",currVolume);
+        int lastSetMediaVolume=GUIobj_RepeatCaller.getPingVolume(context);
 
 
         //initiate GUI Elements
@@ -107,11 +105,22 @@ public class FragmentAllowRepeatCallers extends Fragment {
 
         }
 
+        taptotestvolume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ringtones testSound = new ringtones(context, 0);
+                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                int seekbarVolume = GUIobj_RepeatCaller.getPingVolume(context);
+                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
+                testSound.playShorttune(context);
+            }
+        });
+
         seekbar_ARC.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 pingvolume=i;
-                utilityHelpers.saveIntToMemory(context,"ARC_VOLUME",pingvolume);
+                GUIobj_RepeatCaller.saveVolume(context,pingvolume);
             }
 
             @Override
@@ -121,43 +130,9 @@ public class FragmentAllowRepeatCallers extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                ringtones testSound = new ringtones(context, 0);
-                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                int seekbarVolume = utilityHelpers.loadIntFromMemory(context, "ARC_VOLUME", testSound.getCurrent_MediaVolume());
-                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
-                 testSound.playShorttune(context);
-            }
-        });
-       /* infoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                postInfoDialog();
-            }
-        });
 
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("text/plain");
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                    String shareMessage= "\nLet me recommend you this application\n\n";
-                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" +"\n\n";
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                    startActivity(Intent.createChooser(shareIntent, "choose one"));
-                } catch(Exception e) {
-                    //e.toString();
-                }
             }
         });
-        diagnosis.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, settings.class);
-                FragmentAllowRepeatCallers.this.startActivity(intent);
-            }
-        });*/
         FeatTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,21 +165,6 @@ public class FragmentAllowRepeatCallers extends Fragment {
 
     }
 
-
-    private void postInfoDialog() {
-        Context context=requireContext();
-        try {
-            //start a dialog box
-            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(context);
-            noti_alertbuilder.setMessage("Device Rings on Successive calls, if a call was missed in Silent or Vibrate Mode.\n\n\nNotifications can be dismissed to disable the ringing.");
-            AlertDialog alertDialog = noti_alertbuilder.create();
-            alertDialog.show();
-        } catch (Exception e) {
-
-            Log.e(TAG, " Exception on dialog  " + e);
-            Toast.makeText(getContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void Dialog_requestDND() {
         NotificationManager policy_notificationManager =
@@ -255,9 +215,9 @@ public class FragmentAllowRepeatCallers extends Fragment {
                     process_featureState(true,context);
 
                 } else {
-                    boolean SILEXCEPT_permission_already_requested= utilityHelpers.loadBooleanFromMemory(context, "SILEXCEPT_PERMISSIONREQUESTED");
-                    boolean ARC_permission_already_requested= utilityHelpers.loadBooleanFromMemory(context, "REPEATCALLER_PERMISSIONREQUESTED");
-                    boolean BP_permission_already_requested=utilityHelpers.loadBooleanFromMemory(context, "BABY_PING_PERMISSIONREQUESTED");
+                    boolean SILEXCEPT_permission_already_requested= feat_silentExceptions.loadBOOL_Permission_already_requested(context);
+                    boolean ARC_permission_already_requested=feat_RepeatCaller.loadBOOL_Permission_already_requested(context);
+                    boolean BP_permission_already_requested=feat_BabyPing.loadBOOL_Permission_already_requested(context);
                     boolean permission_already_requested=((SILEXCEPT_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (permission_already_requested == false) {
                         String[] pend = utilityHelpers.getpendingpermissions(context, GUIobj_RepeatCaller.permissions);
@@ -285,10 +245,8 @@ public class FragmentAllowRepeatCallers extends Fragment {
     private ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
                 Context context =requireContext();
-                boolean permission_already_requested=false;
-                permission_already_requested=true;
-                utilityHelpers.saveBooleanToMemory(context,"REPEATCALLER_PERMISSIONREQUESTED",permission_already_requested);
-                    if(isGranted.containsValue(false)){
+                GUIobj_RepeatCaller.setPermissionRequested(context);
+                if(isGranted.containsValue(false)){
                         process_featureState(false,context);
 
                     }
@@ -300,10 +258,10 @@ public class FragmentAllowRepeatCallers extends Fragment {
 
 
     private void process_featureState(boolean state,Context context) {
-        GUIobj_RepeatCaller.setFeatureActivated(state);
-        utilityHelpers.saveBooleanToMemory(context,"FEAT_REPEATCALLER_ACTIVE",state);
+        GUIobj_RepeatCaller.setFeatureActivated(context,state);
         TapToEnable.setChecked(state);
         seekbar_ARC.setEnabled(state);
+        taptotestvolume.setEnabled(state);
         if(state){
             adjustInterfaceButton(EnabledColor,EnabledText);
         }
@@ -371,15 +329,13 @@ public class FragmentAllowRepeatCallers extends Fragment {
                     } else {
                         // Permission Denied
                         process_featureState(false,context);
-                        permission_already_requested=true;
-                        utilityHelpers.saveBooleanToMemory(context,"REPEATCALLER_PERMISSIONREQUESTED",permission_already_requested);
+                        GUIobj_RepeatCaller.setPermissionRequested(context);
 
                         break;
 
                     }
                     process_featureState(true,context);
-                    permission_already_requested=true;
-                    utilityHelpers.saveBooleanToMemory(context,"REPEATCALLER_PERMISSIONREQUESTED",permission_already_requested);
+                    GUIobj_RepeatCaller.setPermissionRequested(context);
                     utilityHelpers.checkLogFormat(context);
 
                 }

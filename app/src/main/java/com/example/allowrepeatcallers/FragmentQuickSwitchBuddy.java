@@ -58,9 +58,6 @@ public class FragmentQuickSwitchBuddy extends Fragment {
         imgdnd=(ImageView)getView().findViewById(R.id.imgdnd);
         imgvibrate=(ImageView) getView().findViewById(R.id.imgvibrate);
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
-        /*infoButton=(ImageView) getView().findViewById(R.id.infoButton);
-        diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
-        share=(ImageView)  getView().findViewById(R.id.share);*/
 
         obj_quickswitch=new feat_quickSwitch(context);
 
@@ -68,9 +65,8 @@ public class FragmentQuickSwitchBuddy extends Fragment {
         int softwaretype=utilityHelpers.loadIntFromMemory(context,"SOFTWARETYPE",0);
         if(softwaretype==1) {
 
-            obj_quickswitch.setFeatureActivated(utilityHelpers.loadBooleanFromMemory(context, "IS_QUICKSWITCH_ACTIVATED"));
             checkAccessibilityPermission(context);
-            if (obj_quickswitch.isFeatureActivated()) {
+            if (obj_quickswitch.isFeatureActivated(context)) {
                 TapToEnable.setChecked(true);
                 adjustInterfaceButton(EnabledColor, EnabledText);
             } else {
@@ -97,35 +93,6 @@ public class FragmentQuickSwitchBuddy extends Fragment {
             FeatTitle.setText("PRO\nDEMO");
             adjustInterfaceButton(DisabledColor,DisabledText);
         }
-        /*share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("text/plain");
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                    String shareMessage= "\nLet me recommend you this application\n\n";
-                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" +"\n\n";
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                    startActivity(Intent.createChooser(shareIntent, "choose one"));
-                } catch(Exception e) {
-                    //e.toString();
-                }
-            }
-        });
-        diagnosis.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, settings.class);
-                FragmentQuickSwitchBuddy.this.startActivity(intent);
-            }
-        });
-        infoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                postInfoDialog();
-            }
-        });*/
 
         BroadcastReceiver receiver=new BroadcastReceiver(){
             @Override
@@ -164,7 +131,7 @@ public class FragmentQuickSwitchBuddy extends Fragment {
         if (!notificationManager.isNotificationPolicyAccessGranted()) {
             TapToEnable.setChecked(false);
             adjustInterfaceButton(DisabledColor,DisabledText);
-            obj_quickswitch.setFeatureActivated(false);
+            obj_quickswitch.setFeatureActivated(context,false);
         }
         else {
             try {
@@ -173,13 +140,13 @@ public class FragmentQuickSwitchBuddy extends Fragment {
                 throw new RuntimeException(e);
             }
             if (accessibilityEnabled != 0) {
-                obj_quickswitch.setFeatureActivated(true);
+                obj_quickswitch.setFeatureActivated(context,true);
                 TapToEnable.setChecked(true);
                 adjustInterfaceButton(EnabledColor, EnabledText);
             } else {
                 TapToEnable.setChecked(false);
                 adjustInterfaceButton(DisabledColor, DisabledText);
-                obj_quickswitch.setFeatureActivated(false);
+                obj_quickswitch.setFeatureActivated(context,false);
                 //start a dialog box
             }
         }
@@ -191,8 +158,8 @@ public class FragmentQuickSwitchBuddy extends Fragment {
         NotificationManager tap_notificationManager =
                 (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
         Context context=requireContext();
-        if(obj_quickswitch.isFeatureActivated()){
-            obj_quickswitch.setFeatureActivated(false);
+        if(obj_quickswitch.isFeatureActivated(context)){
+            obj_quickswitch.setFeatureActivated(context,false);
 
             Toast.makeText(context, " Feature disable saved ", Toast.LENGTH_SHORT).show();
             TapToEnable.setChecked(false);
@@ -203,8 +170,7 @@ public class FragmentQuickSwitchBuddy extends Fragment {
             if (!tap_notificationManager.isNotificationPolicyAccessGranted()) {
                 TapToEnable.setChecked(false);
                 adjustInterfaceButton(DisabledColor,DisabledText);
-                obj_quickswitch.setFeatureActivated(false);
-                utilityHelpers.saveBooleanToMemory(context,"IS_QUICKSWITCH_ACTIVATED",false);
+                obj_quickswitch.setFeatureActivated(context,false);
                 Dialog_requestDND();
             } else {
                 processAccessibilityPermission(context);
@@ -222,16 +188,14 @@ public class FragmentQuickSwitchBuddy extends Fragment {
             throw new RuntimeException(e);
         }
         if (accessibilityEnabled!=0) {
-            obj_quickswitch.setFeatureActivated(true);
-            utilityHelpers.saveBooleanToMemory(context, "IS_QUICKSWITCH_ACTIVATED", true);
+            obj_quickswitch.setFeatureActivated(context,true);
             Toast.makeText(context, " Feature Enable saved ", Toast.LENGTH_SHORT).show();
             TapToEnable.setChecked(true);
             adjustInterfaceButton(EnabledColor,EnabledText);
         } else {
             TapToEnable.setChecked(false);
             adjustInterfaceButton(DisabledColor,DisabledText);
-            obj_quickswitch.setFeatureActivated(false);
-            utilityHelpers.saveBooleanToMemory(context,"IS_QUICKSWITCH_ACTIVATED",false);
+            obj_quickswitch.setFeatureActivated(context,false);
             Dialog_requestACCESSIBILITY(context);
             //start a dialog box
         }
@@ -303,28 +267,14 @@ public class FragmentQuickSwitchBuddy extends Fragment {
 
     private void Dialog_requestACCESSIBILITY(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("To use this feature, the app needs access to the volume buttons of the device. This is managed by the Accessibility permission.\nPress continue to provide these in the settings menu.\n" +
-                        "\nThis permission is only needed to access the volume buttons and no other information is used or created.\n\nYour privacy is most important and you can disable this feature or permission anytime.").setPositiveButton("continue", requestACCESSIBILITY_dialogClickListener)
+        builder.setMessage(obj_quickswitch.getRequestAccessibility()).setPositiveButton("continue", requestACCESSIBILITY_dialogClickListener)
                 .setNegativeButton("cancel", requestACCESSIBILITY_dialogClickListener);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 
 
-    private void postInfoDialog() {
-        Context context=requireContext();
-        try {
-            //start a dialog box
-            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(context);
-            noti_alertbuilder.setMessage("Quickly change ringer modes by double pressing volume buttons when the screen is on");
-            AlertDialog alertDialog = noti_alertbuilder.create();
-            alertDialog.show();
-        } catch (Exception e) {
 
-            Log.e(TAG, " Exception on dialog  " + e);
-            Toast.makeText(getContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
-        }
-    }
     private void adjustInterfaceButton(String ipColor, String ipText) {
         TapToEnable.setText(ipText);
         TapToEnable.setTextColor(Color.parseColor(ipColor));

@@ -112,7 +112,16 @@ public class MainActivity extends AppCompatActivity {
                 if(id==R.id.privacy)
                 {
 
-                    String url = "https://stackoverflow.com/questions/24261224/android-open-url-onclick-certain-button";
+                    String url = "https://sites.google.com/view/quietexceptional/privacy-policy?authuser=9";
+
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                }
+                if(id==R.id.terms)
+                {
+
+                    String url = "https://sites.google.com/view/quietexceptional/terms-and-conditions?authuser=9";
 
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
@@ -143,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                         description=feat_BabyPing.getDescription();
                         break;
                     case 2:
-                        description=feat_RepeatCaller.getDescription();
+                        description=feat_quickSwitch.getDescription();
                         break;
                     case 3:
                         description=feat_RepeatCaller.getDescription();

@@ -33,7 +33,8 @@ class feat_BabyPing {
         return description;
     }
 
-    public boolean isFeatureActivated() {
+    public boolean isFeatureActivated(Context context) {
+        featureActivated= utilityHelpers.loadBooleanFromMemory(context, MEMCODE_ACTIVATEFEAT);
         return featureActivated;
     }
 
@@ -46,7 +47,7 @@ class feat_BabyPing {
     public void setPermissionRequested(Context context) {
         utilityHelpers.saveBooleanToMemory(context,MEMCODE_PERMISSIONREQUESTED,true);
     }
-    public static boolean isPermission_already_requested(Context context){
+    public static boolean loadBOOL_Permission_already_requested(Context context){
             boolean Permission_already_requested=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_PERMISSIONREQUESTED);
         return Permission_already_requested;
     }

@@ -48,6 +48,7 @@ public class FragmentBabyPing extends Fragment {
     View rightLine;
     SeekBar seekbar;
     feat_BabyPing obj_AMC;
+    TextView taptotestvolume;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.babyping, container, false);
@@ -63,12 +64,7 @@ public class FragmentBabyPing extends Fragment {
     public void onResume() {
         super.onResume();
         Context context=getContext();
-       /* leftLine=(View) getView().findViewById(R.id.leftLine);
-        rightLine=(View) getView().findViewById(R.id.rightLine);
-        Animation anima_scaleleft = AnimationUtils.loadAnimation(context, R.anim.scale_fromleft);
-        Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
-        leftLine.startAnimation(anima_scaleleft);
-        rightLine.startAnimation(anima_scaleright);*/
+
     }
 
     @Override
@@ -77,13 +73,11 @@ public class FragmentBabyPing extends Fragment {
         Context context=requireContext();
         utilityHelpers.createNotificationChannel(context);
         TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
-
+        taptotestvolume=(TextView) getView().findViewById(R.id.taptotestvolume);
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
 
         seekbar=(SeekBar) getView().findViewById(R.id.seekBar);
-       /* diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
-        share=(ImageView)  getView().findViewById(R.id.share);
-        infoButton=(ImageView) getView().findViewById(R.id.infoButton);*/
+
         leftLine=(View) getView().findViewById(R.id.leftLine);
         rightLine=(View) getView().findViewById(R.id.rightLine);
         utilityHelpers.adjustTitleTextSize(FeatTitle,context);
@@ -99,14 +93,23 @@ public class FragmentBabyPing extends Fragment {
         // Set the current volume of the SeekBar to the current volume of the MediaPlayer:
         int lastSetMediaVolume=obj_AMC.getPingVolume(context);
         seekbar.setProgress(lastSetMediaVolume);
-        if(obj_AMC.isFeatureActivated()){
+        if(obj_AMC.isFeatureActivated(context)){
             process_featureState(true,context);
         }
         else{
             process_featureState(false,context);
         }
 
-
+        taptotestvolume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ringtones testSound = new ringtones(context, 0);
+                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                int seekbarVolume = obj_AMC.getPingVolume(context);
+                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
+                testSound.playShorttune(context);
+            }
+        });
 
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -122,12 +125,6 @@ public class FragmentBabyPing extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                ringtones testSound = new ringtones(context, 0);
-                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                int seekbarVolume = obj_AMC.getPingVolume(context);
-                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
-                testSound.playShorttune(context);
-
             }
         });
 
@@ -151,6 +148,7 @@ public class FragmentBabyPing extends Fragment {
         obj_AMC.setFeatureActivated(context,state);
         TapToEnable.setChecked(state);
         seekbar.setEnabled(state);
+        taptotestvolume.setEnabled(state);
         if(state){
             adjustInterfaceButton(EnabledColor,EnabledText);
         }
@@ -161,21 +159,6 @@ public class FragmentBabyPing extends Fragment {
     }
 
 
-    private void postInfoDialog() {
-        Context context=requireContext();
-        try {
-            //start a dialog box
-            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(context);
-            noti_alertbuilder.setMessage("Device makes a short sound after a missed call");
-            AlertDialog alertDialog = noti_alertbuilder.create();
-            alertDialog.show();
-        } catch (Exception e) {
-
-            Log.e(TAG, " Exception on dialog  " + e);
-            Toast.makeText(getContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void adjustInterfaceButton(String ipColor, String ipText) {
         TapToEnable.setText(ipText);
         TapToEnable.setTextColor(Color.parseColor(ipColor));
@@ -184,7 +167,7 @@ public class FragmentBabyPing extends Fragment {
 
     private void userTap() {
         Context context=requireContext();
-        if(obj_AMC.isFeatureActivated()){
+        if(obj_AMC.isFeatureActivated(context)){
             process_featureState(false,context);
 
         }
@@ -195,9 +178,9 @@ public class FragmentBabyPing extends Fragment {
                     Toast.makeText(context, " Feature Enable saved ", Toast.LENGTH_SHORT).show();
 
                 } else {
-                    boolean ARC_permission_already_requested= utilityHelpers.loadBooleanFromMemory(context, "REPEATCALLER_PERMISSIONREQUESTED");
-                    boolean BP_permission_already_requested=utilityHelpers.loadBooleanFromMemory(context, "BABY_PING_PERMISSIONREQUESTED");
-                    boolean SILEXCEPT_permission_already_requested= utilityHelpers.loadBooleanFromMemory(context, "SILEXCEPT_PERMISSIONREQUESTED");
+                    boolean ARC_permission_already_requested= feat_RepeatCaller.loadBOOL_Permission_already_requested(context);
+                    boolean BP_permission_already_requested=feat_BabyPing.loadBOOL_Permission_already_requested(context);
+                    boolean SILEXCEPT_permission_already_requested= feat_silentExceptions.loadBOOL_Permission_already_requested(context);
                     boolean permission_already_requested=((SILEXCEPT_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (permission_already_requested == false) {
                         String[] pend = utilityHelpers.getpendingpermissions(context, feat_BabyPing.permissions);

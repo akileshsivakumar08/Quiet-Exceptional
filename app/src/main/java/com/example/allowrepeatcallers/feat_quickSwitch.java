@@ -14,18 +14,27 @@ public class feat_quickSwitch {
     public static int call_downcounter;
     private boolean featureActivated;
     private static String description;
-
-    public boolean isFeatureActivated() {
+    private final String requestAccessibility;
+    private static final String MEMCODE_ACTIVATEFEAT="FEAT_QUICKSWITCH_ACTIVE";
+    public boolean isFeatureActivated(Context context) {
+        featureActivated= utilityHelpers.loadBooleanFromMemory(context, MEMCODE_ACTIVATEFEAT);
         return featureActivated;
     }
 
-    public void setFeatureActivated(boolean featureActivatedlocal) {
-        featureActivated = featureActivatedlocal;
-        //utilityHelpers.saveBooleanToMemory(context,"IS_QUICKSWITCH_ACTIVATED",featureActivated);
+    public String getRequestAccessibility() {
+        return requestAccessibility;
     }
 
     public feat_quickSwitch(Context context) {
-        featureActivated = utilityHelpers.loadBooleanFromMemory(context, "FEAT_QUICKSWITCH_ACTIVE");
+        featureActivated = utilityHelpers.loadBooleanFromMemory(context, MEMCODE_ACTIVATEFEAT);
         description=context.getString(R.string.QS_description);
+        requestAccessibility=context.getString(R.string.QS_RequestAccessibility);
+    }
+    public void setFeatureActivated(Context context,boolean featureActivated) {
+        utilityHelpers.saveBooleanToMemory(context,MEMCODE_ACTIVATEFEAT,featureActivated);
+        this.featureActivated = featureActivated;
+    }
+    public static String getDescription() {
+        return description;
     }
 }

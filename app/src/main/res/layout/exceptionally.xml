@@ -17,78 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_star_border_24"
-        app:tint="#FFBF60" />
-
-    <!--
-
-    <ImageView
-        android:id="@+id/infoButton"
-        android:layout_width="65dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/baseline_info_24"
-        app:tint="#2F435A"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/share"
-        android:layout_width="65dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/infoButton"
-        app:srcCompat="@drawable/baseline_share_24"
-        app:tint="#2F435A" />
-
-    <ImageView
-        android:id="@+id/Diagnosis"
-        android:layout_width="65dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/infoButton"
-        app:srcCompat="@drawable/baseline_settings_24"
-        app:tint="#2F435A" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Info"
-        android:textColor="#2F435A"
-        app:layout_constraintEnd_toEndOf="@+id/infoButton"
-        app:layout_constraintStart_toStartOf="@+id/infoButton"
-        app:layout_constraintTop_toBottomOf="@+id/infoButton" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Allfeat_Share"
-        android:textColor="#2F435A"
-        app:layout_constraintEnd_toEndOf="@+id/share"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/share"
-        app:layout_constraintTop_toBottomOf="@+id/share" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Settings"
-        android:textColor="#2F435A"
-        app:layout_constraintEnd_toEndOf="@+id/Diagnosis"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/Diagnosis"
-        app:layout_constraintTop_toBottomOf="@+id/Diagnosis" />
-
--->
+        app:tint="#E4E5E8" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/TapToEnable"
@@ -149,18 +78,46 @@
         app:layout_constraintStart_toStartOf="@+id/seekBar_silExcept"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_silExcept" />
 
-    <Button
+    <ImageView
         android:id="@+id/manageContacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Add Contacts"
-        android:backgroundTint="#424651"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#FFFBF2"
         android:textColor="#C5C5C5"
         app:layout_constraintEnd_toEndOf="@+id/seekBar_silExcept"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:srcCompat="@drawable/baseline_add_24" />
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/PC_AddContacts"
+        android:textColor="#2F435A"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/manageContacts"
+        app:layout_constraintStart_toStartOf="@+id/manageContacts"
+        app:layout_constraintTop_toBottomOf="@+id/manageContacts" />
 
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:text="@string/ARC_Volume"
+        app:layout_constraintEnd_toEndOf="@+id/seekBar_silExcept"
+        app:layout_constraintStart_toStartOf="@+id/seekBar_silExcept"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar_silExcept" />
 
-
+    <TextView
+        android:id="@+id/taptotestvolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/TapVolumeTest"
+        app:layout_constraintEnd_toEndOf="@+id/textView8"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar_silExcept" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

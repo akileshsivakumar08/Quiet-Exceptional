@@ -49,9 +49,9 @@ public class FragmentsilentExceptions extends Fragment {
     String DisabledColor="#72435C";
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
-    int blinknumber=3;
     SeekBar seekBar_silExcept;
-    Button manageContacts;
+    ImageView manageContacts;
+    TextView taptotestvolume;
     feat_silentExceptions GUIobj_silentExceptions;
     ImageView starimage;
     int pingvolume;
@@ -83,9 +83,9 @@ public class FragmentsilentExceptions extends Fragment {
         //load GUI Elements
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
         TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
-
+        taptotestvolume=(TextView) getView().findViewById(R.id.taptotestvolume);
         seekBar_silExcept=(SeekBar) getView().findViewById(R.id.seekBar_silExcept);
-        manageContacts=(Button) getView().findViewById(R.id.manageContacts);
+        manageContacts=(ImageView) getView().findViewById(R.id.manageContacts);
 
         //load managers
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
@@ -106,6 +106,17 @@ public class FragmentsilentExceptions extends Fragment {
             process_featureState(false,context);
         }
 
+        taptotestvolume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ringtones testSound = new ringtones(context, 0);
+                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                int seekbarVolume = GUIobj_silentExceptions.getPingVolume(context);
+                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
+                testSound.playShorttune(context);
+            }
+        });
+
         seekBar_silExcept.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -120,11 +131,6 @@ public class FragmentsilentExceptions extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                ringtones testSound = new ringtones(context, 0);
-                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                int seekbarVolume = GUIobj_silentExceptions.getExceptionallyVolume(context);
-                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
-                testSound.playShorttune(context);
             }
         });
 
@@ -161,22 +167,6 @@ public class FragmentsilentExceptions extends Fragment {
 
     }
 
-
-
-    private void postInfoDialog() {
-        Context context=requireContext();
-        try {
-            //start a dialog box
-            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(context);
-            noti_alertbuilder.setMessage("Device Rings on Successive calls, if a call was missed in Silent or Vibrate Mode.\n\n\nNotifications can be dismissed to disable the ringing.");
-            AlertDialog alertDialog = noti_alertbuilder.create();
-            alertDialog.show();
-        } catch (Exception e) {
-
-            Log.e(TAG, " Exception on dialog  " + e);
-            Toast.makeText(getContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void Dialog_requestDND() {
         NotificationManager policy_notificationManager =
@@ -224,9 +214,9 @@ public class FragmentsilentExceptions extends Fragment {
                     process_featureState(true,context);
 
                 } else {
-                    boolean SILEXCEPT_permission_already_requested= utilityHelpers.loadBooleanFromMemory(context, "SILEXCEPT_PERMISSIONREQUESTED");
-                    boolean ARC_permission_already_requested=utilityHelpers.loadBooleanFromMemory(context, "ARC_PERMISSIONREQUESTED");
-                    boolean BP_permission_already_requested=utilityHelpers.loadBooleanFromMemory(context, "BABY_PING_PERMISSIONREQUESTED");
+                    boolean SILEXCEPT_permission_already_requested= feat_silentExceptions.loadBOOL_Permission_already_requested(context);
+                    boolean ARC_permission_already_requested=feat_RepeatCaller.loadBOOL_Permission_already_requested(context);
+                    boolean BP_permission_already_requested=feat_BabyPing.loadBOOL_Permission_already_requested(context);
                     boolean permission_already_requested=((SILEXCEPT_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (!permission_already_requested) {
                         String[] pend = utilityHelpers.getpendingpermissions(context, feat_silentExceptions.permissions);
@@ -258,10 +248,8 @@ public class FragmentsilentExceptions extends Fragment {
     private ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
                 Context context =requireContext();
-                boolean permission_already_requested=false;
-                permission_already_requested=true;
-                utilityHelpers.saveBooleanToMemory(context,"SILEXCEPT_PERMISSIONREQUESTED",permission_already_requested);
-                    if(isGranted.containsValue(false)){
+                GUIobj_silentExceptions.setPermissionRequested(context);
+                if(isGranted.containsValue(false)){
                         process_featureState(false,context);
 
                     }
@@ -276,7 +264,7 @@ public class FragmentsilentExceptions extends Fragment {
         TapToEnable.setChecked(state);
         seekBar_silExcept.setEnabled(state);
         manageContacts.setEnabled(state);
-
+        taptotestvolume.setEnabled(state);
         if(state){
             adjustInterfaceButton(EnabledColor,EnabledText);
         }
@@ -343,16 +331,14 @@ public class FragmentsilentExceptions extends Fragment {
                 } else {
                     // Permission Denied
                     process_featureState(false, context);
-                    permission_already_requested = true;
-                    utilityHelpers.saveBooleanToMemory(context, "REPEATCALLER_PERMISSIONREQUESTED", permission_already_requested);
+                    GUIobj_silentExceptions.setPermissionRequested(context);
 
                     break;
 
                 }
                 process_featureState(true, context);
-                permission_already_requested = true;
-                utilityHelpers.saveBooleanToMemory(context, "REPEATCALLER_PERMISSIONREQUESTED", permission_already_requested);
-                utilityHelpers.checkLogFormat(context);
+                GUIobj_silentExceptions.setPermissionRequested(context);
+               utilityHelpers.checkLogFormat(context);
 
             }
         } else {

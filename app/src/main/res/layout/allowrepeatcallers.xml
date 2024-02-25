@@ -168,7 +168,17 @@
         app:layout_constraintStart_toStartOf="@+id/seekBar_ARC"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_ARC" />
 
-
+    <TextView
+        android:id="@+id/taptotestvolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/TapVolumeTest"
+        android:textColor="#DDE1ED"
+        app:layout_constraintEnd_toEndOf="@+id/textView8"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar_ARC" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

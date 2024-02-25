@@ -11,6 +11,7 @@
     <string name="Allfeat_settings">Settings</string>
     <string name="Allfeat_Info">Info</string>
     <string name="Allfeat_Share">Share</string>
+    <string name="PC_AddContacts">Add Contacts</string>
     <string name="ARC_Title">Allow Repeat Callers</string>
     <string name="ARC_description"> Device Rings on Successive calls, if a call was missed in Silent or Vibrate Mode.\n\nNotifications can be dismissed to disable the ringing.</string>
     <string name="ARC_Title_semi">Allow</string>
@@ -19,6 +20,8 @@
     <string name="MCA_description">Device makes a short sound after a missed call</string>
     <string name="QS_Title">Quick Switch</string>
     <string name="QS_description">Quickly change ringer modes by double pressing volume buttons when the screen is on</string>
+    <string name="QS_RequestAccessibility">To use this feature, the app needs access to the volume buttons of the device. This is managed by the Accessibility permission.\nPress continue to provide these in the settings menu.\n
+                        \nThis permission is only needed to access the volume buttons and no other information is used or created.\n\nYour privacy is most important and you can disable this feature or permission anytime.</string>
     <string name="PC_Title">Prio Contacts</string>
     <string name="PC_description">Device Rings on if a call is received from marked Contacts, if the device is in silent or Vibrate mode.</string>
     <string name="TapVolumeTest">Tap Here To Test Volume</string>
