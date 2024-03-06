@@ -4,12 +4,14 @@ import static android.content.ContentValues.TAG;
 import static android.content.Context.AUDIO_SERVICE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
@@ -20,10 +22,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +35,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
-
-import java.lang.reflect.Array;
-import java.util.Collection;
 
 public class FragmentAllowRepeatCallers extends Fragment {
     TextView FeatTitle;
@@ -54,8 +53,11 @@ public class FragmentAllowRepeatCallers extends Fragment {
     String DisabledText="Tap To Enable";
     TextView taptotestvolume;
     SeekBar seekbar_ARC;
-    feat_RepeatCaller GUIobj_RepeatCaller;
+    feat_AllowRepeatCallers GUIobj_RepeatCaller;
     int pingvolume;
+    ImageView arrow1;
+    ImageView arrow2;
+    float animationDistance=20f;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,16 +79,16 @@ public class FragmentAllowRepeatCallers extends Fragment {
 
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
         taptotestvolume=(TextView) getView().findViewById(R.id.taptotestvolume);
-        /*diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
-        infoButton=(ImageView) getView().findViewById(R.id.infoButton);
-        share=(ImageView)  getView().findViewById(R.id.share);*/
+        arrow1=(ImageView) getView().findViewById(R.id.arrow1);
+        arrow2=(ImageView) getView().findViewById(R.id.arrow2);
         seekbar_ARC=(SeekBar) getView().findViewById(R.id.seekBar_ARC);
 
-
-
+        animateDiagonalPan(arrow1,(animationDistance*-1));
+        animateDiagonalPan(arrow2,animationDistance);
+        animateScalePan(FeatTitle,1.01f);
         //load managers
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
-        GUIobj_RepeatCaller=new feat_RepeatCaller(context);
+        GUIobj_RepeatCaller=new feat_AllowRepeatCallers(context);
         //load from memory
         int lastSetMediaVolume=GUIobj_RepeatCaller.getPingVolume(context);
 
@@ -215,9 +217,9 @@ public class FragmentAllowRepeatCallers extends Fragment {
                     process_featureState(true,context);
 
                 } else {
-                    boolean SILEXCEPT_permission_already_requested= feat_silentExceptions.loadBOOL_Permission_already_requested(context);
-                    boolean ARC_permission_already_requested=feat_RepeatCaller.loadBOOL_Permission_already_requested(context);
-                    boolean BP_permission_already_requested=feat_BabyPing.loadBOOL_Permission_already_requested(context);
+                    boolean SILEXCEPT_permission_already_requested= feat_PrioContacts.loadBOOL_Permission_already_requested(context);
+                    boolean ARC_permission_already_requested= feat_AllowRepeatCallers.loadBOOL_Permission_already_requested(context);
+                    boolean BP_permission_already_requested= feat_AlertMissedCalls.loadBOOL_Permission_already_requested(context);
                     boolean permission_already_requested=((SILEXCEPT_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (permission_already_requested == false) {
                         String[] pend = utilityHelpers.getpendingpermissions(context, GUIobj_RepeatCaller.permissions);
@@ -271,7 +273,48 @@ public class FragmentAllowRepeatCallers extends Fragment {
 
     }
 
+    private void animateDiagonalPan(View v,float distance) {
+        AnimatorSet animSetXY = new AnimatorSet();
 
+        float targetY = distance;
+        float targetX=distance;
+        ObjectAnimator y1 = ObjectAnimator.ofFloat(v,
+                "translationY",v.getY(), targetY);
+        y1.setRepeatCount(ValueAnimator.INFINITE);
+        y1.setRepeatMode(ValueAnimator.REVERSE);
+        ObjectAnimator x1 = ObjectAnimator.ofFloat(v,
+                "translationX", v.getX(), targetX);
+
+        x1.setRepeatCount(ValueAnimator.INFINITE);
+        x1.setRepeatMode(ValueAnimator.REVERSE);
+        animSetXY.playTogether(x1, y1);
+        animSetXY.setInterpolator(new LinearInterpolator());
+        animSetXY.setDuration(1800);
+        animSetXY.start();
+
+    }
+
+    private void animateScalePan(View v,float scale) {
+        AnimatorSet animSetXY = new AnimatorSet();
+
+        ObjectAnimator scaleanimY = ObjectAnimator.ofFloat(v,
+                "ScaleY",1f, scale);
+        scaleanimY.setRepeatCount(ValueAnimator.INFINITE);
+        scaleanimY.setRepeatMode(ValueAnimator.REVERSE);
+        ObjectAnimator scaleanimX = ObjectAnimator.ofFloat(v,
+                "ScaleX", 1f, scale);
+
+        scaleanimX.setRepeatCount(ValueAnimator.INFINITE);
+        scaleanimX.setRepeatMode(ValueAnimator.REVERSE);
+        animSetXY.playTogether(scaleanimX, scaleanimY);
+        animSetXY.setInterpolator(new LinearInterpolator());
+        animSetXY.setDuration(1500);
+        animSetXY.start();
+
+    }
+
+
+    
     DialogInterface.OnClickListener noti_alert_dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {

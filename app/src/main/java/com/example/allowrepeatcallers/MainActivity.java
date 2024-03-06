@@ -13,38 +13,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
-import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.CallLog;
-import android.provider.Settings;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
-import java.net.URISyntaxException;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     ImageView infoButton;
@@ -151,16 +133,16 @@ public class MainActivity extends AppCompatActivity {
                 String description="";
                 switch(currentFragmentPosition){
                     case 0:
-                        description=feat_silentExceptions.getDescription();
+                        description= feat_PrioContacts.getDescription();
                         break;
                     case 1:
-                        description=feat_BabyPing.getDescription();
+                        description= feat_AlertMissedCalls.getDescription();
                         break;
                     case 2:
-                        description=feat_quickSwitch.getDescription();
+                        description= feat_QuickSwitch.getDescription();
                         break;
                     case 3:
-                        description=feat_RepeatCaller.getDescription();
+                        description= feat_AllowRepeatCallers.getDescription();
                         break;
                 }
                 postInfoDialog(description);

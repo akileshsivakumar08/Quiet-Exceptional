@@ -11,10 +11,8 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.CallLog;
 import android.telephony.TelephonyManager;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -24,8 +22,8 @@ public class callReceiver_BabyPing extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, @NonNull Intent intent) {
-        if (!utilityHelpers.ispermissionpending(context, feat_BabyPing.permissions)) {
-        feat_BabyPing obj_AMC=new feat_BabyPing(context);
+        if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
+        feat_AlertMissedCalls obj_AMC=new feat_AlertMissedCalls(context);
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);

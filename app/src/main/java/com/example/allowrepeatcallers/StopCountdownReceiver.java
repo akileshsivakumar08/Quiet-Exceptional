@@ -12,7 +12,7 @@ import android.widget.Toast;
 public class StopCountdownReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        feat_RepeatCaller stopButton_repeatCaller=new feat_RepeatCaller(context);
+        feat_AllowRepeatCallers stopButton_repeatCaller=new feat_AllowRepeatCallers(context);
         if(intent.getAction().equals("STOP_SERVICE")){
             int notiid=intent.getIntExtra("TIMERID",-1);
             int listid=notiid-1;

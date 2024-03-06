@@ -104,6 +104,7 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="start"
         android:text="@string/MCA_Title"
+        android:textAlignment="center"
         android:textColor="#2F435A"
         android:textSize="75sp"
         android:textStyle="bold"
@@ -115,14 +116,14 @@
         app:layout_constraintVertical_bias="0.2" />
 
 
-
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/TapToEnable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Allfeat_Tap2Enable"
         android:textColor="#D8A7B1"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/FeatTitle"
+        app:layout_constraintStart_toStartOf="@+id/FeatTitle"
         app:layout_constraintTop_toBottomOf="@+id/FeatTitle" />
 
     <SeekBar

@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.view.View;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -33,7 +32,7 @@ public class troubleshoot extends AppCompatActivity {
         getMissedList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                feat_RepeatCaller obj_getmissedlist=new feat_RepeatCaller(context);
+                feat_AllowRepeatCallers obj_getmissedlist=new feat_AllowRepeatCallers(context);
                 String string_missedList="\n";
                 ArrayList<String>local_missedList=obj_getmissedlist.getMissedList();
                 if(local_missedList.size()==0){

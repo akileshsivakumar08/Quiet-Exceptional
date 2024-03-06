@@ -8,7 +8,7 @@
 
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/arrow2"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginTop="208dp"
@@ -20,7 +20,7 @@
         app:tint="#DDE1ED" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/arrow1"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginBottom="180dp"
@@ -116,15 +116,16 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:text="@string/ARC_Title"
+        android:textAlignment="center"
         android:textColor="#FFD369"
         android:textSize="75sp"
         android:textStyle="bold"
-        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.301" />
 
     <SeekBar
         android:id="@+id/seekBar_ARC"

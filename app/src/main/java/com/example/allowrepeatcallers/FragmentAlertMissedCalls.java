@@ -31,7 +31,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
-public class FragmentBabyPing extends Fragment {
+public class FragmentAlertMissedCalls extends Fragment {
     TextView FeatTitle;
     ImageView diagnosis;
     SwitchCompat TapToEnable;
@@ -47,11 +47,11 @@ public class FragmentBabyPing extends Fragment {
     View leftLine;
     View rightLine;
     SeekBar seekbar;
-    feat_BabyPing obj_AMC;
+    feat_AlertMissedCalls obj_AMC;
     TextView taptotestvolume;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.babyping, container, false);
+        return inflater.inflate(R.layout.alertmissedcalls, container, false);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class FragmentBabyPing extends Fragment {
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         seekbar.setMax(maxMusicVolume);
-        obj_AMC=new feat_BabyPing(context);
+        obj_AMC=new feat_AlertMissedCalls(context);
 
         Animation anima_scaleleft = AnimationUtils.loadAnimation(context, R.anim.scale_fromleft);
         Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
@@ -172,18 +172,18 @@ public class FragmentBabyPing extends Fragment {
 
         }
         else{
-                if (!utilityHelpers.ispermissionpending(context, feat_BabyPing.permissions)) {
+                if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
                     process_featureState(true,context);
                     utilityHelpers.checkLogFormat(context);
                     Toast.makeText(context, " Feature Enable saved ", Toast.LENGTH_SHORT).show();
 
                 } else {
-                    boolean ARC_permission_already_requested= feat_RepeatCaller.loadBOOL_Permission_already_requested(context);
-                    boolean BP_permission_already_requested=feat_BabyPing.loadBOOL_Permission_already_requested(context);
-                    boolean SILEXCEPT_permission_already_requested= feat_silentExceptions.loadBOOL_Permission_already_requested(context);
+                    boolean ARC_permission_already_requested= feat_AllowRepeatCallers.loadBOOL_Permission_already_requested(context);
+                    boolean BP_permission_already_requested= feat_AlertMissedCalls.loadBOOL_Permission_already_requested(context);
+                    boolean SILEXCEPT_permission_already_requested= feat_PrioContacts.loadBOOL_Permission_already_requested(context);
                     boolean permission_already_requested=((SILEXCEPT_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
                     if (permission_already_requested == false) {
-                        String[] pend = utilityHelpers.getpendingpermissions(context, feat_BabyPing.permissions);
+                        String[] pend = utilityHelpers.getpendingpermissions(context, feat_AlertMissedCalls.permissions);
                         requestPermissionLauncher.launch(pend);
                     } else if (permission_already_requested == true) {
                         try {
@@ -262,7 +262,7 @@ public class FragmentBabyPing extends Fragment {
 
                 }
 
-                feat_BabyPing.permission_already_requested=true;
+                feat_AlertMissedCalls.permission_already_requested=true;
                 obj_AMC.setPermissionRequested(context);
                 break;
             default:

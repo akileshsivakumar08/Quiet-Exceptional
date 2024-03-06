@@ -42,9 +42,9 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        feat_RepeatCaller obj_RepeatCaller=new feat_RepeatCaller(context);
+        feat_AllowRepeatCallers obj_RepeatCaller=new feat_AllowRepeatCallers(context);
         try {
-            if (!utilityHelpers.ispermissionpending(context, feat_RepeatCaller.permissions)) {
+            if (!utilityHelpers.ispermissionpending(context, feat_AllowRepeatCallers.permissions)) {
 
             if (!utilityHelpers.ispermissionpending(context, obj_RepeatCaller.permissions)) {
             notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -111,8 +111,8 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                                         obj_RepeatCaller.addToMissedList(logName, logNumber, "Missed");
                                         NotificationManager post_notificationManager = notificationManager;
                                         error = "ID:Created Notification Channel";
-                                        feat_RepeatCaller.notificationIDcounter = feat_RepeatCaller.notificationIDcounter + 1;
-                                        int notificationID = feat_RepeatCaller.notificationIDcounter;
+                                        feat_AllowRepeatCallers.notificationIDcounter = feat_AllowRepeatCallers.notificationIDcounter + 1;
+                                        int notificationID = feat_AllowRepeatCallers.notificationIDcounter;
                                         String NotiString = getNotificationTitleString();
 
 
@@ -197,7 +197,7 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
         return stringType;
     }
 
-    private void handleReset(Context context,feat_RepeatCaller obj_RepeatCaller) {
+    private void handleReset(Context context, feat_AllowRepeatCallers obj_RepeatCaller) {
         repeatCaller_Ringtone.setMyRingerisplaying(false);
                 if(obj_RepeatCaller.isRepeatCallerRingActivated()) {
                     AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);

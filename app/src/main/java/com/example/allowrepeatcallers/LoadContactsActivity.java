@@ -6,7 +6,6 @@ import static com.example.allowrepeatcallers.R.menu.popupmenu_loadedlist;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,14 +20,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
 public class LoadContactsActivity extends AppCompatActivity {
 
     ListView listview;
-    feat_silentExceptions obj_LoadContacts;
+    feat_PrioContacts obj_LoadContacts;
     Context context;
 
     @Override
@@ -36,9 +34,7 @@ public class LoadContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         context=getApplicationContext();
         getSupportActionBar().setTitle( "Your Contacts");
-        ArrayList<class_Buddy> obj_BuddyLocal;
-        obj_LoadContacts=new feat_silentExceptions(context);
-
+        obj_LoadContacts=new feat_PrioContacts(context);
         setContentView(R.layout.activity_load_contacts);
         refreshlistview(obj_LoadContacts.getSilExceptList());
         FloatingActionButton AddButton = findViewById(R.id.add_fab);
@@ -46,10 +42,8 @@ public class LoadContactsActivity extends AppCompatActivity {
         AddButton.setOnClickListener(view -> {
 
             Intent in = new Intent (Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-            //startActivityForResult (in, RESULT_PICK_CONTACT);
             getResult.launch(in);
         });
-
 
         listview.setOnItemClickListener((adapterView, view, i, l) -> popupmenu(i));
 
@@ -123,8 +117,7 @@ public class LoadContactsActivity extends AppCompatActivity {
 
         boolean check=obj_LoadContacts.isnumberinList(buddy.getBuddy_PhNo());
         if (!check) {
-            obj_LoadContacts.addTosilExceptList(buddy);
-            obj_LoadContacts.saveDataToMemory(context);
+            obj_LoadContacts.addToPrioContactsList(buddy,context);
 
             refreshlistview(obj_LoadContacts.getSilExceptList());
         }
@@ -133,20 +126,6 @@ public class LoadContactsActivity extends AppCompatActivity {
         }
     }
 
-
-
-    private boolean checkrepeatcontact(ArrayList<class_Buddy> obj_BuddyLocal, class_Buddy buddy) {
-        if (obj_BuddyLocal.size() != 0) {
-            String phno = buddy.getBuddy_PhNo();
-            for (int i = 0; i < obj_BuddyLocal.size(); i++) {
-                String db_phno = obj_BuddyLocal.get(i).getBuddy_PhNo();
-                if (db_phno.equals(phno)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
 }
 

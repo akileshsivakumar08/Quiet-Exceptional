@@ -1,12 +1,8 @@
 package com.example.allowrepeatcallers;
 
-import static android.content.Context.NOTIFICATION_SERVICE;
-
-import android.Manifest;
-import android.app.NotificationManager;
 import android.content.Context;
 
-class feat_BabyPing {
+class feat_AlertMissedCalls {
 
     private boolean featureActivated=false;
     public static String[] permissions= {android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.READ_CALL_LOG};
@@ -21,10 +17,10 @@ class feat_BabyPing {
         utilityHelpers.saveIntToMemory(context,MEMCODE_VOLUME,inputVolume);
     }
 
-    private static final String MEMCODE_ACTIVATEFEAT="IS_BABYPING_ACTIVATED";
-    private static final String MEMCODE_VOLUME="BABYPING_VOLUME";
-    private static final String MEMCODE_PERMISSIONREQUESTED="BABY_PING_PERMISSIONREQUESTED";
-    public feat_BabyPing(Context context) {
+    private static final String MEMCODE_ACTIVATEFEAT="IS_AMC_ACTIVATED";
+    private static final String MEMCODE_VOLUME="AMC_VOLUME";
+    private static final String MEMCODE_PERMISSIONREQUESTED="AMC_PERMISSIONREQUESTED";
+    public feat_AlertMissedCalls(Context context) {
         featureActivated=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_ACTIVATEFEAT);
         description = context.getString(R.string.MCA_description);
     }

@@ -1,6 +1,5 @@
 package com.example.allowrepeatcallers;
 
-import static android.content.ContentValues.TAG;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 import android.app.NotificationManager;
@@ -13,12 +12,10 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -27,7 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
-public class FragmentQuickSwitchBuddy extends Fragment {
+public class FragmentQuickSwitch extends Fragment {
     SwitchCompat TapToEnable;
     TextView FeatTitle;
     ImageView share;
@@ -42,7 +39,7 @@ public class FragmentQuickSwitchBuddy extends Fragment {
     ImageView imgdnd;
     ImageView imgbell;
     ImageView imgvibrate;
-    feat_quickSwitch obj_quickswitch;
+    feat_QuickSwitch obj_quickswitch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,7 +56,7 @@ public class FragmentQuickSwitchBuddy extends Fragment {
         imgvibrate=(ImageView) getView().findViewById(R.id.imgvibrate);
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
 
-        obj_quickswitch=new feat_quickSwitch(context);
+        obj_quickswitch=new feat_QuickSwitch(context);
 
         utilityHelpers.adjustTitleTextSize(FeatTitle,context);
         int softwaretype=utilityHelpers.loadIntFromMemory(context,"SOFTWARETYPE",0);

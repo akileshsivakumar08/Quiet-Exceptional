@@ -15,12 +15,12 @@ public class MyPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new FragmentsilentExceptions();
+                return new FragmentPrioContacts();
 
             case 1:
-                return new FragmentBabyPing();
+                return new FragmentAlertMissedCalls();
             case 2:
-                return new FragmentQuickSwitchBuddy();
+                return new FragmentQuickSwitch();
             case 3:
                 return new FragmentAllowRepeatCallers();
             default:

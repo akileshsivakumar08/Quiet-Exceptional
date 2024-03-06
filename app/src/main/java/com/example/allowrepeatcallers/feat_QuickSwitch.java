@@ -2,7 +2,7 @@ package com.example.allowrepeatcallers;
 
 import android.content.Context;
 
-public class feat_quickSwitch {
+public class feat_QuickSwitch {
 
     public static int upcounter;
     public static int downcounter;
@@ -25,7 +25,7 @@ public class feat_quickSwitch {
         return requestAccessibility;
     }
 
-    public feat_quickSwitch(Context context) {
+    public feat_QuickSwitch(Context context) {
         featureActivated = utilityHelpers.loadBooleanFromMemory(context, MEMCODE_ACTIVATEFEAT);
         description=context.getString(R.string.QS_description);
         requestAccessibility=context.getString(R.string.QS_RequestAccessibility);

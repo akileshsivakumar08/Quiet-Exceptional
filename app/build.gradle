@@ -7,7 +7,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.allowrepeatcallers"
+        applicationId "com.QE.allowrepeatcallers"
         minSdk 26
         targetSdk 34
         versionCode 1

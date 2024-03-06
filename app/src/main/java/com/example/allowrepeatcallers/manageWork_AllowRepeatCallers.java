@@ -4,7 +4,6 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 import android.app.NotificationManager;
 import android.content.Context;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
@@ -19,7 +18,7 @@ public class manageWork_AllowRepeatCallers extends Worker {
     @Override
     public Result doWork() {
         Context context=getApplicationContext();
-        feat_RepeatCaller timeout_repeatCaller=new feat_RepeatCaller(context);
+        feat_AllowRepeatCallers timeout_repeatCaller=new feat_AllowRepeatCallers(context);
         int notiid=getInputData().getInt("NOTIID",255);
         int listid=notiid-1;
         NotificationManager remove_notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
