@@ -4,11 +4,11 @@ import static android.content.ContentValues.TAG;
 import static android.content.Context.AUDIO_SERVICE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
@@ -34,6 +34,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
+
 public class FragmentPrioContacts extends Fragment {
     TextView FeatTitle;
     private static final String CHANNEL_ID = "Missed Call Notification";
@@ -52,6 +53,7 @@ public class FragmentPrioContacts extends Fragment {
     feat_PrioContacts GUIobj_PrioContacts;
     ImageView starimage;
     int pingvolume;
+    permissionhandler OBJ_Permissions;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,7 +78,7 @@ public class FragmentPrioContacts extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context=requireContext();
-        utilityHelpers.createNotificationChannel(context);
+        //utilityHelpers.createNotificationChannel(context);
         //load GUI Elements
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
         TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
@@ -87,6 +89,7 @@ public class FragmentPrioContacts extends Fragment {
         //load managers
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         GUIobj_PrioContacts =new feat_PrioContacts(context);
+        OBJ_Permissions=new permissionhandler(context);
         //load from memory
         int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         int lastSetMediaVolume= GUIobj_PrioContacts.getPrioContactsVolume(context);
@@ -107,7 +110,7 @@ public class FragmentPrioContacts extends Fragment {
             public void onClick(View v) {
                 ringtones testSound = new ringtones(context, 0);
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                int seekbarVolume = GUIobj_PrioContacts.getPingVolume(context);
+                int seekbarVolume = GUIobj_PrioContacts.getPrioContactsVolume(context);
                 am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
                 testSound.playShorttune(context);
             }
@@ -151,7 +154,8 @@ public class FragmentPrioContacts extends Fragment {
             @Override
             public void onClick(View view) {
                     Intent intent = new Intent(context, LoadContactsActivity.class);
-                    startActivity(intent);
+                    intent.putParcelableArrayListExtra("List_Parcel",GUIobj_PrioContacts.getSilExceptList());
+                    LoadContactsActivityResultLauncher.launch(intent);
             }
         });
 
@@ -168,14 +172,14 @@ public class FragmentPrioContacts extends Fragment {
             try {
                 //start a dialog box
                 AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
-                noti_alertbuilder.setMessage("To use this app DND permisions are needed . Press continue to provide these in the app settings menu").setPositiveButton("continue", noti_alert_dialogClickListener)
-                        .setNegativeButton("cancel", noti_alert_dialogClickListener);
+                noti_alertbuilder.setMessage(R.string.provide_dnd_permissions).setPositiveButton(R.string.continue_menu, noti_alert_dialogClickListener)
+                        .setNegativeButton(R.string.cancel_menu, noti_alert_dialogClickListener);
                 AlertDialog alertDialog = noti_alertbuilder.create();
                 alertDialog.show();
             } catch (Exception e) {
 
                // Log.e(TAG, " Exception on dialog  " + e);
-                Toast.makeText(requireContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), R.string.exception_on_dialog, Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -207,12 +211,9 @@ public class FragmentPrioContacts extends Fragment {
                     process_featureState(true,context);
 
                 } else {
-                    boolean PrioContacts_permission_already_requested = feat_PrioContacts.loadBOOL_Permission_already_requested(context);
-                    boolean ARC_permission_already_requested= feat_AllowRepeatCallers.loadBOOL_Permission_already_requested(context);
-                    boolean BP_permission_already_requested= feat_AlertMissedCalls.loadBOOL_Permission_already_requested(context);
-                    boolean permission_already_requested=((PrioContacts_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
+                    String[] pend = utilityHelpers.getpendingpermissions(context, feat_PrioContacts.permissions);
+                    Boolean permission_already_requested=OBJ_Permissions.werePermissionsRequested(pend);
                     if (!permission_already_requested) {
-                        String[] pend = utilityHelpers.getpendingpermissions(context, feat_PrioContacts.permissions);
                         requestPermissionLauncher.launch(pend);
                     } else if (permission_already_requested) {
                         permissionAlreadyRequested_RequestDialog(context);
@@ -241,7 +242,7 @@ public class FragmentPrioContacts extends Fragment {
     private ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
                 Context context =requireContext();
-                GUIobj_PrioContacts.setPermissionRequested(context);
+                OBJ_Permissions.setPermissionRequested(context,isGranted);
                 if(isGranted.containsValue(false)){
                         process_featureState(false,context);
 
@@ -253,20 +254,27 @@ public class FragmentPrioContacts extends Fragment {
 
 
     private void process_featureState(boolean state,Context context) {
-        GUIobj_PrioContacts.setFeatureActivated(context,state);
+        GUIobj_PrioContacts.setFeatureActivated(context, state);
         TapToEnable.setChecked(state);
         seekBar_PrioContacts.setEnabled(state);
         manageContacts.setEnabled(state);
         taptotestvolume.setEnabled(state);
-        if(state){
-            adjustInterfaceButton(EnabledColor,EnabledText);
+        if (state) {
+            adjustInterfaceButton(EnabledColor, EnabledText);
+        } else {
+            adjustInterfaceButton(DisabledColor, DisabledText);
         }
-        else{
-            adjustInterfaceButton(DisabledColor,DisabledText);
-        }
-
     }
 
+        ActivityResultLauncher<Intent> LoadContactsActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // Here, no request code
+                        Intent data = result.getData();
+                            GUIobj_PrioContacts.setPrioContactsList(getContext(), data.getParcelableArrayListExtra("outputList"));
+                    }
+                });
 
     DialogInterface.OnClickListener noti_alert_dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
@@ -312,32 +320,6 @@ public class FragmentPrioContacts extends Fragment {
         }
     };
 
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Context context =requireContext();
-        boolean permission_already_requested=false;
-        if (requestCode == PERMISSION_CODE_POSTNOTIFICATIONS) {
-            for (int i = 0; i < permissions.length; i++) {
-                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                    // Permission Denied
-                    process_featureState(false, context);
-                    GUIobj_PrioContacts.setPermissionRequested(context);
-
-                    break;
-
-                }
-                process_featureState(true, context);
-                GUIobj_PrioContacts.setPermissionRequested(context);
-               utilityHelpers.checkLogFormat(context);
-
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
 
 }
 

@@ -12,7 +12,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-public class callReceiver_Exceptionally extends BroadcastReceiver {
+public class callReceiver_PrioContacts extends BroadcastReceiver {
     ringtones exceptionally_Ringtone;
     public static MediaPlayer local_mp;
 
@@ -66,7 +66,7 @@ public class callReceiver_Exceptionally extends BroadcastReceiver {
         exceptionally_Ringtone.setMyRingerisplaying(false);
         if(obj_silentExceptions.isSilentExceptionRingActivated()) {
             AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            am.setStreamVolume(AudioManager.STREAM_MUSIC, ringtones.getCurrent_MediaVolume(), 0);
+            am.setStreamVolume(AudioManager.STREAM_MUSIC, ringtones.getCurrent_MediaVolume(context), 0);
             exceptionally_Ringtone.stoptune(context,local_mp);
             obj_silentExceptions.setSilentExceptionRingActivated(false);
         }

@@ -34,8 +34,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,7 +58,7 @@ public class utilityHelpers {
             text.setTextSize(75);
         }
         else{
-            text.setTextSize(60);
+            text.setTextSize(50);
         }
     }
 
@@ -212,14 +216,20 @@ public class utilityHelpers {
     }
 
     public static void turnSpeakerON(AudioManager am) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            AudioDeviceInfo[] audioDevices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-            for (AudioDeviceInfo device : audioDevices) {
-                if (device.getType() == AudioDeviceInfo.TYPE_AUX_LINE || device.getType() == AudioDeviceInfo.TYPE_BLE_HEADSET) {
-                    am.setSpeakerphoneOn(true);
-                }
+        if (isDeviceConnected(am)) {
+            am.setSpeakerphoneOn(true);
+        }
+    }
+    public static boolean isDeviceConnected(AudioManager am){
+        boolean isDeviceConnected=false;
+        AudioDeviceInfo[] audioDevices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+        for (AudioDeviceInfo device : audioDevices) {
+            if (device.getType() == AudioDeviceInfo.TYPE_AUX_LINE || device.getType() == AudioDeviceInfo.TYPE_BLE_HEADSET) {
+                isDeviceConnected=true;
+                break;
             }
         }
+        return isDeviceConnected;
     }
     public static Notification buildNotification(String title, String content, int notificationID, Context context) {
         callReceiver_RepeatCaller.error = "ID:building notification";
@@ -244,6 +254,7 @@ public class utilityHelpers {
                     .build();
         }
     }
+
 
     public static String getSortOrder(Context context) {
         String sortOrder=utilityHelpers.loadStringFromMemory(context,MEMCODE_SORTORDER);
@@ -277,4 +288,18 @@ public class utilityHelpers {
     }
 
 
+    public static HashMap<String, Boolean> convertStringToHashMap(String loadedmap) {
+        Gson gson = new Gson();
+        HashMap<String,Boolean> grantedPermissions= new HashMap<String, Boolean>();
+        if(!loadedmap.equals("null")) {
+            grantedPermissions = gson.fromJson(loadedmap, new TypeToken<HashMap<String, Boolean>>() {
+            }.getType());
+        }
+        return grantedPermissions;
+    }
+    public static String convertHashMapToString(Context context,HashMap<String,Boolean> requestedPermissions){
+        Gson gson = new Gson();
+        String String_requestedPermissions = gson.toJson(requestedPermissions);
+        return String_requestedPermissions;
+    }
 }

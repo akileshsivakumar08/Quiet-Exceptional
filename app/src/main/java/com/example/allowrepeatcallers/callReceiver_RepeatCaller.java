@@ -74,7 +74,7 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                                 if (!(repeatCaller_Ringtone.isRingtonePlaying())) {
                                     error = "Ringer Mode is silent";
 
-                                    int seekbarVolume = utilityHelpers.loadIntFromMemory(context, "ARC_VOLUME", repeatCaller_Ringtone.getCurrent_MediaVolume());
+                                    int seekbarVolume = utilityHelpers.loadIntFromMemory(context, "ARC_VOLUME", repeatCaller_Ringtone.getCurrent_MediaVolume(context));
                                     am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
 
                                     local_mp = repeatCaller_Ringtone.playLongtune(context);
@@ -201,7 +201,7 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
         repeatCaller_Ringtone.setMyRingerisplaying(false);
                 if(obj_RepeatCaller.isRepeatCallerRingActivated()) {
                     AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                    am.setStreamVolume(AudioManager.STREAM_MUSIC, ringtones.getCurrent_MediaVolume(), 0);
+                    am.setStreamVolume(AudioManager.STREAM_MUSIC, ringtones.getCurrent_MediaVolume(context), 0);
                     repeatCaller_Ringtone.stoptune(context,local_mp);
                     obj_RepeatCaller.setRepeatCallerRingActivated(false);
                 }

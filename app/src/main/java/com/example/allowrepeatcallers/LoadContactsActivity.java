@@ -26,7 +26,8 @@ import java.util.ArrayList;
 public class LoadContactsActivity extends AppCompatActivity {
 
     ListView listview;
-    feat_PrioContacts obj_LoadContacts;
+    String featureIdentifier;
+    ArrayList<class_Buddy> ContactsList;
     Context context;
 
     @Override
@@ -34,9 +35,14 @@ public class LoadContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         context=getApplicationContext();
         getSupportActionBar().setTitle( "Your Contacts");
-        obj_LoadContacts=new feat_PrioContacts(context);
+        ContactsList=new ArrayList<class_Buddy>();
+        ArrayList<class_Buddy> ContactsListIP = getIntent().getParcelableArrayListExtra("List_Parcel");
+        if(ContactsListIP!=null){
+            ContactsList=ContactsListIP;
+        }
         setContentView(R.layout.activity_load_contacts);
-        refreshlistview(obj_LoadContacts.getSilExceptList());
+        featureIdentifier = getIntent().getStringExtra("FEATURE_IDENTIFIER");
+        refreshlistview(ContactsList);
         FloatingActionButton AddButton = findViewById(R.id.add_fab);
 
         AddButton.setOnClickListener(view -> {
@@ -45,20 +51,20 @@ public class LoadContactsActivity extends AppCompatActivity {
             getResult.launch(in);
         });
 
-        listview.setOnItemClickListener((adapterView, view, i, l) -> popupmenu(i));
+        listview.setOnItemClickListener((adapterView, view, i, l) -> popupmenu(i,featureIdentifier));
 
 
     }
 
-    private void popupmenu(int i) {
+    private void popupmenu(int i,String featureIdentifier) {
         PopupMenu popupmenu = new PopupMenu(getApplicationContext(),listview);
         popupmenu.getMenuInflater().inflate(popupmenu_loadedlist,popupmenu.getMenu());
         popupmenu.show();
         popupmenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                obj_LoadContacts.deletebuddy(i,context);
-                refreshlistview(obj_LoadContacts.getSilExceptList());
+                ContactsList.remove(i);
+                refreshlistview(ContactsList);
                 return false;
             }
         });
@@ -67,9 +73,11 @@ public class LoadContactsActivity extends AppCompatActivity {
     private void refreshlistview(ArrayList<class_Buddy> obj_BuddyLocal){
 
         listview = (ListView) findViewById(R.id.listview);
-        PersonAdapter personAdapter = new PersonAdapter(this, R.layout.list_row, obj_BuddyLocal);
+        if(obj_BuddyLocal!=null) {
+            PersonAdapter personAdapter = new PersonAdapter(this, R.layout.list_row, obj_BuddyLocal);
 
-        listview.setAdapter(personAdapter);
+            listview.setAdapter(personAdapter);
+        }
         //setContentView(listview);
     }
     private class_Buddy contactPicked(Intent data) {
@@ -104,29 +112,39 @@ public class LoadContactsActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     // There are no request codes
                     Intent data = result.getData();
-                    storeData(data);
+                    addContactToList(data);
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Failed To pick contact", Toast.LENGTH_SHORT).show();
                 }
             });
 
-    private void storeData(Intent data) {
+    private void addContactToList(Intent data) {
         class_Buddy buddy;
         buddy=contactPicked(data);
-
-        boolean check=obj_LoadContacts.isnumberinList(buddy.getBuddy_PhNo());
-        if (!check) {
-            obj_LoadContacts.addToPrioContactsList(buddy,context);
-
-            refreshlistview(obj_LoadContacts.getSilExceptList());
+        if(ContactsList!=null) {
+            int numberID = utilityHelpers.listLoopSearchObj(buddy.getBuddy_PhNo(), ContactsList);
+            if (numberID != 255) {
+                Toast.makeText(this, "Contact already exists", Toast.LENGTH_SHORT).show();
+            } else {
+                ContactsList.add(buddy);
+                refreshlistview(ContactsList);
+            }
         }
         else{
-            Toast.makeText(this, "Contact already exists", Toast.LENGTH_SHORT).show();
+            ContactsList.add(buddy);
+            refreshlistview(ContactsList);
         }
     }
 
 
+    @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putParcelableArrayListExtra("outputList", ContactsList);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
+    }
 }
 
 

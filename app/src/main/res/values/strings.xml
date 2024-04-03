@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Quiet Exceptional</string>
     <string name="accessibility_service_label">AllowRepeatCallers</string>
-    <string name="accessibility_service_desc">This service detects if the volume button is pressed</string>
+    <string name="accessibility_service_desc">Accessibility Service is needed to detect if the volume button is pressed</string>
     <string name="language_change">change</string>
     <string name="Settings">Settings</string>
     <string name="troubleshoot">Troubleshoot</string>
@@ -13,9 +13,8 @@
     <string name="Allfeat_Info">Info</string>
     <string name="Allfeat_Share">Share</string>
     <string name="PC_AddContacts">Add Contacts</string>
-    <string name="ARC_Title">Allow Repeat Callers</string>
+    <string name="ARC_Title">Allow\nRepeat\nCallers</string>
     <string name="ARC_description"> Device Rings on Successive calls, if a call was missed in Silent or Vibrate Mode.\n\nNotifications can be dismissed to disable the ringing.</string>
-    <string name="ARC_Title_semi">Allow</string>
     <string name="ARC_Volume">Volume</string>
     <string name="MCA_Title">Alert Missed Calls</string>
     <string name="MCA_description">Device makes a short sound after a missed call</string>
@@ -24,8 +23,15 @@
     <string name="QS_RequestAccessibility">To use this feature, the app needs access to the volume buttons of the device. This is managed by the Accessibility permission.\nPress continue to provide these in the settings menu.\n
                         \nThis permission is only needed to access the volume buttons and no other information is used or created.\n\nYour privacy is most important and you can disable this feature or permission anytime.</string>
     <string name="PC_Title">Prio Contacts</string>
+    <string name="SA_Title">SMS\nAlarm</string>
     <string name="PC_description">Device Rings on if a call is received from marked Contacts, if the device is in silent or Vibrate mode.</string>
     <string name="TapVolumeTest">Tap Here To Test Volume</string>
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
+    <string name="Allfeat_Tap2Permission">Tap to grant Permissions</string>
+    <string name="missing_permissions">" Missing Permissions "</string>
+    <string name="provide_dnd_permissions">To use this app DND permisions are needed . Press continue to provide these in the app settings menu</string>
+    <string name="continue_menu">continue</string>
+    <string name="cancel_menu">cancel</string>
+    <string name="exception_on_dialog">" Exception on dialog "</string>
 </resources>

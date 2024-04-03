@@ -1,4 +1,4 @@
-package com.example.allowrepeatcallers;
+package AlertMissedCalls;
 
 import static android.provider.CallLog.Calls.MISSED_TYPE;
 import static java.lang.Thread.sleep;
@@ -16,7 +16,12 @@ import android.telephony.TelephonyManager;
 
 import androidx.annotation.NonNull;
 
-public class callReceiver_BabyPing extends BroadcastReceiver {
+import com.example.allowrepeatcallers.ringtones;
+import com.example.allowrepeatcallers.utilityHelpers;
+
+import AlertMissedCalls.feat_AlertMissedCalls;
+
+public class callReceiver_AlertMissedCalls extends BroadcastReceiver {
     public static NotificationManager notificationManager;
     public static MediaPlayer mp;
 
@@ -40,6 +45,9 @@ public class callReceiver_BabyPing extends BroadcastReceiver {
                                 int setVolume =obj_AMC.getPingVolume(context);
                                 am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
                                 ringtones shorttune = new ringtones(context, 2);
+                                if(utilityHelpers.isDeviceConnected(am)){
+                                    am.setStreamVolume(AudioManager.STREAM_MUSIC,(am.getStreamMaxVolume(AudioManager.STREAM_MUSIC))/2,0);
+                                }
                                 shorttune.playShorttune(context);
                                 //am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
                             }

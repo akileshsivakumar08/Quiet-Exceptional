@@ -1,4 +1,4 @@
-package com.example.allowrepeatcallers;
+package AlertMissedCalls;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.AUDIO_SERVICE;
@@ -31,6 +31,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.allowrepeatcallers.R;
+import com.example.allowrepeatcallers.permissionhandler;
+import com.example.allowrepeatcallers.ringtones;
+import com.example.allowrepeatcallers.utilityHelpers;
+
+import AlertMissedCalls.feat_AlertMissedCalls;
+
 public class FragmentAlertMissedCalls extends Fragment {
     TextView FeatTitle;
     ImageView diagnosis;
@@ -49,6 +56,7 @@ public class FragmentAlertMissedCalls extends Fragment {
     SeekBar seekbar;
     feat_AlertMissedCalls obj_AMC;
     TextView taptotestvolume;
+    permissionhandler OBJ_Permissions;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.alertmissedcalls, container, false);
@@ -71,7 +79,7 @@ public class FragmentAlertMissedCalls extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context=requireContext();
-        utilityHelpers.createNotificationChannel(context);
+        //utilityHelpers.createNotificationChannel(context);
         TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
         taptotestvolume=(TextView) getView().findViewById(R.id.taptotestvolume);
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
@@ -85,6 +93,7 @@ public class FragmentAlertMissedCalls extends Fragment {
         int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         seekbar.setMax(maxMusicVolume);
         obj_AMC=new feat_AlertMissedCalls(context);
+        OBJ_Permissions=new permissionhandler(context);
 
         Animation anima_scaleleft = AnimationUtils.loadAnimation(context, R.anim.scale_fromleft);
         Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
@@ -178,12 +187,10 @@ public class FragmentAlertMissedCalls extends Fragment {
                     Toast.makeText(context, " Feature Enable saved ", Toast.LENGTH_SHORT).show();
 
                 } else {
-                    boolean ARC_permission_already_requested= feat_AllowRepeatCallers.loadBOOL_Permission_already_requested(context);
-                    boolean BP_permission_already_requested= feat_AlertMissedCalls.loadBOOL_Permission_already_requested(context);
-                    boolean SILEXCEPT_permission_already_requested= feat_PrioContacts.loadBOOL_Permission_already_requested(context);
-                    boolean permission_already_requested=((SILEXCEPT_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
+                    String[] pend = utilityHelpers.getpendingpermissions(context, feat_AlertMissedCalls.permissions);
+                    Boolean permission_already_requested=OBJ_Permissions.werePermissionsRequested(pend);
                     if (permission_already_requested == false) {
-                        String[] pend = utilityHelpers.getpendingpermissions(context, feat_AlertMissedCalls.permissions);
+
                         requestPermissionLauncher.launch(pend);
                     } else if (permission_already_requested == true) {
                         try {
@@ -199,16 +206,13 @@ public class FragmentAlertMissedCalls extends Fragment {
                         }
                     }
                 }
-
-
-
         }
     }
 
     private ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
                 Context context =requireContext();
-                obj_AMC.setPermissionRequested(context);
+                OBJ_Permissions.setPermissionRequested(context,isGranted);
                 if(isGranted.containsValue(false)){
                     process_featureState(false,context);
 
@@ -243,7 +247,7 @@ public class FragmentAlertMissedCalls extends Fragment {
     };
 
 
-    @Override
+   /* @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         Context context =requireContext();
         switch (requestCode) {
@@ -268,7 +272,7 @@ public class FragmentAlertMissedCalls extends Fragment {
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-    }
+    }*/
 
 }
 

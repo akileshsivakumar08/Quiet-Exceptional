@@ -1,8 +1,12 @@
-package com.example.allowrepeatcallers;
+package AlertMissedCalls;
 
 import android.content.Context;
 
-class feat_AlertMissedCalls {
+import com.example.allowrepeatcallers.R;
+import com.example.allowrepeatcallers.ringtones;
+import com.example.allowrepeatcallers.utilityHelpers;
+
+public class feat_AlertMissedCalls {
 
     private boolean featureActivated=false;
     public static String[] permissions= {android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.READ_CALL_LOG};
@@ -10,7 +14,7 @@ class feat_AlertMissedCalls {
     private static String description;
 
     public int getPingVolume(Context context) {
-        int pingVolume=utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME,ringtones.getCurrent_MediaVolume());
+        int pingVolume= utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME, ringtones.getCurrent_MediaVolume(context));
         return pingVolume;
     }
     public void saveVolume(Context context,int inputVolume){

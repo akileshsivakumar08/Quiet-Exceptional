@@ -27,7 +27,7 @@ class feat_AllowRepeatCallers {
     }
 
     public int getPingVolume(Context context) {
-        int pingVolume=utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME,ringtones.getCurrent_MediaVolume());
+        int pingVolume=utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME,ringtones.getCurrent_MediaVolume(context));
         return pingVolume;
     }
     public void saveVolume(Context context,int inputVolume){
@@ -36,13 +36,6 @@ class feat_AllowRepeatCallers {
 
     private static String description= String.valueOf(R.string.ARC_description);
 
-    public static boolean loadBOOL_Permission_already_requested(Context context) {
-        boolean Permission_already_requested=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_PERMISSIONREQUESTED);
-        return Permission_already_requested;
-    }
-    public void setPermissionRequested(Context context) {
-        utilityHelpers.saveBooleanToMemory(context,MEMCODE_PERMISSIONREQUESTED,true);
-    }
 
     public void setFeatureActivated(Context context,boolean featureActivated) {
         utilityHelpers.saveBooleanToMemory(context,"FEAT_REPEATCALLER_ACTIVE",featureActivated);
@@ -93,7 +86,7 @@ class feat_AllowRepeatCallers {
     }
     // public static NotificationManager notificationManager;
 
-    void nullifyMissedElement(int numberID,NotificationManager notificationManager) {
+    public void nullifyMissedElement(int numberID,NotificationManager notificationManager) {
         int notiid = numberID + 1;
         if (255 != numberID) {
 

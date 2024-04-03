@@ -35,7 +35,13 @@ class feat_PrioContacts {
     PrioContactsList.add(buddy);
     saveDataToMemory(context);
 }
-     public boolean isSilentExceptionRingActivated() {
+
+    public void setPrioContactsList(Context context,ArrayList<class_Buddy> prioContactsList) {
+        PrioContactsList = prioContactsList;
+        saveDataToMemory(context);
+    }
+
+    public boolean isSilentExceptionRingActivated() {
          return silentExceptionRingActivated;
      }
 
@@ -43,10 +49,6 @@ class feat_PrioContacts {
          feat_PrioContacts.silentExceptionRingActivated = silentExceptionRingActivated;
      }
 
-    public int getPingVolume(Context context) {
-        int pingVolume=utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME,ringtones.getCurrent_MediaVolume());
-        return pingVolume;
-    }
 
     public ArrayList<class_Buddy> getSilExceptList() {
         return PrioContactsList;
@@ -110,15 +112,8 @@ class feat_PrioContacts {
 
 
     public int getPrioContactsVolume(Context context) {
-        int seekbarVolume=utilityHelpers.loadIntFromMemory(context, MEMCODE_VOLUME, ringtones.getCurrent_MediaVolume());
+        int seekbarVolume=utilityHelpers.loadIntFromMemory(context, MEMCODE_VOLUME, ringtones.getCurrent_MediaVolume(context));
         return seekbarVolume;
-    }
-    public static boolean loadBOOL_Permission_already_requested(Context context){
-        boolean Permission_already_requested=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_PERMISSIONREQUESTED);
-        return Permission_already_requested;
-    }
-    public void setPermissionRequested(Context context) {
-        utilityHelpers.saveBooleanToMemory(context,MEMCODE_PERMISSIONREQUESTED,true);
     }
 }
 

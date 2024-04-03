@@ -1,17 +1,28 @@
 package com.example.allowrepeatcallers;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
-public class class_Buddy implements Serializable {
+public class class_Buddy implements Parcelable {
 
 
     private String Buddy_PhNo;
     private String Buddy_Message;
     private String Buddy_name;
-    class_Buddy(String name, String Phno,String message){
-        Buddy_name=name;
-        Buddy_PhNo=Phno;
-        Buddy_Message=message;
+
+    class_Buddy(String name, String Phno, String message) {
+        Buddy_name = name;
+        Buddy_PhNo = Phno;
+        Buddy_Message = message;
+    }
+    class_Buddy(Parcel in) {
+        Buddy_name = in.readString();
+        Buddy_PhNo = in.readString();
+        Buddy_Message = in.readString();
     }
 
     public String getBuddy_PhNo() {
@@ -37,4 +48,28 @@ public class class_Buddy implements Serializable {
     public void setBuddy_name(String buddy_name) {
         this.Buddy_name = buddy_name;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(getBuddy_name());
+        dest.writeString(getBuddy_PhNo());
+        dest.writeString(getBuddy_Message());
+
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public class_Buddy createFromParcel(Parcel in) {
+            return new class_Buddy(in);
+        }
+
+        @Override
+        public Object[] newArray(int size) {
+            return new Object[size];
+        }
+    };
 }
