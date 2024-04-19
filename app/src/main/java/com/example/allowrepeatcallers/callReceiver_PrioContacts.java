@@ -31,7 +31,6 @@ public class callReceiver_PrioContacts extends BroadcastReceiver {
                     exceptionally_Ringtone = new ringtones(context, obj_silentExceptions.getFeat_ID());
 
                     if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                        Toast.makeText(context, "Ringing", Toast.LENGTH_SHORT).show();
                         if ((AudioManager.RINGER_MODE_NORMAL != am.getRingerMode())) {
                             getCurrentSettings(context);
                             Boolean MatchfoundinList = obj_silentExceptions.isnumberinList( number);
@@ -57,7 +56,7 @@ public class callReceiver_PrioContacts extends BroadcastReceiver {
             }
         }catch (Exception e) {
             Log.e(TAG, " Exception on receive CALL  " + e);
-            Toast.makeText(context, " Exception on receive CALL ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.exception_on_receive_call, Toast.LENGTH_SHORT).show();
         }
     }
 

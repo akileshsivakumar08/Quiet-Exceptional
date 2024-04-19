@@ -62,7 +62,7 @@ public class FragmentQuickSwitch extends Fragment {
         int softwaretype=utilityHelpers.loadIntFromMemory(context,"SOFTWARETYPE",0);
         if(softwaretype==1) {
 
-            checkAccessibilityPermission(context);
+
             if (obj_quickswitch.isFeatureActivated(context)) {
                 TapToEnable.setChecked(true);
                 adjustInterfaceButton(EnabledColor, EnabledText);
@@ -70,6 +70,7 @@ public class FragmentQuickSwitch extends Fragment {
                 TapToEnable.setChecked(false);
                 adjustInterfaceButton(DisabledColor, DisabledText);
             }
+            checkAccessibilityPermission(context);
 
             FeatTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -129,6 +130,8 @@ public class FragmentQuickSwitch extends Fragment {
             TapToEnable.setChecked(false);
             adjustInterfaceButton(DisabledColor,DisabledText);
             obj_quickswitch.setFeatureActivated(context,false);
+
+            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
         }
         else {
             try {
@@ -144,6 +147,7 @@ public class FragmentQuickSwitch extends Fragment {
                 TapToEnable.setChecked(false);
                 adjustInterfaceButton(DisabledColor, DisabledText);
                 obj_quickswitch.setFeatureActivated(context,false);
+                TapToEnable.setText(R.string.Allfeat_Tap2Permission);
                 //start a dialog box
             }
         }
@@ -205,14 +209,13 @@ public class FragmentQuickSwitch extends Fragment {
             try {
                 //start a dialog box
                 AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
-                noti_alertbuilder.setMessage("To use this app DND permisions are needed . Press continue to provide these in the app settings menu").setPositiveButton("continue", noti_alert_dialogClickListener)
-                        .setNegativeButton("cancel", noti_alert_dialogClickListener);
+                noti_alertbuilder.setMessage(R.string.provide_dnd_permissions).setPositiveButton(R.string.continue_menu, noti_alert_dialogClickListener)
+                        .setNegativeButton(R.string.cancel_menu, noti_alert_dialogClickListener);
                 AlertDialog alertDialog = noti_alertbuilder.create();
                 alertDialog.show();
             } catch (Exception e) {
 
                 // Log.e(TAG, " Exception on dialog  " + e);
-                Toast.makeText(requireContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -264,8 +267,8 @@ public class FragmentQuickSwitch extends Fragment {
 
     private void Dialog_requestACCESSIBILITY(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(obj_quickswitch.getRequestAccessibility()).setPositiveButton("continue", requestACCESSIBILITY_dialogClickListener)
-                .setNegativeButton("cancel", requestACCESSIBILITY_dialogClickListener);
+        builder.setMessage(obj_quickswitch.getRequestAccessibility()).setPositiveButton(R.string.continue_menu, requestACCESSIBILITY_dialogClickListener)
+                .setNegativeButton(R.string.cancel_menu, requestACCESSIBILITY_dialogClickListener);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }

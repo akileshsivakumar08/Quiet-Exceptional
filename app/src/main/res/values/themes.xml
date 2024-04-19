@@ -3,7 +3,16 @@
     <style name="Base.Theme.AllowRepeatCallers" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
     </style>
 
-    <style name="Theme.AllowRepeatCallers" parent="Base.Theme.AllowRepeatCallers" />
+    <style name="Theme.AllowRepeatCallers" parent="Base.Theme.AllowRepeatCallers">
+        <item name="colorPrimary">@color/black</item>
+        <item name="textFillColor">@color/white</item>
+        <item name="android:homeAsUpIndicator">@color/white</item>
+    </style>
+
+
+
+        />
 </resources>

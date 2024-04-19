@@ -53,7 +53,6 @@ public class LoadContactsActivity extends AppCompatActivity {
 
         listview.setOnItemClickListener((adapterView, view, i, l) -> popupmenu(i,featureIdentifier));
 
-
     }
 
     private void popupmenu(int i,String featureIdentifier) {
@@ -115,7 +114,7 @@ public class LoadContactsActivity extends AppCompatActivity {
                     addContactToList(data);
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Failed To pick contact", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.no_contact_selected, Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -125,7 +124,7 @@ public class LoadContactsActivity extends AppCompatActivity {
         if(ContactsList!=null) {
             int numberID = utilityHelpers.listLoopSearchObj(buddy.getBuddy_PhNo(), ContactsList);
             if (numberID != 255) {
-                Toast.makeText(this, "Contact already exists", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.contact_already_exists, Toast.LENGTH_SHORT).show();
             } else {
                 ContactsList.add(buddy);
                 refreshlistview(ContactsList);

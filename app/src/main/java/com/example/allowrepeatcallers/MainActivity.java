@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import static java.lang.Thread.sleep;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -38,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
     public final int SoftwareType=1;
     public DrawerLayout drawerLayout;
     MyPagerAdapter adapter;
-    ImageView diagnosis;
     ImageView share;
+    ImageView rateapp;
     public ActionBarDrawerToggle actionBarDrawerToggle;
     public static int currentFragmentPosition;
     @Override
@@ -47,14 +49,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Context context=getApplicationContext();
         setContentView(R.layout.activity_main);
+
         TabLayout pagerTabLayout;
         pagerTabLayout=findViewById(R.id.tablayout);
         utilityHelpers.saveIntToMemory(context,"SOFTWARETYPE",SoftwareType);
-        diagnosis = (ImageView) findViewById(R.id.Diagnosis);
         infoButton=(ImageView) findViewById(R.id.infoButton);
         share=(ImageView)  findViewById(R.id.share);
-
-
+        rateapp=(ImageView) findViewById(R.id.rateapp);
         if ((ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG)== PackageManager.PERMISSION_GRANTED)){
             utilityHelpers.checkLogFormat(context);
         }
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+       // getSupportActionBar().setHomeButtonEnabled(true);
 
 
 
@@ -170,11 +172,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        diagnosis.setOnClickListener(new View.OnClickListener(){
+
+        rateapp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, settings.class);
-                startActivity(intent);
+            public void onClick(View v) {
+                Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+                i.setData(Uri.parse("https://play.google.com/store/apps/details?id=Quietexceptional "));
+                startActivity(i);
             }
         });
 

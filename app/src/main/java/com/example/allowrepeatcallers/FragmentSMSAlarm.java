@@ -54,6 +54,10 @@ public class FragmentSMSAlarm extends Fragment {
     int pingvolume;
     permissionhandler OBJ_Permissions;
 
+    private TextView manageContacts_text;
+    private String settingscolor_enabled="#2F435A";
+    private String settingscolor_disabled="#E4E5E8";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.smsalarm, container, false);
@@ -74,6 +78,7 @@ public class FragmentSMSAlarm extends Fragment {
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
         TapToEnable=(TextView) getView().findViewById(R.id.TapToEnable);
         manageContacts=(ImageView) getView().findViewById(R.id.manageContacts);
+        manageContacts_text=(TextView) getView().findViewById(R.id.manageContacts_text);
         smsimage=(ImageView) getView().findViewById(R.id.smsimage);
         //load managers
         GUIobj_SA =new feat_SMSAlarm(context);
@@ -145,14 +150,13 @@ public class FragmentSMSAlarm extends Fragment {
             try {
                 //start a dialog box
                 AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
-                noti_alertbuilder.setMessage("To use this app DND permisions are needed . Press continue to provide these in the app settings menu").setPositiveButton("continue", noti_alert_dialogClickListener)
-                        .setNegativeButton("cancel", noti_alert_dialogClickListener);
+                noti_alertbuilder.setMessage(R.string.provide_dnd_permissions).setPositiveButton(R.string.continue_menu, noti_alert_dialogClickListener)
+                        .setNegativeButton(R.string.cancel_menu, noti_alert_dialogClickListener);
                 AlertDialog alertDialog = noti_alertbuilder.create();
                 alertDialog.show();
             } catch (Exception e) {
 
                // Log.e(TAG, " Exception on dialog  " + e);
-                Toast.makeText(requireContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -174,6 +178,7 @@ public class FragmentSMSAlarm extends Fragment {
             if (!tap_notificationManager.isNotificationPolicyAccessGranted()) {
 
                 process_featureState(false,context);
+                TapToEnable.setText(R.string.Allfeat_Tap2Permission);
                 Dialog_requestDND();
             } else {
                 if (!utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
@@ -215,13 +220,12 @@ public class FragmentSMSAlarm extends Fragment {
         try {
             //start a dialog box
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("To use this app permisions are needed to read Contacts and detect incoming calls. Press continue to provide these in the app settings menu").setPositiveButton("continue", dialogClickListener)
-                    .setNegativeButton("cancel", dialogClickListener);
+            builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
+                    .setNegativeButton(R.string.cancel_menu, dialogClickListener);
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         } catch (Exception e) {
             Log.e(TAG, " Exception on dialog  " + e);
-            Toast.makeText(context, " Exception on dialog ", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -253,11 +257,17 @@ public class FragmentSMSAlarm extends Fragment {
         manageContacts.setEnabled(state);
         if(state){
             adjustInterfaceButton(EnabledColor,EnabledText);
-            TapToEnable.setText("Long Press to Send Emergency");
+            TapToEnable.setText(R.string.long_press_to_send_emergency);
+
+            manageContacts.setColorFilter(Color.parseColor(settingscolor_enabled));
+            manageContacts_text.setTextColor(Color.parseColor(settingscolor_enabled));
         }
         else{
             adjustInterfaceButton(DisabledColor,DisabledText);
-            TapToEnable.setText("Tap to grant Permissions");
+            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
+
+            manageContacts.setColorFilter(Color.parseColor(settingscolor_disabled));
+            manageContacts_text.setTextColor(Color.parseColor(settingscolor_disabled));
         }
 
     }

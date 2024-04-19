@@ -9,15 +9,26 @@
 
     <ImageView
         android:id="@+id/starimage"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="-100dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="-10dp"
         android:rotation="-20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_star_border_24"
-        app:tint="#E4E5E8" />
+        app:tint="#0C7B93" />
+
+    <ImageView
+        android:id="@+id/heartimage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:rotation="10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="100dp"
+        app:srcCompat="@drawable/baseline_favorite_border_24"
+        app:tint="#72435C" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/TapToEnable"
@@ -39,7 +50,7 @@
         android:textAlignment="center"
         android:fontFamily="sans-serif-medium"
         android:text="@string/PC_Title"
-        android:textColor="#424651"
+        android:textColor="#F79489"
         android:textSize="75sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -82,14 +93,14 @@
         android:id="@+id/manageContacts"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
         android:backgroundTint="#FFFBF2"
         android:textColor="#C5C5C5"
         app:layout_constraintEnd_toEndOf="@+id/seekBar_PrioContacts"
-        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:layout_constraintStart_toStartOf="@+id/seekBar_PrioContacts"
+        app:layout_constraintTop_toBottomOf="@+id/taptotestvolume"
         app:srcCompat="@drawable/baseline_add_24" />
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/manageContacts_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/PC_AddContacts"

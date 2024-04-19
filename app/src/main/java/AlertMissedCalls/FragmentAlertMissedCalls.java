@@ -34,20 +34,21 @@ import androidx.fragment.app.Fragment;
 import com.example.allowrepeatcallers.R;
 import com.example.allowrepeatcallers.permissionhandler;
 import com.example.allowrepeatcallers.ringtones;
+import com.example.allowrepeatcallers.settings;
 import com.example.allowrepeatcallers.utilityHelpers;
 
 import AlertMissedCalls.feat_AlertMissedCalls;
 
 public class FragmentAlertMissedCalls extends Fragment {
     TextView FeatTitle;
-    ImageView diagnosis;
+    ImageView settings_AMC;
     SwitchCompat TapToEnable;
     ImageView infoButton;
     Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
     final int PERMISSION_CODE_POSTNOTIFICATIONS=1;
-    String EnabledColor="#1A4314";
+    String EnabledColor="#FFD369";
     ImageView pony;
-    String DisabledColor="#72435C";
+    String DisabledColor="#F79489";
     ImageView share;
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
@@ -57,6 +58,10 @@ public class FragmentAlertMissedCalls extends Fragment {
     feat_AlertMissedCalls obj_AMC;
     TextView taptotestvolume;
     permissionhandler OBJ_Permissions;
+    private String settingscolor_enabled="#2F435A";
+    private String settingscolor_disabled="#E4E5E8";
+    TextView settings_text;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.alertmissedcalls, container, false);
@@ -83,7 +88,8 @@ public class FragmentAlertMissedCalls extends Fragment {
         TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
         taptotestvolume=(TextView) getView().findViewById(R.id.taptotestvolume);
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
-
+        settings_AMC=(ImageView) getView().findViewById(R.id.settings_AMC);
+        settings_text=(TextView) getView().findViewById(R.id.settings_text);
         seekbar=(SeekBar) getView().findViewById(R.id.seekBar);
 
         leftLine=(View) getView().findViewById(R.id.leftLine);
@@ -103,11 +109,16 @@ public class FragmentAlertMissedCalls extends Fragment {
         int lastSetMediaVolume=obj_AMC.getPingVolume(context);
         seekbar.setProgress(lastSetMediaVolume);
         if(obj_AMC.isFeatureActivated(context)){
-            process_featureState(true,context);
+            process_featureState(2,context);
         }
         else{
-            process_featureState(false,context);
+            process_featureState(1,context);
         }
+        if (utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
+            process_featureState(0,context);
+            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
+        }
+
 
         taptotestvolume.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,18 +162,41 @@ public class FragmentAlertMissedCalls extends Fragment {
             }
         });
 
+        settings_AMC.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, settings.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
-    private void process_featureState(boolean state,Context context) {
-        obj_AMC.setFeatureActivated(context,state);
-        TapToEnable.setChecked(state);
-        seekbar.setEnabled(state);
-        taptotestvolume.setEnabled(state);
-        if(state){
-            adjustInterfaceButton(EnabledColor,EnabledText);
+    private void process_featureState(int state,Context context) {
+        Boolean bool_state=false;
+        if(state==2){
+            bool_state=true;
         }
-        else{
-            adjustInterfaceButton(DisabledColor,DisabledText);
+        obj_AMC.setFeatureActivated(context,bool_state);
+        TapToEnable.setChecked(bool_state);
+        seekbar.setEnabled(bool_state);
+        taptotestvolume.setEnabled(bool_state);
+        settings_AMC.setEnabled(bool_state);
+        if(state==2){
+            adjustInterfaceButton(EnabledColor,getString(R.string.tap_to_disable));
+            settings_AMC.setColorFilter(Color.parseColor(settingscolor_enabled));
+            settings_text.setTextColor(Color.parseColor(settingscolor_enabled));
+        }
+        else if(state==1){
+            adjustInterfaceButton(DisabledColor,getString(R.string.Allfeat_Tap2Enable));
+            settings_AMC.setColorFilter(Color.parseColor(settingscolor_disabled));
+            settings_text.setTextColor(Color.parseColor(settingscolor_disabled));
+        }
+        else if(state==0){
+            adjustInterfaceButton(DisabledColor,getString(R.string.Allfeat_Tap2Permission));
+            settings_AMC.setColorFilter(Color.parseColor(settingscolor_disabled));
+            settings_text.setTextColor(Color.parseColor(settingscolor_disabled));
         }
 
     }
@@ -177,12 +211,12 @@ public class FragmentAlertMissedCalls extends Fragment {
     private void userTap() {
         Context context=requireContext();
         if(obj_AMC.isFeatureActivated(context)){
-            process_featureState(false,context);
+            process_featureState(1,context);
 
         }
         else{
                 if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
-                    process_featureState(true,context);
+                    process_featureState(2,context);
                     utilityHelpers.checkLogFormat(context);
                     Toast.makeText(context, " Feature Enable saved ", Toast.LENGTH_SHORT).show();
 
@@ -214,11 +248,11 @@ public class FragmentAlertMissedCalls extends Fragment {
                 Context context =requireContext();
                 OBJ_Permissions.setPermissionRequested(context,isGranted);
                 if(isGranted.containsValue(false)){
-                    process_featureState(false,context);
+                    process_featureState(0,context);
 
                 }
                 else{
-                    process_featureState(true,context);
+                    process_featureState(1,context);
                     utilityHelpers.checkLogFormat(context);
                 }
             });

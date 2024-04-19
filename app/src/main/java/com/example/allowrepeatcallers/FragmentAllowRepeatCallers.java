@@ -99,9 +99,9 @@ public class FragmentAllowRepeatCallers extends Fragment {
         //utilityHelpers.adjustTitleTextSize(FeatTitle2,context);
 
 
-        if (utilityHelpers.ispermissionpending(context, GUIobj_RepeatCaller.permissions)) {
+        if (utilityHelpers.ispermissionpending(context, feat_AllowRepeatCallers.permissions)) {
             process_featureState(false,context);
-
+            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
         }
 
         taptotestvolume.setOnClickListener(new View.OnClickListener() {
@@ -172,14 +172,13 @@ public class FragmentAllowRepeatCallers extends Fragment {
             try {
                 //start a dialog box
                 AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
-                noti_alertbuilder.setMessage("To use this app DND permisions are needed . Press continue to provide these in the app settings menu").setPositiveButton("continue", noti_alert_dialogClickListener)
-                        .setNegativeButton("cancel", noti_alert_dialogClickListener);
+                noti_alertbuilder.setMessage(R.string.provide_dnd_permissions).setPositiveButton(R.string.continue_menu, noti_alert_dialogClickListener)
+                        .setNegativeButton(R.string.cancel_menu, noti_alert_dialogClickListener);
                 AlertDialog alertDialog = noti_alertbuilder.create();
                 alertDialog.show();
             } catch (Exception e) {
 
                // Log.e(TAG, " Exception on dialog  " + e);
-                Toast.makeText(requireContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -206,6 +205,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
             if (!tap_notificationManager.isNotificationPolicyAccessGranted()) {
 
                 process_featureState(false,context);
+                TapToEnable.setText(R.string.Allfeat_Tap2Permission);
                 Dialog_requestDND();
             } else {
                 if (!utilityHelpers.ispermissionpending(context, GUIobj_RepeatCaller.permissions)) {
@@ -231,13 +231,12 @@ public class FragmentAllowRepeatCallers extends Fragment {
         try {
             //start a dialog box
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("To use this app permisions are needed to read Contacts and detect incoming calls. Press continue to provide these in the app settings menu").setPositiveButton("continue", dialogClickListener)
-                    .setNegativeButton("cancel", dialogClickListener);
+            builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
+                    .setNegativeButton(R.string.cancel_menu, dialogClickListener);
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         } catch (Exception e) {
             Log.e(TAG, " Exception on dialog  " + e);
-            Toast.makeText(context, " Exception on dialog ", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -262,10 +261,10 @@ public class FragmentAllowRepeatCallers extends Fragment {
         seekbar_ARC.setEnabled(state);
         taptotestvolume.setEnabled(state);
         if(state){
-            adjustInterfaceButton(EnabledColor,EnabledText);
+            adjustInterfaceButton(EnabledColor,getString(R.string.tap_to_disable));
         }
         else{
-            adjustInterfaceButton(DisabledColor,DisabledText);
+            adjustInterfaceButton(DisabledColor,getString(R.string.Allfeat_Tap2Enable));
         }
 
     }
@@ -357,34 +356,6 @@ public class FragmentAllowRepeatCallers extends Fragment {
     };
 
 
-
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        Context context =requireContext();
-        boolean permission_already_requested=false;
-        switch (requestCode) {
-            case PERMISSION_CODE_POSTNOTIFICATIONS:
-                for(int i =0;i<permissions.length;i++){
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    } else {
-                        // Permission Denied
-                        process_featureState(false,context);
-                        GUIobj_RepeatCaller.setPermissionRequested(context);
-
-                        break;
-
-                    }
-                    process_featureState(true,context);
-                    GUIobj_RepeatCaller.setPermissionRequested(context);
-                    utilityHelpers.checkLogFormat(context);
-
-                }
-
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }*/
 
 }
 

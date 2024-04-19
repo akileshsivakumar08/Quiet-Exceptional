@@ -70,7 +70,6 @@ public class myAccessibilityService extends AccessibilityService {
                                     notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
                                     am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                                     am.setStreamVolume(AudioManager.STREAM_MUSIC, feat_QuickSwitch.Current_MediaVolume, 0);
-                                    Toast.makeText(this, "Volume up pressed and released", Toast.LENGTH_SHORT).show();
                                     feat_QuickSwitch.upcounter = 0;
                                 }
                                 feat_QuickSwitch.upcounter = feat_QuickSwitch.upcounter + 1;
@@ -98,7 +97,7 @@ public class myAccessibilityService extends AccessibilityService {
                                             VibrationEffect effect = VibrationEffect.createPredefined(EFFECT_TICK);
                                             //vibrator.vibrate(effect);
 
-                                            Toast.makeText(this, "set to vibrate", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, R.string.set_to_vibrate, Toast.LENGTH_SHORT).show();
                                         }
                                         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
                                         am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
@@ -106,7 +105,7 @@ public class myAccessibilityService extends AccessibilityService {
                                        // am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                                         //am.setStreamVolume(AudioManager.STREAM_RING, 0, 2);
                                         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY);
-                                        Toast.makeText(this, "set to silent", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, R.string.set_to_silent, Toast.LENGTH_SHORT).show();
 
                                     }
 
@@ -124,7 +123,6 @@ public class myAccessibilityService extends AccessibilityService {
                                 feat_QuickSwitch.currentTime = currentTimeMillis();
                                 feat_QuickSwitch.timediff = feat_QuickSwitch.currentTime - feat_QuickSwitch.oldtime;
                                 if ((feat_QuickSwitch.timediff < 500) && (feat_QuickSwitch.call_upcounter != 0)) {
-                                    Toast.makeText(this, "Volume up in call", Toast.LENGTH_SHORT).show();
                                     feat_QuickSwitch.call_upcounter = 0;
                                 }
                                 feat_QuickSwitch.call_upcounter = feat_QuickSwitch.call_upcounter + 1;
@@ -137,7 +135,6 @@ public class myAccessibilityService extends AccessibilityService {
                                 feat_QuickSwitch.timediff = feat_QuickSwitch.currentTime - feat_QuickSwitch.oldtime;
                                 if ((feat_QuickSwitch.timediff < 500) && (feat_QuickSwitch.call_downcounter != 0)) {
                                     am.setSpeakerphoneOn(false);
-                                    Toast.makeText(this, "Volume down in call", Toast.LENGTH_SHORT).show();
                                     feat_QuickSwitch.call_downcounter = 0;
                                 }
                                 feat_QuickSwitch.call_downcounter = feat_QuickSwitch.call_downcounter + 1;
@@ -145,16 +142,7 @@ public class myAccessibilityService extends AccessibilityService {
 
                             }
                     }
-                } /*else if(quickSwitch.myRingerisplaying==1){
-                    switch (keycode) {
-                        case KEYCODE_VOLUME_DOWN:
-                            if (action == ACTION_UP) {
-
-                                    am.setStreamVolume(AudioManager.STREAM_RING,0,0);
-
-                            }
-                    }
-                }*/
+                }
             }
 
         }

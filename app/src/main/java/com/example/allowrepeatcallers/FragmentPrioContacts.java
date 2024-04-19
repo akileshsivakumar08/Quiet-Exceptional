@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.TextAppearanceInfo;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -42,19 +43,22 @@ public class FragmentPrioContacts extends Fragment {
     SwitchCompat TapToEnable;
     Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
     final int PERMISSION_CODE_POSTNOTIFICATIONS=1;
-    String EnabledColor="#064663";
-    ImageView share;
-    String DisabledColor="#72435C";
-    String EnabledText="Tap To Disable";
-    String DisabledText="Tap To Enable";
+
     SeekBar seekBar_PrioContacts;
     ImageView manageContacts;
     TextView taptotestvolume;
     feat_PrioContacts GUIobj_PrioContacts;
     ImageView starimage;
     int pingvolume;
+    ImageView share;
     permissionhandler OBJ_Permissions;
-
+    private TextView manageContacts_text;
+    private String settingscolor_enabled="#2F435A";
+    private String settingscolor_disabled="#E4E5E8";
+   // String EnabledColor ;
+    //String DisabledColor=(String.valueOf(R.color.orange));
+    String EnabledColor ="#FFD369";
+    String DisabledColor="#F79489";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.priocontacts, container, false);
@@ -85,6 +89,7 @@ public class FragmentPrioContacts extends Fragment {
         taptotestvolume=(TextView) getView().findViewById(R.id.taptotestvolume);
         seekBar_PrioContacts =(SeekBar) getView().findViewById(R.id.seekBar_PrioContacts);
         manageContacts=(ImageView) getView().findViewById(R.id.manageContacts);
+        manageContacts_text=(TextView) getView().findViewById(R.id.manageContacts_text);
 
         //load managers
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
@@ -95,6 +100,7 @@ public class FragmentPrioContacts extends Fragment {
         int lastSetMediaVolume= GUIobj_PrioContacts.getPrioContactsVolume(context);
 
         //initiate GUI Elements
+        //EnabledColor= String.valueOf((getResources().getColor(R.color.yellow)));
 
         int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         seekBar_PrioContacts.setMax(maxMusicVolume);
@@ -103,6 +109,7 @@ public class FragmentPrioContacts extends Fragment {
 
         if (utilityHelpers.ispermissionpending(context, feat_PrioContacts.permissions)) {
             process_featureState(false,context);
+            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
         }
 
         taptotestvolume.setOnClickListener(new View.OnClickListener() {
@@ -189,7 +196,7 @@ public class FragmentPrioContacts extends Fragment {
         TapToEnable.setText(ipText);
         TapToEnable.setTextColor(Color.parseColor(ipColor));
         FeatTitle.setTextColor(Color.parseColor(ipColor));
-        manageContacts.setBackgroundColor(Color.parseColor(ipColor));
+        manageContacts.setBackgroundColor(Color.parseColor (ipColor));
     }
 
     private void userTap() {
@@ -204,6 +211,7 @@ public class FragmentPrioContacts extends Fragment {
             if (!tap_notificationManager.isNotificationPolicyAccessGranted()) {
 
                 process_featureState(false,context);
+                TapToEnable.setText(R.string.Allfeat_Tap2Permission);
                 Dialog_requestDND();
             } else {
                 if (!utilityHelpers.ispermissionpending(context, feat_PrioContacts.permissions)) {
@@ -229,13 +237,12 @@ public class FragmentPrioContacts extends Fragment {
         try {
             //start a dialog box
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("To use this app permisions are needed to read Contacts and detect incoming calls. Press continue to provide these in the app settings menu").setPositiveButton("continue", dialogClickListener)
-                    .setNegativeButton("cancel", dialogClickListener);
+            builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
+                    .setNegativeButton(R.string.cancel_menu, dialogClickListener);
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         } catch (Exception e) {
             Log.e(TAG, " Exception on dialog  " + e);
-            Toast.makeText(context, " Exception on dialog ", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -245,10 +252,11 @@ public class FragmentPrioContacts extends Fragment {
                 OBJ_Permissions.setPermissionRequested(context,isGranted);
                 if(isGranted.containsValue(false)){
                         process_featureState(false,context);
-
+                    TapToEnable.setText(R.string.Allfeat_Tap2Permission);
                     }
                     else{
                         process_featureState(true,context);
+                    TapToEnable.setText(R.string.Allfeat_Tap2Enable);
                     }
             });
 
@@ -260,9 +268,15 @@ public class FragmentPrioContacts extends Fragment {
         manageContacts.setEnabled(state);
         taptotestvolume.setEnabled(state);
         if (state) {
-            adjustInterfaceButton(EnabledColor, EnabledText);
+            adjustInterfaceButton(EnabledColor, getString(R.string.tap_to_disable));
+            manageContacts.setColorFilter(Color.parseColor(settingscolor_enabled));
+            manageContacts_text.setTextColor(Color.parseColor(settingscolor_enabled));
         } else {
-            adjustInterfaceButton(DisabledColor, DisabledText);
+            adjustInterfaceButton(DisabledColor, getString(R.string.Allfeat_Tap2Enable));
+            manageContacts.setColorFilter(Color.parseColor(settingscolor_disabled));
+            manageContacts_text.setTextColor(Color.parseColor(settingscolor_disabled));
+
+
         }
     }
 

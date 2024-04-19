@@ -34,4 +34,13 @@
     <string name="continue_menu">continue</string>
     <string name="cancel_menu">cancel</string>
     <string name="exception_on_dialog">" Exception on dialog "</string>
+    <string name="no_contact_selected">No Contact selected</string>
+    <string name="contact_already_exists">Contact already exists</string>
+    <string name="permission_already_requested">To use this app permisions are needed to read Contacts and detect incoming calls. Press continue to provide these in the app settings menu</string>
+    <string name="long_press_to_send_emergency">Long Press to Send Alarm</string>
+    <string name="exception_on_receive_call">" Exception on receive CALL "</string>
+    <string name="set_to_vibrate">set to vibrate</string>
+    <string name="set_to_silent">set to silent</string>
+    <string name="rate_app">Rate App</string>
+    <string name="tap_to_disable">Tap To Disable</string>
 </resources>

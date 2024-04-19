@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <androidx.drawerlayout.widget.DrawerLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_drawer_layout"
     android:layout_width="match_parent"
@@ -26,10 +25,11 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tablayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="10dp"
             android:layout_marginTop="540dp"
             app:layout_constraintBottom_toTopOf="@+id/infoButton"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tabBackground="@drawable/tab_selector"
@@ -59,14 +59,14 @@
             app:tint="#2F435A" />
 
         <ImageView
-            android:id="@+id/Diagnosis"
+            android:id="@+id/rateapp"
             android:layout_width="65dp"
             android:layout_height="45dp"
             android:layout_marginStart="60dp"
             android:layout_marginBottom="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/infoButton"
-            app:srcCompat="@drawable/baseline_settings_24"
+            app:srcCompat="@drawable/baseline_thumb_up_24"
             app:tint="#2F435A" />
 
 
@@ -84,11 +84,11 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Allfeat_settings"
+            android:text="@string/rate_app"
             android:textColor="#2F435A"
-            app:layout_constraintEnd_toEndOf="@+id/Diagnosis"
-            app:layout_constraintStart_toStartOf="@+id/Diagnosis"
-            app:layout_constraintTop_toBottomOf="@+id/Diagnosis" />
+            app:layout_constraintEnd_toEndOf="@+id/rateapp"
+            app:layout_constraintStart_toStartOf="@+id/rateapp"
+            app:layout_constraintTop_toBottomOf="@+id/rateapp" />
 
         <TextView
             android:id="@+id/textView2"

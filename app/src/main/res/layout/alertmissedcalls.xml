@@ -10,11 +10,11 @@
 
     <View
         android:id="@+id/rightLine"
-        android:layout_width="300dp"
+        android:layout_width="290dp"
         android:layout_height="12dp"
         android:layout_above="@+id/FeatTitle"
-        android:layout_marginTop="30dp"
-        android:background="#2F435A"
+        android:layout_marginTop="20dp"
+        android:background="#0C7B93"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/taptotestvolume" />
 
@@ -24,88 +24,18 @@
         android:layout_height="12dp"
         android:layout_above="@+id/FeatTitle"
         android:layout_marginBottom="35dp"
-        android:background="#2F435A"
+        android:background="#0C7B93"
         app:layout_constraintBottom_toTopOf="@+id/FeatTitle"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!--
-
-    <ImageView
-        android:id="@+id/infoButton"
-        android:layout_width="65dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/baseline_info_24"
-        app:tint="#2F435A" />
-
-    <ImageView
-        android:id="@+id/Diagnosis"
-        android:layout_width="65dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/infoButton"
-        app:srcCompat="@drawable/baseline_settings_24"
-        app:tint="#2F435A" />
-<ImageView
-        android:id="@+id/share"
-        android:layout_width="65dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/infoButton"
-        app:srcCompat="@drawable/baseline_share_24"
-        app:tint="#2F435A" />
-
-
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/infoButton"
-        android:text="@string/Allfeat_Info"
-        android:textColor="#2F435A"
-        app:layout_constraintEnd_toEndOf="@+id/infoButton"
-        app:layout_constraintStart_toStartOf="@+id/infoButton"
-        app:layout_constraintTop_toBottomOf="@+id/infoButton" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Allfeat_Share"
-        android:textColor="#2F435A"
-        app:layout_constraintEnd_toEndOf="@+id/share"
-        app:layout_constraintStart_toStartOf="@+id/share"
-        app:layout_constraintTop_toBottomOf="@+id/share" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Allfeat_settings"
-        android:textColor="#2F435A"
-        app:layout_constraintEnd_toEndOf="@+id/Diagnosis"
-        app:layout_constraintStart_toStartOf="@+id/Diagnosis"
-        app:layout_constraintTop_toBottomOf="@+id/Diagnosis" />
-        -->
 
     <TextView
         android:id="@+id/FeatTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
-        android:gravity="start"
         android:text="@string/MCA_Title"
-        android:textAlignment="center"
-        android:textColor="#2F435A"
+        android:textColor="#F79489"
         android:textSize="75sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -120,9 +50,9 @@
         android:id="@+id/TapToEnable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="@string/Allfeat_Tap2Enable"
         android:textColor="#D8A7B1"
-        app:layout_constraintEnd_toEndOf="@+id/FeatTitle"
         app:layout_constraintStart_toStartOf="@+id/FeatTitle"
         app:layout_constraintTop_toBottomOf="@+id/FeatTitle" />
 
@@ -180,6 +110,28 @@
         app:layout_constraintStart_toStartOf="@+id/seekBar"
         app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
+    <ImageView
+        android:id="@+id/settings_AMC"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:backgroundTint="#FFFBF2"
+        android:textColor="#C5C5C5"
+        android:layout_marginRight="30dp"
+        app:tint="#2F435A"
+        app:layout_constraintBottom_toBottomOf="@+id/rightLine"
+        app:layout_constraintEnd_toStartOf="@+id/rightLine"
+        app:layout_constraintTop_toTopOf="@+id/rightLine"
+        app:srcCompat="@drawable/baseline_settings_24" />
+    <TextView
+        android:id="@+id/settings_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Allfeat_settings"
+        android:textColor="#2F435A"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/settings_AMC"
+        app:layout_constraintStart_toStartOf="@+id/settings_AMC"
+        app:layout_constraintTop_toBottomOf="@+id/settings_AMC" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
