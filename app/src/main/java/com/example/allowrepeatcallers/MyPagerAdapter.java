@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import AlertMissedCalls.FragmentAlertMissedCalls;
+
 public class MyPagerAdapter extends FragmentStateAdapter {
     public MyPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
@@ -15,14 +17,10 @@ public class MyPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new FragmentsilentExceptions();
+                return new FragmentAlertMissedCalls();
 
             case 1:
-                return new FragmentBabyPing();
-            case 2:
-                return new FragmentQuickSwitchBuddy();
-            case 3:
-                return new FragmentAllowRepeatCallers();
+                return new FragmentSMSAlarm();
             default:
                 throw new IllegalArgumentException("Invalid position: " + position);
         }
@@ -30,6 +28,6 @@ public class MyPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 2;
     }
 }

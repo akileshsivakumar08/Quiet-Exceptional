@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFBF2"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/smsimage"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35"
+        app:srcCompat="@drawable/baseline_chat_bubble_outline_24"
+        app:tint="#FFD369" />
+    <ImageView
+        android:id="@+id/smsimage2"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35"
+        app:srcCompat="@drawable/baseline_chat_bubble_outline_24"
+        app:tint="#DDE1ED" />
+
+    <TextView
+        android:id="@+id/TapToEnable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Allfeat_Tap2Permission"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/FeatTitle"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/FeatTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/SA_Title"
+        android:textColor="#424651"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35" />
+
+    <ImageView
+        android:id="@+id/manageContacts"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="120dp"
+        android:backgroundTint="#FFFBF2"
+        android:textColor="#C5C5C5"
+        app:layout_constraintEnd_toEndOf="@+id/FeatTitle"
+        app:layout_constraintStart_toStartOf="@+id/FeatTitle"
+        app:layout_constraintTop_toTopOf="@+id/TapToEnable"
+        app:srcCompat="@drawable/baseline_add_24" />
+
+    <TextView
+        android:id="@+id/manageContacts_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/PC_AddContacts"
+        android:textColor="#2F435A"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/manageContacts"
+        app:layout_constraintStart_toStartOf="@+id/manageContacts"
+        app:layout_constraintTop_toBottomOf="@+id/manageContacts" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,14 +4,11 @@ import static android.content.ContentValues.TAG;
 import static android.content.Context.AUDIO_SERVICE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
@@ -22,8 +19,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.TextAppearanceInfo;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -31,33 +29,39 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 
-
-public class FragmentAllowRepeatCallers extends Fragment {
+public class FragmentPrioContacts extends Fragment {
     TextView FeatTitle;
     private static final String CHANNEL_ID = "Missed Call Notification";
+    ImageView diagnosis;
     SwitchCompat TapToEnable;
-    String EnabledColor="#FFD369";
-    ImageView share;
-    String DisabledColor="#72435C";
-    String EnabledText="Tap To Disable";
-    String DisabledText="Tap To Enable";
+    Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+    final int PERMISSION_CODE_POSTNOTIFICATIONS=1;
+
+    SeekBar seekBar_PrioContacts;
+    ImageView manageContacts;
     TextView taptotestvolume;
-    SeekBar seekbar_ARC;
-    feat_AllowRepeatCallers GUIobj_RepeatCaller;
+    feat_PrioContacts GUIobj_PrioContacts;
+    ImageView starimage;
     int pingvolume;
-    ImageView arrow1;
-    ImageView arrow2;
-    float animationDistance=20f;
+    ImageView share;
     permissionhandler OBJ_Permissions;
+    private TextView manageContacts_text;
+    private String settingscolor_enabled="#2F435A";
+    private String settingscolor_disabled="#E4E5E8";
+   // String EnabledColor ;
+    //String DisabledColor=(String.valueOf(R.color.orange));
+    String EnabledColor ="#FFD369";
+    String DisabledColor="#F79489";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.allowrepeatcallers, container, false);
+        return inflater.inflate(R.layout.priocontacts, container, false);
     }
 
     @Override
@@ -66,40 +70,44 @@ public class FragmentAllowRepeatCallers extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onResume() {
+        super.onResume();
+        Context context=getContext();
+        starimage=(ImageView) getView().findViewById(R.id.starimage);
+        Animation starrotate = AnimationUtils.loadAnimation(context, R.anim.starrotate);
+        starimage.startAnimation(starrotate);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context=requireContext();
-        utilityHelpers.createNotificationChannel(context);
+        //utilityHelpers.createNotificationChannel(context);
         //load GUI Elements
-        TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
-
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
+        TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
         taptotestvolume=(TextView) getView().findViewById(R.id.taptotestvolume);
-        arrow1=(ImageView) getView().findViewById(R.id.arrow1);
-        arrow2=(ImageView) getView().findViewById(R.id.arrow2);
-        seekbar_ARC=(SeekBar) getView().findViewById(R.id.seekBar_ARC);
+        seekBar_PrioContacts =(SeekBar) getView().findViewById(R.id.seekBar_PrioContacts);
+        manageContacts=(ImageView) getView().findViewById(R.id.manageContacts);
+        manageContacts_text=(TextView) getView().findViewById(R.id.manageContacts_text);
 
-        animateDiagonalPan(arrow1,(animationDistance*-1));
-        animateDiagonalPan(arrow2,animationDistance);
-        animateScalePan(FeatTitle,1.01f);
         //load managers
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
-        GUIobj_RepeatCaller=new feat_AllowRepeatCallers(context);
+        GUIobj_PrioContacts =new feat_PrioContacts(context);
         OBJ_Permissions=new permissionhandler(context);
         //load from memory
-        int lastSetMediaVolume=GUIobj_RepeatCaller.getPingVolume(context);
-
+        int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int lastSetMediaVolume= GUIobj_PrioContacts.getPrioContactsVolume(context);
 
         //initiate GUI Elements
+        //EnabledColor= String.valueOf((getResources().getColor(R.color.yellow)));
 
         int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        seekbar_ARC.setMax(maxMusicVolume);
-        seekbar_ARC.setProgress(lastSetMediaVolume);
+        seekBar_PrioContacts.setMax(maxMusicVolume);
+        seekBar_PrioContacts.setProgress(lastSetMediaVolume);
         utilityHelpers.adjustTitleTextSize(FeatTitle,context);
-        //utilityHelpers.adjustTitleTextSize(FeatTitle2,context);
 
-
-        if (utilityHelpers.ispermissionpending(context, feat_AllowRepeatCallers.permissions)) {
+        if (utilityHelpers.ispermissionpending(context, feat_PrioContacts.permissions)) {
             process_featureState(false,context);
             TapToEnable.setText(R.string.Allfeat_Tap2Permission);
         }
@@ -109,17 +117,17 @@ public class FragmentAllowRepeatCallers extends Fragment {
             public void onClick(View v) {
                 ringtones testSound = new ringtones(context, 0);
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                int seekbarVolume = GUIobj_RepeatCaller.getPingVolume(context);
+                int seekbarVolume = GUIobj_PrioContacts.getPrioContactsVolume(context);
                 am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
                 testSound.playShorttune(context);
             }
         });
 
-        seekbar_ARC.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBar_PrioContacts.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 pingvolume=i;
-                GUIobj_RepeatCaller.saveVolume(context,pingvolume);
+                GUIobj_PrioContacts.saveVolume(context,pingvolume);
             }
 
             @Override
@@ -129,9 +137,9 @@ public class FragmentAllowRepeatCallers extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
+
         FeatTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,18 +157,17 @@ public class FragmentAllowRepeatCallers extends Fragment {
             }
         });
 
+        manageContacts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    Intent intent = new Intent(context, LoadContactsActivity.class);
+                    intent.putParcelableArrayListExtra("List_Parcel",GUIobj_PrioContacts.getSilExceptList());
+                    LoadContactsActivityResultLauncher.launch(intent);
+            }
+        });
 
-
-        if(GUIobj_RepeatCaller.isFeatureActivated()){
-            //checkLogFormat();
-            process_featureState(true,context);
-        }
-        else{
-            process_featureState(false,context);
-        }
-
-
-
+        //checkLogFormat();
+        process_featureState(GUIobj_PrioContacts.isFeatureActivated(context),context);
 
     }
 
@@ -179,6 +186,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
             } catch (Exception e) {
 
                // Log.e(TAG, " Exception on dialog  " + e);
+                Toast.makeText(requireContext(), R.string.exception_on_dialog, Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -188,16 +196,14 @@ public class FragmentAllowRepeatCallers extends Fragment {
         TapToEnable.setText(ipText);
         TapToEnable.setTextColor(Color.parseColor(ipColor));
         FeatTitle.setTextColor(Color.parseColor(ipColor));
+        manageContacts.setBackgroundColor(Color.parseColor (ipColor));
     }
 
     private void userTap() {
         Context context=requireContext();
         NotificationManager tap_notificationManager =
                 (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        if(GUIobj_RepeatCaller.isFeatureActivated()){
-            GUIobj_RepeatCaller.clearAndSaveMissedList(context);
-            GUIobj_RepeatCaller.clearNotifications(tap_notificationManager);
-
+        if(GUIobj_PrioContacts.isFeatureActivated(context)){
             process_featureState(false,context);
         }
         else{
@@ -208,18 +214,18 @@ public class FragmentAllowRepeatCallers extends Fragment {
                 TapToEnable.setText(R.string.Allfeat_Tap2Permission);
                 Dialog_requestDND();
             } else {
-                if (!utilityHelpers.ispermissionpending(context, GUIobj_RepeatCaller.permissions)) {
+                if (!utilityHelpers.ispermissionpending(context, feat_PrioContacts.permissions)) {
 
-                    utilityHelpers.checkLogFormat(context);
                     process_featureState(true,context);
 
                 } else {
-                    String[] pend = utilityHelpers.getpendingpermissions(context, feat_AllowRepeatCallers.permissions);
+                    String[] pend = utilityHelpers.getpendingpermissions(context, feat_PrioContacts.permissions);
                     Boolean permission_already_requested=OBJ_Permissions.werePermissionsRequested(pend);
-                    if (permission_already_requested == false) {
+                    if (!permission_already_requested) {
                         requestPermissionLauncher.launch(pend);
-                    } else if (permission_already_requested == true) {
+                    } else if (permission_already_requested) {
                         permissionAlreadyRequested_RequestDialog(context);
+
                     }
                 }
 
@@ -246,71 +252,44 @@ public class FragmentAllowRepeatCallers extends Fragment {
                 OBJ_Permissions.setPermissionRequested(context,isGranted);
                 if(isGranted.containsValue(false)){
                         process_featureState(false,context);
-
+                    TapToEnable.setText(R.string.Allfeat_Tap2Permission);
                     }
                     else{
                         process_featureState(true,context);
-                        utilityHelpers.checkLogFormat(context);
+                    TapToEnable.setText(R.string.Allfeat_Tap2Enable);
                     }
             });
 
 
     private void process_featureState(boolean state,Context context) {
-        GUIobj_RepeatCaller.setFeatureActivated(context,state);
+        GUIobj_PrioContacts.setFeatureActivated(context, state);
         TapToEnable.setChecked(state);
-        seekbar_ARC.setEnabled(state);
+        seekBar_PrioContacts.setEnabled(state);
+        manageContacts.setEnabled(state);
         taptotestvolume.setEnabled(state);
-        if(state){
-            adjustInterfaceButton(EnabledColor,getString(R.string.tap_to_disable));
+        if (state) {
+            adjustInterfaceButton(EnabledColor, getString(R.string.tap_to_disable));
+            manageContacts.setColorFilter(Color.parseColor(settingscolor_enabled));
+            manageContacts_text.setTextColor(Color.parseColor(settingscolor_enabled));
+        } else {
+            adjustInterfaceButton(DisabledColor, getString(R.string.Allfeat_Tap2Enable));
+            manageContacts.setColorFilter(Color.parseColor(settingscolor_disabled));
+            manageContacts_text.setTextColor(Color.parseColor(settingscolor_disabled));
+
+
         }
-        else{
-            adjustInterfaceButton(DisabledColor,getString(R.string.Allfeat_Tap2Enable));
-        }
-
     }
 
-    private void animateDiagonalPan(View v,float distance) {
-        AnimatorSet animSetXY = new AnimatorSet();
+        ActivityResultLauncher<Intent> LoadContactsActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // Here, no request code
+                        Intent data = result.getData();
+                            GUIobj_PrioContacts.setPrioContactsList(getContext(), data.getParcelableArrayListExtra("outputList"));
+                    }
+                });
 
-        float targetY = distance;
-        float targetX=distance;
-        ObjectAnimator y1 = ObjectAnimator.ofFloat(v,
-                "translationY",v.getY(), targetY);
-        y1.setRepeatCount(ValueAnimator.INFINITE);
-        y1.setRepeatMode(ValueAnimator.REVERSE);
-        ObjectAnimator x1 = ObjectAnimator.ofFloat(v,
-                "translationX", v.getX(), targetX);
-
-        x1.setRepeatCount(ValueAnimator.INFINITE);
-        x1.setRepeatMode(ValueAnimator.REVERSE);
-        animSetXY.playTogether(x1, y1);
-        animSetXY.setInterpolator(new LinearInterpolator());
-        animSetXY.setDuration(1800);
-        animSetXY.start();
-
-    }
-
-    private void animateScalePan(View v,float scale) {
-        AnimatorSet animSetXY = new AnimatorSet();
-
-        ObjectAnimator scaleanimY = ObjectAnimator.ofFloat(v,
-                "ScaleY",1f, scale);
-        scaleanimY.setRepeatCount(ValueAnimator.INFINITE);
-        scaleanimY.setRepeatMode(ValueAnimator.REVERSE);
-        ObjectAnimator scaleanimX = ObjectAnimator.ofFloat(v,
-                "ScaleX", 1f, scale);
-
-        scaleanimX.setRepeatCount(ValueAnimator.INFINITE);
-        scaleanimX.setRepeatMode(ValueAnimator.REVERSE);
-        animSetXY.playTogether(scaleanimX, scaleanimY);
-        animSetXY.setInterpolator(new LinearInterpolator());
-        animSetXY.setDuration(1500);
-        animSetXY.start();
-
-    }
-
-
-    
     DialogInterface.OnClickListener noti_alert_dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -318,7 +297,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
                     Intent intent = new Intent(
-                            android.provider.Settings
+                            Settings
                                     .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
 
                     startActivity(intent);
@@ -340,7 +319,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    intent.setData(android.net.Uri.parse("package:" + context.getPackageName()));
+                    intent.setData(Uri.parse("package:" + context.getPackageName()));
 
                     startActivity(intent);
                     //Yes button clicked
@@ -354,7 +333,6 @@ public class FragmentAllowRepeatCallers extends Fragment {
             }
         }
     };
-
 
 
 }

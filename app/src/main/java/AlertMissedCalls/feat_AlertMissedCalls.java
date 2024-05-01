@@ -1,12 +1,12 @@
-package com.example.allowrepeatcallers;
+package AlertMissedCalls;
 
-import static android.content.Context.NOTIFICATION_SERVICE;
-
-import android.Manifest;
-import android.app.NotificationManager;
 import android.content.Context;
 
-class feat_BabyPing {
+import com.example.allowrepeatcallers.R;
+import com.example.allowrepeatcallers.ringtones;
+import com.example.allowrepeatcallers.utilityHelpers;
+
+public class feat_AlertMissedCalls {
 
     private boolean featureActivated=false;
     public static String[] permissions= {android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.READ_CALL_LOG};
@@ -14,17 +14,17 @@ class feat_BabyPing {
     private static String description;
 
     public int getPingVolume(Context context) {
-        int pingVolume=utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME,ringtones.getCurrent_MediaVolume());
+        int pingVolume= utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME, ringtones.getCurrent_MediaVolume(context));
         return pingVolume;
     }
     public void saveVolume(Context context,int inputVolume){
         utilityHelpers.saveIntToMemory(context,MEMCODE_VOLUME,inputVolume);
     }
 
-    private static final String MEMCODE_ACTIVATEFEAT="IS_BABYPING_ACTIVATED";
-    private static final String MEMCODE_VOLUME="BABYPING_VOLUME";
-    private static final String MEMCODE_PERMISSIONREQUESTED="BABY_PING_PERMISSIONREQUESTED";
-    public feat_BabyPing(Context context) {
+    private static final String MEMCODE_ACTIVATEFEAT="IS_AMC_ACTIVATED";
+    private static final String MEMCODE_VOLUME="AMC_VOLUME";
+    private static final String MEMCODE_PERMISSIONREQUESTED="AMC_PERMISSIONREQUESTED";
+    public feat_AlertMissedCalls(Context context) {
         featureActivated=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_ACTIVATEFEAT);
         description = context.getString(R.string.MCA_description);
     }
@@ -33,7 +33,8 @@ class feat_BabyPing {
         return description;
     }
 
-    public boolean isFeatureActivated() {
+    public boolean isFeatureActivated(Context context) {
+        featureActivated= utilityHelpers.loadBooleanFromMemory(context, MEMCODE_ACTIVATEFEAT);
         return featureActivated;
     }
 
@@ -46,7 +47,7 @@ class feat_BabyPing {
     public void setPermissionRequested(Context context) {
         utilityHelpers.saveBooleanToMemory(context,MEMCODE_PERMISSIONREQUESTED,true);
     }
-    public static boolean isPermission_already_requested(Context context){
+    public static boolean loadBOOL_Permission_already_requested(Context context){
             boolean Permission_already_requested=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_PERMISSIONREQUESTED);
         return Permission_already_requested;
     }

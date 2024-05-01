@@ -2,8 +2,6 @@ package com.example.allowrepeatcallers;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -11,7 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-class feat_silentExceptions{
+class feat_PrioContacts {
     public static int ringerMode;
     public static int Current_RingVolume;
     public static boolean silentExceptionActivated;
@@ -19,6 +17,7 @@ class feat_silentExceptions{
     private static final String MEMCODE_ACTIVATEFEAT="FEAT_SILEXCEPT_ACTIVE";
     private static final String MEMCODE_EXCEPTLIST="STRINGSET_EXCEPTLIST";
     private static final String MEMCODE_VOLUME="SILEXCEPT_VOLUME";
+    private static final String MEMCODE_PERMISSIONREQUESTED="SILEXCEPT_PERMISSIONREQUESTED";
     private final int feat_ID=1;
 
     public void saveVolume(Context context,int inputVolume){
@@ -26,29 +25,37 @@ class feat_silentExceptions{
     }
     private boolean featureActivated=false;
     public static String description;
-    public static ArrayList<class_Buddy> silExceptList = new ArrayList<>();
+    public static ArrayList<class_Buddy> PrioContactsList = new ArrayList<>();
     public static String[] permissions= {android.Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,Manifest.permission.READ_CALL_LOG};
 
     public int getFeat_ID() {
         return feat_ID;
     }
-    public void addTosilExceptList(class_Buddy buddy){
-    silExceptList.add(buddy);
+    public void addToPrioContactsList(class_Buddy buddy,Context context){
+    PrioContactsList.add(buddy);
+    saveDataToMemory(context);
 }
-     public boolean isSilentExceptionRingActivated() {
+
+    public void setPrioContactsList(Context context,ArrayList<class_Buddy> prioContactsList) {
+        PrioContactsList = prioContactsList;
+        saveDataToMemory(context);
+    }
+
+    public boolean isSilentExceptionRingActivated() {
          return silentExceptionRingActivated;
      }
 
      public void setSilentExceptionRingActivated(boolean silentExceptionRingActivated) {
-         feat_silentExceptions.silentExceptionRingActivated = silentExceptionRingActivated;
+         feat_PrioContacts.silentExceptionRingActivated = silentExceptionRingActivated;
      }
 
+
     public ArrayList<class_Buddy> getSilExceptList() {
-        return silExceptList;
+        return PrioContactsList;
     }
 
 
-    public feat_silentExceptions(Context context) {
+    public feat_PrioContacts(Context context) {
         featureActivated = utilityHelpers.loadBooleanFromMemory(context, MEMCODE_ACTIVATEFEAT);
         loadsilExceptListFromMemory(context);
         description=context.getString(R.string.PC_description);
@@ -66,16 +73,13 @@ class feat_silentExceptions{
         return description;
     }
 
-    private String getMEMCODE_ACTIVATEFEAT() {
-        return MEMCODE_ACTIVATEFEAT;
-    }
 
 
     public static void loadsilExceptListFromMemory(Context context) {
          Gson gson = new Gson();
          String String_ExceptList = utilityHelpers.loadStringFromMemory(context,MEMCODE_EXCEPTLIST);
         if(!String_ExceptList.equals("null")) {
-             silExceptList = gson.fromJson(String_ExceptList, new TypeToken<List<class_Buddy>>() {
+             PrioContactsList = gson.fromJson(String_ExceptList, new TypeToken<List<class_Buddy>>() {
              }.getType());
          }
      }
@@ -83,7 +87,7 @@ class feat_silentExceptions{
      public Boolean isnumberinList( String senderNum) {
         boolean MatchfoundinList=false;
 
-        int numberID = utilityHelpers.listLoopSearchObj(senderNum,silExceptList);
+        int numberID = utilityHelpers.listLoopSearchObj(senderNum, PrioContactsList);
         if(numberID==255){
             MatchfoundinList=false;
         }
@@ -96,20 +100,19 @@ class feat_silentExceptions{
 
     public void deletebuddy(int id,Context context){
         loadsilExceptListFromMemory(context);
-        silExceptList.remove(id);
+        PrioContactsList.remove(id);
         saveDataToMemory(context);
-       // refreshlistview(silExceptList);
     }
 
     public void saveDataToMemory(Context context) {
         Gson gson = new Gson();
-        String Json_ExceptList = gson.toJson(silExceptList);
+        String Json_ExceptList = gson.toJson(PrioContactsList);
         utilityHelpers.saveStringToMemory(context,MEMCODE_EXCEPTLIST,Json_ExceptList);
     }
 
 
-    public int getExceptionallyVolume(Context context) {
-        int seekbarVolume=utilityHelpers.loadIntFromMemory(context, MEMCODE_VOLUME, ringtones.getCurrent_MediaVolume());
+    public int getPrioContactsVolume(Context context) {
+        int seekbarVolume=utilityHelpers.loadIntFromMemory(context, MEMCODE_VOLUME, ringtones.getCurrent_MediaVolume(context));
         return seekbarVolume;
     }
 }

@@ -21,13 +21,15 @@ public class ringtones {
     public static int Current_MediaVolume;
     public static MediaPlayer mp;
 
-    public static int getCurrent_MediaVolume() {
+    public static int getCurrent_MediaVolume(Context context) {
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        Current_MediaVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
         return Current_MediaVolume;
     }
 
-    boolean isRingtonePlaying(){
-
-        return myRingerisplaying;
+    public boolean isRingtonePlaying(){
+        return ringtone.isPlaying();
+       // return myRingerisplaying;
     }
     public ringtones(Context context,int feat_ID) {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -43,10 +45,10 @@ public class ringtones {
         else if(feat_ID==2){
             mp = MediaPlayer.create(context, R.raw.nokia_sms);
         }
-        Current_MediaVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+
     }
 
-    MediaPlayer playLongtune(Context context) {
+    public MediaPlayer playLongtune(Context context) {
         Toast.makeText(context,"Playing Ringtext",Toast.LENGTH_LONG).show();
 
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -56,7 +58,7 @@ public class ringtones {
         }
         return mp;
     }
-    void stoptune(Context context,MediaPlayer local_mp){
+    public void stoptune(Context context,MediaPlayer local_mp){
         if(local_mp.isPlaying()) {
             local_mp.stop();
             local_mp.reset();

@@ -21,7 +21,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
 public class myAccessibilityService extends AccessibilityService {
-    feat_quickSwitch obj_QS;
+    feat_QuickSwitch obj_QS;
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
 
@@ -34,7 +34,7 @@ public class myAccessibilityService extends AccessibilityService {
 
     @Override
     protected boolean onKeyEvent(KeyEvent event) {
-        obj_QS=new feat_quickSwitch(getApplicationContext());
+        obj_QS=new feat_QuickSwitch(getApplicationContext());
         Context context = getApplicationContext();
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -45,8 +45,7 @@ public class myAccessibilityService extends AccessibilityService {
             throw new RuntimeException(e);
         }
         if (accessEnabled != 0) {
-            obj_QS.setFeatureActivated(utilityHelpers.loadBooleanFromMemory(context, "IS_QUICKSWITCH_ACTIVATED"));
-            if (obj_QS.isFeatureActivated()){
+            if (obj_QS.isFeatureActivated(context)){
                 int action, keycode;
 
             action = event.getAction();
@@ -56,8 +55,8 @@ public class myAccessibilityService extends AccessibilityService {
 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                if ((feat_quickSwitch.upcounter == 0) || (feat_quickSwitch.downcounter == 0)) {
-                    feat_quickSwitch.Current_MediaVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+                if ((feat_QuickSwitch.upcounter == 0) || (feat_QuickSwitch.downcounter == 0)) {
+                    feat_QuickSwitch.Current_MediaVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
                 }
 
                 if (!am.isMusicActive() && (am.getMode() != AudioManager.MODE_RINGTONE) && (am.getMode() != AudioManager.MODE_IN_COMMUNICATION) && (am.getMode() != AudioManager.MODE_IN_CALL)) {
@@ -65,26 +64,25 @@ public class myAccessibilityService extends AccessibilityService {
                     switch (keycode) {
                         case KEYCODE_VOLUME_UP:
                             if (action == ACTION_UP) {
-                                feat_quickSwitch.currentTime = currentTimeMillis();
-                                feat_quickSwitch.timediff = feat_quickSwitch.currentTime - feat_quickSwitch.oldtime;
-                                if ((feat_quickSwitch.timediff < 1000) && (feat_quickSwitch.upcounter != 0) && (AudioManager.RINGER_MODE_NORMAL != am.getRingerMode())) {
+                                feat_QuickSwitch.currentTime = currentTimeMillis();
+                                feat_QuickSwitch.timediff = feat_QuickSwitch.currentTime - feat_QuickSwitch.oldtime;
+                                if ((feat_QuickSwitch.timediff < 1000) && (feat_QuickSwitch.upcounter != 0) && (AudioManager.RINGER_MODE_NORMAL != am.getRingerMode())) {
                                     notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
                                     am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                                    am.setStreamVolume(AudioManager.STREAM_MUSIC, feat_quickSwitch.Current_MediaVolume, 0);
-                                    Toast.makeText(this, "Volume up pressed and released", Toast.LENGTH_SHORT).show();
-                                    feat_quickSwitch.upcounter = 0;
+                                    am.setStreamVolume(AudioManager.STREAM_MUSIC, feat_QuickSwitch.Current_MediaVolume, 0);
+                                    feat_QuickSwitch.upcounter = 0;
                                 }
-                                feat_quickSwitch.upcounter = feat_quickSwitch.upcounter + 1;
-                                feat_quickSwitch.oldtime = feat_quickSwitch.currentTime;
+                                feat_QuickSwitch.upcounter = feat_QuickSwitch.upcounter + 1;
+                                feat_QuickSwitch.oldtime = feat_QuickSwitch.currentTime;
 
                             }
                     }
                     switch (keycode) {
                         case KEYCODE_VOLUME_DOWN:
                             if (action == ACTION_UP) {
-                                feat_quickSwitch.currentTime = currentTimeMillis();
-                                feat_quickSwitch.timediff = feat_quickSwitch.currentTime - feat_quickSwitch.oldtime;
-                                if ((feat_quickSwitch.timediff < 1000) && (feat_quickSwitch.downcounter != 0)) {
+                                feat_QuickSwitch.currentTime = currentTimeMillis();
+                                feat_QuickSwitch.timediff = feat_QuickSwitch.currentTime - feat_QuickSwitch.oldtime;
+                                if ((feat_QuickSwitch.timediff < 1000) && (feat_QuickSwitch.downcounter != 0)) {
                                     if (AudioManager.RINGER_MODE_NORMAL == am.getRingerMode()) {
 
 
@@ -99,7 +97,7 @@ public class myAccessibilityService extends AccessibilityService {
                                             VibrationEffect effect = VibrationEffect.createPredefined(EFFECT_TICK);
                                             //vibrator.vibrate(effect);
 
-                                            Toast.makeText(this, "set to vibrate", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, R.string.set_to_vibrate, Toast.LENGTH_SHORT).show();
                                         }
                                         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
                                         am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
@@ -107,14 +105,14 @@ public class myAccessibilityService extends AccessibilityService {
                                        // am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                                         //am.setStreamVolume(AudioManager.STREAM_RING, 0, 2);
                                         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY);
-                                        Toast.makeText(this, "set to silent", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, R.string.set_to_silent, Toast.LENGTH_SHORT).show();
 
                                     }
 
-                                    feat_quickSwitch.downcounter = -1;
+                                    feat_QuickSwitch.downcounter = -1;
                                 }
-                                feat_quickSwitch.downcounter = feat_quickSwitch.downcounter + 1;
-                                feat_quickSwitch.oldtime = feat_quickSwitch.currentTime;
+                                feat_QuickSwitch.downcounter = feat_QuickSwitch.downcounter + 1;
+                                feat_QuickSwitch.oldtime = feat_QuickSwitch.currentTime;
 
                             }
                     }
@@ -122,40 +120,29 @@ public class myAccessibilityService extends AccessibilityService {
                     switch (keycode) {
                         case KEYCODE_VOLUME_UP:
                             if (action == ACTION_UP) {
-                                feat_quickSwitch.currentTime = currentTimeMillis();
-                                feat_quickSwitch.timediff = feat_quickSwitch.currentTime - feat_quickSwitch.oldtime;
-                                if ((feat_quickSwitch.timediff < 500) && (feat_quickSwitch.call_upcounter != 0)) {
-                                    Toast.makeText(this, "Volume up in call", Toast.LENGTH_SHORT).show();
-                                    feat_quickSwitch.call_upcounter = 0;
+                                feat_QuickSwitch.currentTime = currentTimeMillis();
+                                feat_QuickSwitch.timediff = feat_QuickSwitch.currentTime - feat_QuickSwitch.oldtime;
+                                if ((feat_QuickSwitch.timediff < 500) && (feat_QuickSwitch.call_upcounter != 0)) {
+                                    feat_QuickSwitch.call_upcounter = 0;
                                 }
-                                feat_quickSwitch.call_upcounter = feat_quickSwitch.call_upcounter + 1;
-                                feat_quickSwitch.oldtime = feat_quickSwitch.currentTime;
+                                feat_QuickSwitch.call_upcounter = feat_QuickSwitch.call_upcounter + 1;
+                                feat_QuickSwitch.oldtime = feat_QuickSwitch.currentTime;
 
                             }
                         case KEYCODE_VOLUME_DOWN:
                             if (action == ACTION_UP) {
-                                feat_quickSwitch.currentTime = currentTimeMillis();
-                                feat_quickSwitch.timediff = feat_quickSwitch.currentTime - feat_quickSwitch.oldtime;
-                                if ((feat_quickSwitch.timediff < 500) && (feat_quickSwitch.call_downcounter != 0)) {
+                                feat_QuickSwitch.currentTime = currentTimeMillis();
+                                feat_QuickSwitch.timediff = feat_QuickSwitch.currentTime - feat_QuickSwitch.oldtime;
+                                if ((feat_QuickSwitch.timediff < 500) && (feat_QuickSwitch.call_downcounter != 0)) {
                                     am.setSpeakerphoneOn(false);
-                                    Toast.makeText(this, "Volume down in call", Toast.LENGTH_SHORT).show();
-                                    feat_quickSwitch.call_downcounter = 0;
+                                    feat_QuickSwitch.call_downcounter = 0;
                                 }
-                                feat_quickSwitch.call_downcounter = feat_quickSwitch.call_downcounter + 1;
-                                feat_quickSwitch.oldtime = feat_quickSwitch.currentTime;
+                                feat_QuickSwitch.call_downcounter = feat_QuickSwitch.call_downcounter + 1;
+                                feat_QuickSwitch.oldtime = feat_QuickSwitch.currentTime;
 
                             }
                     }
-                } /*else if(quickSwitch.myRingerisplaying==1){
-                    switch (keycode) {
-                        case KEYCODE_VOLUME_DOWN:
-                            if (action == ACTION_UP) {
-
-                                    am.setStreamVolume(AudioManager.STREAM_RING,0,0);
-
-                            }
-                    }
-                }*/
+                }
             }
 
         }

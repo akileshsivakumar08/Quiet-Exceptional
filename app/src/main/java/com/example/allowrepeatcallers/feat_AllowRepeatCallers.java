@@ -1,7 +1,5 @@
 package com.example.allowrepeatcallers;
 
-import static android.provider.Settings.System.getString;
-
 import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -12,23 +10,35 @@ import androidx.work.OneTimeWorkRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-class feat_RepeatCaller {
+class feat_AllowRepeatCallers {
     //public static List<class_Buddy> missedList=new ArrayList<>();
     private static ArrayList<String> missedList=new ArrayList<>();
     private static boolean stateRINGING=false;
     private boolean featureActivated=false;
 
+    private static final String MEMCODE_VOLUME="ARC_VOLUME";
+    private static final String MEMCODE_PERMISSIONREQUESTED="REPEATCALLER_PERMISSIONREQUESTED";
+
     public static String getDescription() {
         return description;
     }
 
+    public int getPingVolume(Context context) {
+        int pingVolume=utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME,ringtones.getCurrent_MediaVolume(context));
+        return pingVolume;
+    }
+    public void saveVolume(Context context,int inputVolume){
+        utilityHelpers.saveIntToMemory(context,MEMCODE_VOLUME,inputVolume);
+    }
+
     private static String description= String.valueOf(R.string.ARC_description);
 
-    public void setFeatureActivated(boolean featureActivated) {
+
+    public void setFeatureActivated(Context context,boolean featureActivated) {
+        utilityHelpers.saveBooleanToMemory(context,"FEAT_REPEATCALLER_ACTIVE",featureActivated);
         this.featureActivated = featureActivated;
     }
 
@@ -68,7 +78,7 @@ class feat_RepeatCaller {
         return feat_ID;
     }
 
-    public feat_RepeatCaller(Context context) {
+    public feat_AllowRepeatCallers(Context context) {
         featureActivated = utilityHelpers.loadBooleanFromMemory(context, "FEAT_REPEATCALLER_ACTIVE");
         missedList = loadMissedListFromMemory(context);
         description=context.getString(R.string.ARC_description);
@@ -76,7 +86,7 @@ class feat_RepeatCaller {
     }
     // public static NotificationManager notificationManager;
 
-    void nullifyMissedElement(int numberID,NotificationManager notificationManager) {
+    public void nullifyMissedElement(int numberID,NotificationManager notificationManager) {
         int notiid = numberID + 1;
         if (255 != numberID) {
 

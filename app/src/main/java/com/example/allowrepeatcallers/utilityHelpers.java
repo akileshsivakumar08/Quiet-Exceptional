@@ -1,5 +1,6 @@
 package com.example.allowrepeatcallers;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -28,12 +29,17 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,7 +58,7 @@ public class utilityHelpers {
             text.setTextSize(75);
         }
         else{
-            text.setTextSize(60);
+            text.setTextSize(50);
         }
     }
 
@@ -114,14 +120,12 @@ public class utilityHelpers {
         int i=0;
         if (!(myList.isEmpty())) {
             Log.d("myTag", "Object list obtained from Memory");
-            callReceiver_RepeatCaller.error="ID:list is not empty";
             for (i = 0; i < myList.size(); i++) {
                 Log.d("myTag", "Looping");
 
                // if ((PhoneNumberUtils.compare(number, myList.get(i).getBuddy_PhNo()))) {
                 if ((PhoneNumberUtils.compare(number, myList.get(i).getBuddy_PhNo()))) {
                     MatchfoundinList = true;
-                    callReceiver_RepeatCaller.error="ID:Match is found";
                     Log.d("myTag", "Match found");
                     break;
                 }
@@ -129,7 +133,6 @@ public class utilityHelpers {
 
         }
         if(MatchfoundinList==false){
-            callReceiver_RepeatCaller.error="ID:No Match found or list is empty";
             i=255;
         }
         return i;
@@ -139,14 +142,12 @@ public class utilityHelpers {
         int i=0;
         if (!(myList.isEmpty())) {
             Log.d("myTag", "Object list obtained from Memory");
-            callReceiver_RepeatCaller.error="ID:list is not empty";
             for (i = 0; i < myList.size(); i++) {
                 Log.d("myTag", "Looping");
 
                 // if ((PhoneNumberUtils.compare(number, myList.get(i).getBuddy_PhNo()))) {
                 if ((PhoneNumberUtils.compare(number, myList.get(i)))) {
                     MatchfoundinList = true;
-                    callReceiver_RepeatCaller.error="ID:Match is found";
                     Log.d("myTag", "Match found");
                     break;
                 }
@@ -154,7 +155,6 @@ public class utilityHelpers {
 
         }
         if(MatchfoundinList==false){
-            callReceiver_RepeatCaller.error="ID:No Match found or list is empty";
             i=255;
         }
         return i;
@@ -210,17 +210,22 @@ public class utilityHelpers {
     }
 
     public static void turnSpeakerON(AudioManager am) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            AudioDeviceInfo[] audioDevices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-            for (AudioDeviceInfo device : audioDevices) {
-                if (device.getType() == AudioDeviceInfo.TYPE_AUX_LINE || device.getType() == AudioDeviceInfo.TYPE_BLE_HEADSET) {
-                    am.setSpeakerphoneOn(true);
-                }
-            }
+        if (isDeviceConnected(am)) {
+            am.setSpeakerphoneOn(true);
         }
     }
+    public static boolean isDeviceConnected(AudioManager am){
+        boolean isDeviceConnected=false;
+        AudioDeviceInfo[] audioDevices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+        for (AudioDeviceInfo device : audioDevices) {
+            if (device.getType() == AudioDeviceInfo.TYPE_AUX_LINE || device.getType() == AudioDeviceInfo.TYPE_BLE_HEADSET) {
+                isDeviceConnected=true;
+                break;
+            }
+        }
+        return isDeviceConnected;
+    }
     public static Notification buildNotification(String title, String content, int notificationID, Context context) {
-        callReceiver_RepeatCaller.error = "ID:building notification";
         String CHANNEL_ID = "Missed Call Notification";
         Intent stopIntent = new Intent(context.getApplicationContext(), StopCountdownReceiver.class);
         stopIntent.setAction("STOP_SERVICE");
@@ -242,6 +247,7 @@ public class utilityHelpers {
                     .build();
         }
     }
+
 
     public static String getSortOrder(Context context) {
         String sortOrder=utilityHelpers.loadStringFromMemory(context,MEMCODE_SORTORDER);
@@ -272,5 +278,21 @@ public class utilityHelpers {
             }
         }
         return ring;
+    }
+
+
+    public static HashMap<String, Boolean> convertStringToHashMap(String loadedmap) {
+        Gson gson = new Gson();
+        HashMap<String,Boolean> grantedPermissions= new HashMap<String, Boolean>();
+        if(!loadedmap.equals("null")) {
+            grantedPermissions = gson.fromJson(loadedmap, new TypeToken<HashMap<String, Boolean>>() {
+            }.getType());
+        }
+        return grantedPermissions;
+    }
+    public static String convertHashMapToString(Context context,HashMap<String,Boolean> requestedPermissions){
+        Gson gson = new Gson();
+        String String_requestedPermissions = gson.toJson(requestedPermissions);
+        return String_requestedPermissions;
     }
 }

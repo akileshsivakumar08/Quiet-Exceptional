@@ -4,13 +4,15 @@ package com.example.allowrepeatcallers;
 import static com.example.allowrepeatcallers.R.menu.popupmenu_loadedlist;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -18,17 +20,19 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
 public class LoadContactsActivity extends AppCompatActivity {
 
     ListView listview;
-    feat_silentExceptions obj_LoadContacts;
+    String featureIdentifier;
+    ArrayList<class_Buddy> ContactsList;
+    ArrayList<class_Buddy> diffList;
     Context context;
 
     @Override
@@ -36,35 +40,36 @@ public class LoadContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         context=getApplicationContext();
         getSupportActionBar().setTitle( "Your Contacts");
-        ArrayList<class_Buddy> obj_BuddyLocal;
-        obj_LoadContacts=new feat_silentExceptions(context);
-
+        ContactsList=new ArrayList<class_Buddy>();
+        diffList=new ArrayList<class_Buddy>();
+        ArrayList<class_Buddy> ContactsListIP = getIntent().getParcelableArrayListExtra("List_Parcel");
+        if(ContactsListIP!=null){
+            ContactsList=ContactsListIP;
+        }
         setContentView(R.layout.activity_load_contacts);
-        refreshlistview(obj_LoadContacts.getSilExceptList());
+        featureIdentifier = getIntent().getStringExtra("FEATURE_IDENTIFIER");
+        refreshlistview(ContactsList);
         FloatingActionButton AddButton = findViewById(R.id.add_fab);
 
         AddButton.setOnClickListener(view -> {
 
             Intent in = new Intent (Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-            //startActivityForResult (in, RESULT_PICK_CONTACT);
             getResult.launch(in);
         });
 
-
-        listview.setOnItemClickListener((adapterView, view, i, l) -> popupmenu(i));
-
+        listview.setOnItemClickListener((adapterView, view, i, l) -> popupmenu(i,featureIdentifier));
 
     }
 
-    private void popupmenu(int i) {
+    private void popupmenu(int i,String featureIdentifier) {
         PopupMenu popupmenu = new PopupMenu(getApplicationContext(),listview);
         popupmenu.getMenuInflater().inflate(popupmenu_loadedlist,popupmenu.getMenu());
         popupmenu.show();
         popupmenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                obj_LoadContacts.deletebuddy(i,context);
-                refreshlistview(obj_LoadContacts.getSilExceptList());
+                ContactsList.remove(i);
+                refreshlistview(ContactsList);
                 return false;
             }
         });
@@ -73,9 +78,11 @@ public class LoadContactsActivity extends AppCompatActivity {
     private void refreshlistview(ArrayList<class_Buddy> obj_BuddyLocal){
 
         listview = (ListView) findViewById(R.id.listview);
-        PersonAdapter personAdapter = new PersonAdapter(this, R.layout.list_row, obj_BuddyLocal);
+        if(obj_BuddyLocal!=null) {
+            PersonAdapter personAdapter = new PersonAdapter(this, R.layout.list_row, obj_BuddyLocal);
 
-        listview.setAdapter(personAdapter);
+            listview.setAdapter(personAdapter);
+        }
         //setContentView(listview);
     }
     private class_Buddy contactPicked(Intent data) {
@@ -90,7 +97,7 @@ public class LoadContactsActivity extends AppCompatActivity {
             boolean isIt=cursor.moveToFirst ();
             int phoneIndex = cursor.getColumnIndex (ContactsContract.CommonDataKinds.Phone.NUMBER);
             int nameIndex= (cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String msg="Emergency";
+            String msg=getString(R.string.exceptional_sms_alarm);
             phoneNo = cursor.getString (phoneIndex);
             phoneNo=phoneNo.replaceAll("[^0-9]", "");
             String disp_name=cursor.getString(nameIndex);
@@ -110,43 +117,47 @@ public class LoadContactsActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     // There are no request codes
                     Intent data = result.getData();
-                    storeData(data);
+                    addContactToList(data);
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Failed To pick contact", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.no_contact_selected, Toast.LENGTH_SHORT).show();
                 }
             });
 
-    private void storeData(Intent data) {
+    private void addContactToList(Intent data) {
         class_Buddy buddy;
         buddy=contactPicked(data);
-
-        boolean check=obj_LoadContacts.isnumberinList(buddy.getBuddy_PhNo());
-        if (!check) {
-            obj_LoadContacts.addTosilExceptList(buddy);
-            obj_LoadContacts.saveDataToMemory(context);
-
-            refreshlistview(obj_LoadContacts.getSilExceptList());
-        }
-        else{
-            Toast.makeText(this, "Contact already exists", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
-
-    private boolean checkrepeatcontact(ArrayList<class_Buddy> obj_BuddyLocal, class_Buddy buddy) {
-        if (obj_BuddyLocal.size() != 0) {
-            String phno = buddy.getBuddy_PhNo();
-            for (int i = 0; i < obj_BuddyLocal.size(); i++) {
-                String db_phno = obj_BuddyLocal.get(i).getBuddy_PhNo();
-                if (db_phno.equals(phno)) {
-                    return false;
-                }
+        if(ContactsList!=null) {
+            int numberID = utilityHelpers.listLoopSearchObj(buddy.getBuddy_PhNo(), ContactsList);
+            if (numberID != 255) {
+                Toast.makeText(this, R.string.contact_already_exists, Toast.LENGTH_SHORT).show();
+            } else {
+                ContactsList.add(buddy);
+                diffList.add(buddy);
+                refreshlistview(ContactsList);
             }
         }
-        return true;
+        else{
+            ContactsList.add(buddy);
+            refreshlistview(ContactsList);
+        }
     }
+
+
+    @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putParcelableArrayListExtra("outputList", ContactsList);
+        resultIntent.putParcelableArrayListExtra("diffList", diffList);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
+    }
+
+
+
+
+
+
 
 }
 

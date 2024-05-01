@@ -1,31 +1,30 @@
 package com.example.allowrepeatcallers;
 
 import static android.content.ContentValues.TAG;
-import static android.content.Context.AUDIO_SERVICE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
+import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,31 +33,42 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
-public class FragmentsilentExceptions extends Fragment {
+import java.util.ArrayList;
+
+import AlertMissedCalls.feat_AlertMissedCalls;
+
+
+public class FragmentSMSAlarm extends Fragment {
     TextView FeatTitle;
     private static final String CHANNEL_ID = "Missed Call Notification";
     ImageView diagnosis;
-    SwitchCompat TapToEnable;
+    TextView TapToEnable;
     Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
     final int PERMISSION_CODE_POSTNOTIFICATIONS=1;
     String EnabledColor="#064663";
-    ImageView share;
+    ImageView smsimage;
+    ImageView smsimage2;
     String DisabledColor="#72435C";
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
-    int blinknumber=3;
-    SeekBar seekBar_silExcept;
-    Button manageContacts;
-    feat_silentExceptions GUIobj_silentExceptions;
-    ImageView starimage;
+    ImageView manageContacts;
+    TextView taptotestvolume;
+    feat_SMSAlarm GUIobj_SA;
     int pingvolume;
+    permissionhandler OBJ_Permissions;
+    ArrayList<class_Buddy> ContactstoSendSMS;
+
+    private TextView manageContacts_text;
+    int start_length;
+    int differenceContactLength;
+    private String settingscolor_enabled="#2F435A";
+    private String settingscolor_disabled="#E4E5E8";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.exceptionally, container, false);
+        return inflater.inflate(R.layout.smsalarm, container, false);
     }
 
     @Override
@@ -70,11 +80,17 @@ public class FragmentsilentExceptions extends Fragment {
     public void onResume() {
         super.onResume();
         Context context=getContext();
-        starimage=(ImageView) getView().findViewById(R.id.starimage);
-        Animation starrotate = AnimationUtils.loadAnimation(context, R.anim.starrotate);
-        starimage.startAnimation(starrotate);
-    }
 
+        if (utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
+            process_featureState(false,context);
+            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
+        }
+        else{
+            process_featureState(true,context);
+            TapToEnable.setText(R.string.long_press_to_send_emergency);
+        }
+
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,51 +98,27 @@ public class FragmentsilentExceptions extends Fragment {
         utilityHelpers.createNotificationChannel(context);
         //load GUI Elements
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
-        TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
-
-        seekBar_silExcept=(SeekBar) getView().findViewById(R.id.seekBar_silExcept);
-        manageContacts=(Button) getView().findViewById(R.id.manageContacts);
-
+        TapToEnable=(TextView) getView().findViewById(R.id.TapToEnable);
+        manageContacts=(ImageView) getView().findViewById(R.id.manageContacts);
+        manageContacts_text=(TextView) getView().findViewById(R.id.manageContacts_text);
+        smsimage=(ImageView) getView().findViewById(R.id.smsimage);
+        smsimage2=(ImageView) getView().findViewById(R.id.smsimage2);
         //load managers
-        AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
-        GUIobj_silentExceptions=new feat_silentExceptions(context);
+        GUIobj_SA =new feat_SMSAlarm(context);
+        OBJ_Permissions=new permissionhandler(context);
+        ContactstoSendSMS=new ArrayList<class_Buddy>();
         //load from memory
-        int currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        int lastSetMediaVolume=GUIobj_silentExceptions.getExceptionallyVolume(context);
-
 
         //initiate GUI Elements
-
-        int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        seekBar_silExcept.setMax(maxMusicVolume);
-        seekBar_silExcept.setProgress(lastSetMediaVolume);
+        animateScalePan(smsimage,1.07f,0);
+        //animateScalePan(smsimage2,1.1f,500);
         utilityHelpers.adjustTitleTextSize(FeatTitle,context);
 
-        if (utilityHelpers.ispermissionpending(context, feat_silentExceptions.permissions)) {
+        if (utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
             process_featureState(false,context);
         }
 
-        seekBar_silExcept.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                pingvolume=i;
-                GUIobj_silentExceptions.saveVolume(context,pingvolume);
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                ringtones testSound = new ringtones(context, 0);
-                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                int seekbarVolume = GUIobj_silentExceptions.getExceptionallyVolume(context);
-                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
-                testSound.playShorttune(context);
-            }
-        });
 
         FeatTitle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,7 +127,6 @@ public class FragmentsilentExceptions extends Fragment {
 
             }
         });
-
 
 
         TapToEnable.setOnClickListener(new View.OnClickListener() {
@@ -149,34 +140,35 @@ public class FragmentsilentExceptions extends Fragment {
             @Override
             public void onClick(View view) {
                     Intent intent = new Intent(context, LoadContactsActivity.class);
-                    startActivity(intent);
+
+                intent.putParcelableArrayListExtra("List_Parcel",GUIobj_SA.getSilExceptList());
+                start_length=GUIobj_SA.getSilExceptList().size();
+                LoadContactsActivityResultLauncher.launch(intent);
             }
         });
 
         //checkLogFormat();
-        process_featureState(GUIobj_silentExceptions.isFeatureActivated(context),context);
+        process_featureState(GUIobj_SA.isFeatureActivated(context),context);
 
-
-
+        FeatTitle.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(GUIobj_SA.isFeatureActivated(context)){
+                    if(!utilityHelpers.ispermissionpending(context,feat_SMSAlarm.permissions)) {
+                        ContactstoSendSMS=GUIobj_SA.getSilExceptList();
+                        GUIobj_SA.sendSMS(context,1,ContactstoSendSMS);
+                    }
+                    else{
+                        Toast.makeText(context, R.string.missing_permissions, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return false;
+            }
+        });
 
     }
 
 
-
-    private void postInfoDialog() {
-        Context context=requireContext();
-        try {
-            //start a dialog box
-            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(context);
-            noti_alertbuilder.setMessage("Device Rings on Successive calls, if a call was missed in Silent or Vibrate Mode.\n\n\nNotifications can be dismissed to disable the ringing.");
-            AlertDialog alertDialog = noti_alertbuilder.create();
-            alertDialog.show();
-        } catch (Exception e) {
-
-            Log.e(TAG, " Exception on dialog  " + e);
-            Toast.makeText(getContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void Dialog_requestDND() {
         NotificationManager policy_notificationManager =
@@ -185,14 +177,13 @@ public class FragmentsilentExceptions extends Fragment {
             try {
                 //start a dialog box
                 AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
-                noti_alertbuilder.setMessage("To use this app DND permisions are needed . Press continue to provide these in the app settings menu").setPositiveButton("continue", noti_alert_dialogClickListener)
-                        .setNegativeButton("cancel", noti_alert_dialogClickListener);
+                noti_alertbuilder.setMessage(R.string.provide_dnd_permissions).setPositiveButton(R.string.continue_menu, noti_alert_dialogClickListener)
+                        .setNegativeButton(R.string.cancel_menu, noti_alert_dialogClickListener);
                 AlertDialog alertDialog = noti_alertbuilder.create();
                 alertDialog.show();
             } catch (Exception e) {
 
                // Log.e(TAG, " Exception on dialog  " + e);
-                Toast.makeText(requireContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -209,59 +200,68 @@ public class FragmentsilentExceptions extends Fragment {
         Context context=requireContext();
         NotificationManager tap_notificationManager =
                 (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        if(GUIobj_silentExceptions.isFeatureActivated(context)){
-            process_featureState(false,context);
-        }
-        else{
+        if(!GUIobj_SA.isFeatureActivated(context)){
 
             if (!tap_notificationManager.isNotificationPolicyAccessGranted()) {
 
                 process_featureState(false,context);
+                TapToEnable.setText(R.string.Allfeat_Tap2Permission);
                 Dialog_requestDND();
             } else {
-                if (!utilityHelpers.ispermissionpending(context, feat_silentExceptions.permissions)) {
+                if (!utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
 
                     process_featureState(true,context);
 
                 } else {
-                    boolean SILEXCEPT_permission_already_requested= utilityHelpers.loadBooleanFromMemory(context, "SILEXCEPT_PERMISSIONREQUESTED");
-                    boolean ARC_permission_already_requested=utilityHelpers.loadBooleanFromMemory(context, "ARC_PERMISSIONREQUESTED");
-                    boolean BP_permission_already_requested=utilityHelpers.loadBooleanFromMemory(context, "BABY_PING_PERMISSIONREQUESTED");
-                    boolean permission_already_requested=((SILEXCEPT_permission_already_requested)||(ARC_permission_already_requested)||(BP_permission_already_requested));
+                    String[] pend = utilityHelpers.getpendingpermissions(context, feat_SMSAlarm.permissions);
+                    Boolean permission_already_requested=OBJ_Permissions.werePermissionsRequested(pend);
                     if (!permission_already_requested) {
-                        String[] pend = utilityHelpers.getpendingpermissions(context, feat_silentExceptions.permissions);
                         requestPermissionLauncher.launch(pend);
                     } else if (permission_already_requested) {
                         permissionAlreadyRequested_RequestDialog(context);
-
                     }
                 }
 
             }
         }
     }
+    private void animateScalePan(View v,float scale,long startDelay) {
+        AnimatorSet animSetXY = new AnimatorSet();
 
+        ObjectAnimator scaleanimY = ObjectAnimator.ofFloat(v,
+                "ScaleY",1f, scale);
+        scaleanimY.setRepeatCount(ValueAnimator.INFINITE);
+        scaleanimY.setRepeatMode(ValueAnimator.REVERSE);
+        ObjectAnimator scaleanimX = ObjectAnimator.ofFloat(v,
+                "ScaleX", 1f, scale);
+
+        scaleanimX.setRepeatCount(ValueAnimator.INFINITE);
+        scaleanimX.setRepeatMode(ValueAnimator.REVERSE);
+        animSetXY.playTogether(scaleanimX, scaleanimY);
+        animSetXY.setInterpolator(new LinearInterpolator());
+        animSetXY.setDuration(900);
+        animSetXY.setStartDelay(startDelay);
+        animSetXY.start();
+
+    }
     private void permissionAlreadyRequested_RequestDialog(Context context) {
         try {
             //start a dialog box
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("To use this app permisions are needed to read Contacts and detect incoming calls. Press continue to provide these in the app settings menu").setPositiveButton("continue", dialogClickListener)
-                    .setNegativeButton("cancel", dialogClickListener);
+            builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
+                    .setNegativeButton(R.string.cancel_menu, dialogClickListener);
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         } catch (Exception e) {
             Log.e(TAG, " Exception on dialog  " + e);
-            Toast.makeText(context, " Exception on dialog ", Toast.LENGTH_SHORT).show();
         }
     }
 
     private ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
                 Context context =requireContext();
-                boolean permission_already_requested=false;
-                permission_already_requested=true;
-                utilityHelpers.saveBooleanToMemory(context,"SILEXCEPT_PERMISSIONREQUESTED",permission_already_requested);
-                    if(isGranted.containsValue(false)){
+                OBJ_Permissions.setPermissionRequested(context,isGranted);
+                if(isGranted.containsValue(false)){
                         process_featureState(false,context);
 
                     }
@@ -270,21 +270,74 @@ public class FragmentsilentExceptions extends Fragment {
                     }
             });
 
-
+    ActivityResultLauncher<Intent> LoadContactsActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // Here, no request code
+                    Intent data = result.getData();
+                    ArrayList<class_Buddy> outputList=data.getParcelableArrayListExtra("outputList");
+                    ContactstoSendSMS =data.getParcelableArrayListExtra("diffList");
+                    GUIobj_SA.setSMSAlarmList(getContext(), data.getParcelableArrayListExtra("outputList"));
+                    if(ContactstoSendSMS.size()>0){
+                        requestDialogShareSMS();
+                    }
+                }
+            });
     private void process_featureState(boolean state,Context context) {
-        GUIobj_silentExceptions.setFeatureActivated(context,state);
-        TapToEnable.setChecked(state);
-        seekBar_silExcept.setEnabled(state);
-        manageContacts.setEnabled(state);
+        GUIobj_SA.setFeatureActivated(context,state);
 
+        manageContacts.setEnabled(state);
         if(state){
             adjustInterfaceButton(EnabledColor,EnabledText);
+            TapToEnable.setText(R.string.long_press_to_send_emergency);
+
+            manageContacts.setColorFilter(Color.parseColor(settingscolor_enabled));
+            manageContacts_text.setTextColor(Color.parseColor(settingscolor_enabled));
         }
         else{
             adjustInterfaceButton(DisabledColor,DisabledText);
+            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
+
+            manageContacts.setColorFilter(Color.parseColor(settingscolor_disabled));
+            manageContacts_text.setTextColor(Color.parseColor(settingscolor_disabled));
         }
 
     }
+
+
+    private void requestDialogShareSMS() {
+        try {
+            //start a dialog box
+            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
+            noti_alertbuilder.setMessage(R.string.requestShareSMSAlarm).setPositiveButton(R.string.accept_menu, shareSMS_dialogClickListener)
+                    .setNegativeButton(R.string.reject_menu, shareSMS_dialogClickListener);
+            AlertDialog alertDialog = noti_alertbuilder.create();
+            alertDialog.show();
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    DialogInterface.OnClickListener shareSMS_dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            Context context=requireContext();
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+
+                    GUIobj_SA.sendSMS(context,2,ContactstoSendSMS);
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //No button clicked
+                    //smsReceiver.DND_OverridePermission=false;
+                    break;
+            }
+        }
+    };
+
 
 
     DialogInterface.OnClickListener noti_alert_dialogClickListener = new DialogInterface.OnClickListener() {
@@ -333,32 +386,6 @@ public class FragmentsilentExceptions extends Fragment {
 
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Context context =requireContext();
-        boolean permission_already_requested=false;
-        if (requestCode == PERMISSION_CODE_POSTNOTIFICATIONS) {
-            for (int i = 0; i < permissions.length; i++) {
-                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                    // Permission Denied
-                    process_featureState(false, context);
-                    permission_already_requested = true;
-                    utilityHelpers.saveBooleanToMemory(context, "REPEATCALLER_PERMISSIONREQUESTED", permission_already_requested);
-
-                    break;
-
-                }
-                process_featureState(true, context);
-                permission_already_requested = true;
-                utilityHelpers.saveBooleanToMemory(context, "REPEATCALLER_PERMISSIONREQUESTED", permission_already_requested);
-                utilityHelpers.checkLogFormat(context);
-
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
 
 }
 

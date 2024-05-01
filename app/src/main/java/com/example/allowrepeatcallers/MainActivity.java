@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import static java.lang.Thread.sleep;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,46 +14,34 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.media.AudioManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.CallLog;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.net.URISyntaxException;
-import java.util.Locale;
+import AlertMissedCalls.feat_AlertMissedCalls;
+
 
 public class MainActivity extends AppCompatActivity {
     ImageView infoButton;
     public final int SoftwareType=1;
     public DrawerLayout drawerLayout;
     MyPagerAdapter adapter;
-    ImageView diagnosis;
     ImageView share;
+    ImageView rateapp;
     public ActionBarDrawerToggle actionBarDrawerToggle;
     public static int currentFragmentPosition;
     @Override
@@ -60,14 +49,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Context context=getApplicationContext();
         setContentView(R.layout.activity_main);
+
         TabLayout pagerTabLayout;
         pagerTabLayout=findViewById(R.id.tablayout);
         utilityHelpers.saveIntToMemory(context,"SOFTWARETYPE",SoftwareType);
-        diagnosis = (ImageView) findViewById(R.id.Diagnosis);
         infoButton=(ImageView) findViewById(R.id.infoButton);
         share=(ImageView)  findViewById(R.id.share);
-
-
+        rateapp=(ImageView) findViewById(R.id.rateapp);
         if ((ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG)== PackageManager.PERMISSION_GRANTED)){
             utilityHelpers.checkLogFormat(context);
         }
@@ -112,7 +100,16 @@ public class MainActivity extends AppCompatActivity {
                 if(id==R.id.privacy)
                 {
 
-                    String url = "https://stackoverflow.com/questions/24261224/android-open-url-onclick-certain-button";
+                    String url = "https://sites.google.com/view/quietexceptional/privacy-policy?authuser=9";
+
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                }
+                else if(id==R.id.terms)
+                {
+
+                    String url = "https://sites.google.com/view/quietexceptional/terms-and-conditions?authuser=9";
 
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
@@ -128,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+       // getSupportActionBar().setHomeButtonEnabled(true);
 
 
 
@@ -137,16 +135,10 @@ public class MainActivity extends AppCompatActivity {
                 String description="";
                 switch(currentFragmentPosition){
                     case 0:
-                        description=feat_silentExceptions.getDescription();
+                        description= feat_AlertMissedCalls.getDescription();
                         break;
                     case 1:
-                        description=feat_BabyPing.getDescription();
-                        break;
-                    case 2:
-                        description=feat_RepeatCaller.getDescription();
-                        break;
-                    case 3:
-                        description=feat_RepeatCaller.getDescription();
+                        description= feat_SMSAlarm.getDescription();
                         break;
                 }
                 postInfoDialog(description);
@@ -169,11 +161,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        diagnosis.setOnClickListener(new View.OnClickListener(){
+
+        rateapp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, settings.class);
-                startActivity(intent);
+            public void onClick(View v) {
+                Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+                i.setData(Uri.parse("https://play.google.com/store/apps/details?id=Quietexceptional "));
+                startActivity(i);
             }
         });
 

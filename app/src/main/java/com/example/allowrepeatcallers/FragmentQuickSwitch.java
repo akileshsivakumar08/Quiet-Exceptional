@@ -1,6 +1,5 @@
 package com.example.allowrepeatcallers;
 
-import static android.content.ContentValues.TAG;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 import android.app.NotificationManager;
@@ -13,12 +12,10 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -27,7 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
-public class FragmentQuickSwitchBuddy extends Fragment {
+public class FragmentQuickSwitch extends Fragment {
     SwitchCompat TapToEnable;
     TextView FeatTitle;
     ImageView share;
@@ -42,7 +39,7 @@ public class FragmentQuickSwitchBuddy extends Fragment {
     ImageView imgdnd;
     ImageView imgbell;
     ImageView imgvibrate;
-    feat_quickSwitch obj_quickswitch;
+    feat_QuickSwitch obj_quickswitch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,25 +55,22 @@ public class FragmentQuickSwitchBuddy extends Fragment {
         imgdnd=(ImageView)getView().findViewById(R.id.imgdnd);
         imgvibrate=(ImageView) getView().findViewById(R.id.imgvibrate);
         FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
-        /*infoButton=(ImageView) getView().findViewById(R.id.infoButton);
-        diagnosis=(ImageView) getView().findViewById(R.id.Diagnosis);
-        share=(ImageView)  getView().findViewById(R.id.share);*/
 
-        obj_quickswitch=new feat_quickSwitch(context);
+        obj_quickswitch=new feat_QuickSwitch(context);
 
         utilityHelpers.adjustTitleTextSize(FeatTitle,context);
         int softwaretype=utilityHelpers.loadIntFromMemory(context,"SOFTWARETYPE",0);
         if(softwaretype==1) {
 
-            obj_quickswitch.setFeatureActivated(utilityHelpers.loadBooleanFromMemory(context, "IS_QUICKSWITCH_ACTIVATED"));
-            checkAccessibilityPermission(context);
-            if (obj_quickswitch.isFeatureActivated()) {
+
+            if (obj_quickswitch.isFeatureActivated(context)) {
                 TapToEnable.setChecked(true);
                 adjustInterfaceButton(EnabledColor, EnabledText);
             } else {
                 TapToEnable.setChecked(false);
                 adjustInterfaceButton(DisabledColor, DisabledText);
             }
+            checkAccessibilityPermission(context);
 
             FeatTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -97,35 +91,6 @@ public class FragmentQuickSwitchBuddy extends Fragment {
             FeatTitle.setText("PRO\nDEMO");
             adjustInterfaceButton(DisabledColor,DisabledText);
         }
-        /*share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.setType("text/plain");
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                    String shareMessage= "\nLet me recommend you this application\n\n";
-                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" +"\n\n";
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                    startActivity(Intent.createChooser(shareIntent, "choose one"));
-                } catch(Exception e) {
-                    //e.toString();
-                }
-            }
-        });
-        diagnosis.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, settings.class);
-                FragmentQuickSwitchBuddy.this.startActivity(intent);
-            }
-        });
-        infoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                postInfoDialog();
-            }
-        });*/
 
         BroadcastReceiver receiver=new BroadcastReceiver(){
             @Override
@@ -164,7 +129,9 @@ public class FragmentQuickSwitchBuddy extends Fragment {
         if (!notificationManager.isNotificationPolicyAccessGranted()) {
             TapToEnable.setChecked(false);
             adjustInterfaceButton(DisabledColor,DisabledText);
-            obj_quickswitch.setFeatureActivated(false);
+            obj_quickswitch.setFeatureActivated(context,false);
+
+            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
         }
         else {
             try {
@@ -173,13 +140,14 @@ public class FragmentQuickSwitchBuddy extends Fragment {
                 throw new RuntimeException(e);
             }
             if (accessibilityEnabled != 0) {
-                obj_quickswitch.setFeatureActivated(true);
+                obj_quickswitch.setFeatureActivated(context,true);
                 TapToEnable.setChecked(true);
                 adjustInterfaceButton(EnabledColor, EnabledText);
             } else {
                 TapToEnable.setChecked(false);
                 adjustInterfaceButton(DisabledColor, DisabledText);
-                obj_quickswitch.setFeatureActivated(false);
+                obj_quickswitch.setFeatureActivated(context,false);
+                TapToEnable.setText(R.string.Allfeat_Tap2Permission);
                 //start a dialog box
             }
         }
@@ -191,8 +159,8 @@ public class FragmentQuickSwitchBuddy extends Fragment {
         NotificationManager tap_notificationManager =
                 (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
         Context context=requireContext();
-        if(obj_quickswitch.isFeatureActivated()){
-            obj_quickswitch.setFeatureActivated(false);
+        if(obj_quickswitch.isFeatureActivated(context)){
+            obj_quickswitch.setFeatureActivated(context,false);
 
             Toast.makeText(context, " Feature disable saved ", Toast.LENGTH_SHORT).show();
             TapToEnable.setChecked(false);
@@ -203,8 +171,7 @@ public class FragmentQuickSwitchBuddy extends Fragment {
             if (!tap_notificationManager.isNotificationPolicyAccessGranted()) {
                 TapToEnable.setChecked(false);
                 adjustInterfaceButton(DisabledColor,DisabledText);
-                obj_quickswitch.setFeatureActivated(false);
-                utilityHelpers.saveBooleanToMemory(context,"IS_QUICKSWITCH_ACTIVATED",false);
+                obj_quickswitch.setFeatureActivated(context,false);
                 Dialog_requestDND();
             } else {
                 processAccessibilityPermission(context);
@@ -222,16 +189,14 @@ public class FragmentQuickSwitchBuddy extends Fragment {
             throw new RuntimeException(e);
         }
         if (accessibilityEnabled!=0) {
-            obj_quickswitch.setFeatureActivated(true);
-            utilityHelpers.saveBooleanToMemory(context, "IS_QUICKSWITCH_ACTIVATED", true);
+            obj_quickswitch.setFeatureActivated(context,true);
             Toast.makeText(context, " Feature Enable saved ", Toast.LENGTH_SHORT).show();
             TapToEnable.setChecked(true);
             adjustInterfaceButton(EnabledColor,EnabledText);
         } else {
             TapToEnable.setChecked(false);
             adjustInterfaceButton(DisabledColor,DisabledText);
-            obj_quickswitch.setFeatureActivated(false);
-            utilityHelpers.saveBooleanToMemory(context,"IS_QUICKSWITCH_ACTIVATED",false);
+            obj_quickswitch.setFeatureActivated(context,false);
             Dialog_requestACCESSIBILITY(context);
             //start a dialog box
         }
@@ -244,14 +209,13 @@ public class FragmentQuickSwitchBuddy extends Fragment {
             try {
                 //start a dialog box
                 AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
-                noti_alertbuilder.setMessage("To use this app DND permisions are needed . Press continue to provide these in the app settings menu").setPositiveButton("continue", noti_alert_dialogClickListener)
-                        .setNegativeButton("cancel", noti_alert_dialogClickListener);
+                noti_alertbuilder.setMessage(R.string.provide_dnd_permissions).setPositiveButton(R.string.continue_menu, noti_alert_dialogClickListener)
+                        .setNegativeButton(R.string.cancel_menu, noti_alert_dialogClickListener);
                 AlertDialog alertDialog = noti_alertbuilder.create();
                 alertDialog.show();
             } catch (Exception e) {
 
                 // Log.e(TAG, " Exception on dialog  " + e);
-                Toast.makeText(requireContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -303,28 +267,14 @@ public class FragmentQuickSwitchBuddy extends Fragment {
 
     private void Dialog_requestACCESSIBILITY(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("To use this feature, the app needs access to the volume buttons of the device. This is managed by the Accessibility permission.\nPress continue to provide these in the settings menu.\n" +
-                        "\nThis permission is only needed to access the volume buttons and no other information is used or created.\n\nYour privacy is most important and you can disable this feature or permission anytime.").setPositiveButton("continue", requestACCESSIBILITY_dialogClickListener)
-                .setNegativeButton("cancel", requestACCESSIBILITY_dialogClickListener);
+        builder.setMessage(obj_quickswitch.getRequestAccessibility()).setPositiveButton(R.string.continue_menu, requestACCESSIBILITY_dialogClickListener)
+                .setNegativeButton(R.string.cancel_menu, requestACCESSIBILITY_dialogClickListener);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
 
 
-    private void postInfoDialog() {
-        Context context=requireContext();
-        try {
-            //start a dialog box
-            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(context);
-            noti_alertbuilder.setMessage("Quickly change ringer modes by double pressing volume buttons when the screen is on");
-            AlertDialog alertDialog = noti_alertbuilder.create();
-            alertDialog.show();
-        } catch (Exception e) {
 
-            Log.e(TAG, " Exception on dialog  " + e);
-            Toast.makeText(getContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
-        }
-    }
     private void adjustInterfaceButton(String ipColor, String ipText) {
         TapToEnable.setText(ipText);
         TapToEnable.setTextColor(Color.parseColor(ipColor));

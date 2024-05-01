@@ -9,21 +9,16 @@ import android.content.Intent;
 import android.widget.Toast;
 
 
-public class StopCountdownReceiver extends BroadcastReceiver {
+public class StopAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        feat_AllowRepeatCallers stopButton_repeatCaller=new feat_AllowRepeatCallers(context);
         if(intent.getAction().equals("STOP_SERVICE")){
-            int notiid=intent.getIntExtra("TIMERID",-1);
-            int listid=notiid-1;
+            feat_SMSAlarm obj_SMSAlarm=new feat_SMSAlarm(context);
+            feat_SMSAlarm.AlarmSound.stoptune(context,feat_SMSAlarm.player);
+            obj_SMSAlarm.setSilentExceptionRingActivated(false);
             NotificationManager remove_notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-            stopButton_repeatCaller.nullifyMissedElement(listid,remove_notificationManager);
-
-            Toast.makeText(context, "removedfrom MissedList", Toast.LENGTH_SHORT).show();
-            stopButton_repeatCaller.saveMissedListToMemory(context);
-
-            //WorkManager.getInstance(context).cancelWorkById(getWorkId(notiid));
-
+            remove_notificationManager.cancel(1);
+            remove_notificationManager.setInterruptionFilter(obj_SMSAlarm.interruptionFilter);
         }
     }
     //private static UUID getWorkId(int notificationId) {
