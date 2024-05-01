@@ -11,13 +11,4 @@
     <item
         android:id="@+id/terms"
         android:title="Terms of use" />
-    <item
-        android:id="@+id/troubleshoot"
-        android:title="Troubleshoot" />
-    <item
-        android:id="@+id/Guide"
-        android:title="Guide and FAQ" />
-    <item
-        android:id="@+id/Version"
-        android:title="Version" />
 </menu>

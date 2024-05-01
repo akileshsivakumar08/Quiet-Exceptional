@@ -37,22 +37,25 @@ public class callReceiver_AlertMissedCalls extends BroadcastReceiver {
             boolean ringDevice=utilityHelpers.isDNDOverriden(context);
             if (ringDevice) {
                 if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+                    if((am.getMode() != AudioManager.MODE_IN_COMMUNICATION) && (am.getMode() != AudioManager.MODE_IN_CALL)){
                     if (obj_AMC.isFeatureActivated(context)) {
 
-                            String logType = getLastCallLog(context);
-                            if (logType.equals(String.valueOf(MISSED_TYPE))) {
-                                utilityHelpers.turnSpeakerON(am);
-                                int setVolume =obj_AMC.getPingVolume(context);
-                                am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
-                                ringtones shorttune = new ringtones(context, 2);
-                                if(utilityHelpers.isDeviceConnected(am)){
-                                    am.setStreamVolume(AudioManager.STREAM_MUSIC,(am.getStreamMaxVolume(AudioManager.STREAM_MUSIC))/2,0);
-                                }
-                                shorttune.playShorttune(context);
-                                //am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
+                        String logType = getLastCallLog(context);
+                        if (logType.equals(String.valueOf(MISSED_TYPE))) {
+                            utilityHelpers.turnSpeakerON(am);
+                            int setVolume = obj_AMC.getPingVolume(context);
+                            am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
+                            ringtones shorttune = new ringtones(context, 2);
+                            if (utilityHelpers.isDeviceConnected(am)) {
+                                am.setStreamVolume(AudioManager.STREAM_MUSIC, (am.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) / 2, 0);
                             }
+
+                            shorttune.playShorttune(context);
+                            //am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
                         }
                     }
+                }
+            }
                     //  Toast.makeText(context, "This a toast message", Toast.LENGTH_LONG).show();
                 }
             }

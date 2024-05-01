@@ -39,7 +39,7 @@ class feat_SMSAlarm {
 
 
     public static String description;
-    private String content="Emergency Message. Swipe to stop playing tune";
+    private String content= String.valueOf(R.string.emergency_message_swipe_to_stop_playing_tune);
     public ArrayList<class_Buddy> SMSAlarmList = new ArrayList<>();
     public static String[] permissions= {Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.RECEIVE_SMS,Manifest.permission.SEND_SMS, Manifest.permission.READ_CONTACTS,Manifest.permission.READ_SMS};
 
@@ -89,7 +89,7 @@ class feat_SMSAlarm {
     public feat_SMSAlarm(Context context) {
         featureActivated = utilityHelpers.loadBooleanFromMemory(context, MEMCODE_ACTIVATEFEAT);
         loadsilExceptListFromMemory(context);
-        description=context.getString(R.string.PC_description);
+        description=context.getString(R.string.SA_description);
         createNotificationChannel(context);
         AlarmSound= new ringtones(context,1);
      }
@@ -159,20 +159,29 @@ class feat_SMSAlarm {
                 .build();
     }
 
-    public void sendSMS(Context context) {
+    public void sendSMS(Context context,int smstype,ArrayList<class_Buddy> contacts) {
         String phoneNo = "";
-        String SMS = "Emergency";
+        String SMS;
+        if(smstype==1) {
+            SMS = context.getString(R.string.exceptional_sms_alarm);
+        }
+        else{
+            SMS = context.getString(R.string.ShareSMSAlarm);
+        }
         try {
             loadsilExceptListFromMemory(context);
-            if (!(SMSAlarmList.isEmpty())) {
-                for (int i = 0; i < SMSAlarmList.size(); i++) {
-                    phoneNo = SMSAlarmList.get(i).getBuddy_PhNo();
-                    String name = SMSAlarmList.get(i).getBuddy_name();
+            if (!(contacts.isEmpty())) {
+                for (int i = 0; i < contacts.size(); i++) {
+                    phoneNo = contacts.get(i).getBuddy_PhNo();
+                    String name = contacts.get(i).getBuddy_name();
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(phoneNo, null, SMS, null, null);
                     Toast.makeText(context, "sending message to " + name, Toast.LENGTH_SHORT).show();
 
                 }
+            }
+            else{
+                Toast.makeText(context, R.string.no_contacts_found, Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,5 +189,14 @@ class feat_SMSAlarm {
         }
     }
 
+    public ArrayList<class_Buddy> getLastnContacts(int differenceContactLength) {
+        ArrayList<class_Buddy> ContactstoSendSMS=new ArrayList<class_Buddy>();
+        int totalSize=SMSAlarmList.size();
+        for(int i=0;i<differenceContactLength;i++){
+            ContactstoSendSMS.add(SMSAlarmList.get(totalSize-1));
+            totalSize=totalSize-1;
+        }
+        return ContactstoSendSMS;
+    }
 }
 

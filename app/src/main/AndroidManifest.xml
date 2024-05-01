@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
@@ -40,10 +39,7 @@
             android:screenOrientation="portrait" >
 
         </activity>
-        <activity
-            android:name=".troubleshoot"
-            android:exported="true" />
-        <service android:name=".myAccessibilityService"
+       <!-- <service android:name=".myAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:label="@string/accessibility_service_label"
             android:description="@string/accessibility_service_desc"
@@ -54,7 +50,7 @@
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
-        </service>
+        </service>-->
         <receiver android:name="AlertMissedCalls.callReceiver_AlertMissedCalls"
             android:exported="true">
             <intent-filter>
@@ -73,7 +69,7 @@
                 <action android:name="STOP_SERVICE"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".callReceiver_RepeatCaller"
+       <!-- <receiver android:name=".callReceiver_RepeatCaller"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE"/>
@@ -84,7 +80,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE"/>
             </intent-filter>
-        </receiver>
+        </receiver>-->
         <receiver android:name=".Receiver_SMSAlarm"
             android:exported="true">
             <intent-filter>

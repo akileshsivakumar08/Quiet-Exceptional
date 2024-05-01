@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/smsimage"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -18,7 +18,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.35"
         app:srcCompat="@drawable/baseline_chat_bubble_outline_24"
-        app:tint="#F79489" />
+        app:tint="#FFD369" />
+    <ImageView
+        android:id="@+id/smsimage2"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35"
+        app:srcCompat="@drawable/baseline_chat_bubble_outline_24"
+        app:tint="#DDE1ED" />
 
     <TextView
         android:id="@+id/TapToEnable"
@@ -53,7 +65,7 @@
         android:id="@+id/manageContacts"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:backgroundTint="#FFFBF2"
         android:textColor="#C5C5C5"
         app:layout_constraintEnd_toEndOf="@+id/FeatTitle"

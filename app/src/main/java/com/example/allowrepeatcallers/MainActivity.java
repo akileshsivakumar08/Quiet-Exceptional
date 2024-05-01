@@ -115,11 +115,6 @@ public class MainActivity extends AppCompatActivity {
                     i.setData(Uri.parse(url));
                     startActivity(i);
                 }
-                else if(id==R.id.troubleshoot)
-                {
-                    Intent intent = new Intent(context, troubleshoot.class);
-                            startActivity(intent);
-                        }
 
 
                 return true;
@@ -140,16 +135,10 @@ public class MainActivity extends AppCompatActivity {
                 String description="";
                 switch(currentFragmentPosition){
                     case 0:
-                        description= feat_PrioContacts.getDescription();
-                        break;
-                    case 1:
                         description= feat_AlertMissedCalls.getDescription();
                         break;
-                    case 2:
-                        description= feat_QuickSwitch.getDescription();
-                        break;
-                    case 3:
-                        description= feat_AllowRepeatCallers.getDescription();
+                    case 1:
+                        description= feat_SMSAlarm.getDescription();
                         break;
                 }
                 postInfoDialog(description);

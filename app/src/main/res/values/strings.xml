@@ -17,7 +17,7 @@
     <string name="ARC_description"> Device Rings on Successive calls, if a call was missed in Silent or Vibrate Mode.\n\nNotifications can be dismissed to disable the ringing.</string>
     <string name="ARC_Volume">Volume</string>
     <string name="MCA_Title">Alert Missed Calls</string>
-    <string name="MCA_description">Device makes a short sound after a missed call</string>
+    <string name="MCA_description">Device makes a short sound after a missed call in all ringer Modes.</string>
     <string name="QS_Title">Quick Switch</string>
     <string name="QS_description">Quickly change ringer modes by double pressing volume buttons when the screen is on</string>
     <string name="QS_RequestAccessibility">To use this feature, the app needs access to the volume buttons of the device. This is managed by the Accessibility permission.\nPress continue to provide these in the settings menu.\n
@@ -43,4 +43,12 @@
     <string name="set_to_silent">set to silent</string>
     <string name="rate_app">Rate App</string>
     <string name="tap_to_disable">Tap To Disable</string>
+    <string name="SA_description">Device rings on receiving the SMS \"Emergency\" from selected contacts.\n\nLong-press to send Emergencies to all the saved contacts.\n\nCarrier Charges may apply.</string>
+    <string name="emergency_message_swipe_to_stop_playing_tune">Emergency Message. Swipe to stop playing tune</string>
+    <string name="no_contacts_found">No Contacts found</string>
+    <string name="requestShareSMSAlarm">Its a good Idea to let the new Contacts know. \nSend a message that they can reach you with Alarm SMS? \nThis will also share a link to download the app.</string>
+    <string name="accept_menu">Yes</string>
+    <string name="reject_menu">No</string>
+    <string name="ShareSMSAlarm">"Hey, ive added you on Quiet Exceptional. \nYou can now send me the SMSS \"Exceptional SMS Alarm\". \nMy phone will ring even if it is in silent or vibrate mode. "</string>
+    <string name="exceptional_sms_alarm">Exceptional SMS Alarm</string>
 </resources>

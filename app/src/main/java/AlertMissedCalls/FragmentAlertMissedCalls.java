@@ -37,6 +37,8 @@ import com.example.allowrepeatcallers.ringtones;
 import com.example.allowrepeatcallers.settings;
 import com.example.allowrepeatcallers.utilityHelpers;
 
+import java.io.File;
+
 import AlertMissedCalls.feat_AlertMissedCalls;
 
 public class FragmentAlertMissedCalls extends Fragment {
@@ -77,6 +79,16 @@ public class FragmentAlertMissedCalls extends Fragment {
     public void onResume() {
         super.onResume();
         Context context=getContext();
+        if(obj_AMC.isFeatureActivated(context)){
+            process_featureState(2,context);
+        }
+        else{
+            process_featureState(1,context);
+        }
+        if (utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
+            process_featureState(0,context);
+            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
+        }
 
     }
 
@@ -165,10 +177,16 @@ public class FragmentAlertMissedCalls extends Fragment {
         settings_AMC.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, settings.class);
-                startActivity(intent);
+                if(obj_AMC.isFeatureActivated(context)) {
+                    Intent intent = new Intent(context, settings.class);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(context, " Enable Feature to Access Settings ", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
 
 
     }
@@ -182,21 +200,21 @@ public class FragmentAlertMissedCalls extends Fragment {
         TapToEnable.setChecked(bool_state);
         seekbar.setEnabled(bool_state);
         taptotestvolume.setEnabled(bool_state);
-        settings_AMC.setEnabled(bool_state);
+        //settings_AMC.setEnabled(bool_state);
         if(state==2){
             adjustInterfaceButton(EnabledColor,getString(R.string.tap_to_disable));
-            settings_AMC.setColorFilter(Color.parseColor(settingscolor_enabled));
-            settings_text.setTextColor(Color.parseColor(settingscolor_enabled));
+           // settings_AMC.setColorFilter(Color.parseColor(settingscolor_enabled));
+           // settings_text.setTextColor(Color.parseColor(settingscolor_enabled));
         }
         else if(state==1){
             adjustInterfaceButton(DisabledColor,getString(R.string.Allfeat_Tap2Enable));
-            settings_AMC.setColorFilter(Color.parseColor(settingscolor_disabled));
-            settings_text.setTextColor(Color.parseColor(settingscolor_disabled));
+            //settings_AMC.setColorFilter(Color.parseColor(settingscolor_disabled));
+           // settings_text.setTextColor(Color.parseColor(settingscolor_disabled));
         }
         else if(state==0){
             adjustInterfaceButton(DisabledColor,getString(R.string.Allfeat_Tap2Permission));
-            settings_AMC.setColorFilter(Color.parseColor(settingscolor_disabled));
-            settings_text.setTextColor(Color.parseColor(settingscolor_disabled));
+           // settings_AMC.setColorFilter(Color.parseColor(settingscolor_disabled));
+          //  settings_text.setTextColor(Color.parseColor(settingscolor_disabled));
         }
 
     }
@@ -218,7 +236,6 @@ public class FragmentAlertMissedCalls extends Fragment {
                 if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
                     process_featureState(2,context);
                     utilityHelpers.checkLogFormat(context);
-                    Toast.makeText(context, " Feature Enable saved ", Toast.LENGTH_SHORT).show();
 
                 } else {
                     String[] pend = utilityHelpers.getpendingpermissions(context, feat_AlertMissedCalls.permissions);
@@ -230,8 +247,8 @@ public class FragmentAlertMissedCalls extends Fragment {
                         try {
                             //start a dialog box
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                            builder.setMessage("To use this app permisions are needed to read call logs and detect incoming calls. Press continue to provide these in the app settings menu").setPositiveButton("continue", dialogClickListener)
-                                    .setNegativeButton("cancel", dialogClickListener);
+                            builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
+                                    .setNegativeButton(R.string.cancel_menu, dialogClickListener);
                             AlertDialog alertDialog = builder.create();
                             alertDialog.show();
                         } catch (Exception e) {
@@ -279,34 +296,6 @@ public class FragmentAlertMissedCalls extends Fragment {
             }
         }
     };
-
-
-   /* @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        Context context =requireContext();
-        switch (requestCode) {
-            case PERMISSION_CODE_POSTNOTIFICATIONS:
-                for(int i =0;i<permissions.length;i++){
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    } else {
-                        // Permission Denied
-                        Toast.makeText(context, "denied", Toast.LENGTH_SHORT).show();
-                        process_featureState(false,context);
-
-                        break;
-
-                    }
-                    process_featureState(true,context);
-
-                }
-
-                feat_AlertMissedCalls.permission_already_requested=true;
-                obj_AMC.setPermissionRequested(context);
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }*/
 
 }
 

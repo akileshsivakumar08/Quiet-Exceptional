@@ -4,12 +4,15 @@ package com.example.allowrepeatcallers;
 import static com.example.allowrepeatcallers.R.menu.popupmenu_loadedlist;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -17,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,6 +32,7 @@ public class LoadContactsActivity extends AppCompatActivity {
     ListView listview;
     String featureIdentifier;
     ArrayList<class_Buddy> ContactsList;
+    ArrayList<class_Buddy> diffList;
     Context context;
 
     @Override
@@ -36,6 +41,7 @@ public class LoadContactsActivity extends AppCompatActivity {
         context=getApplicationContext();
         getSupportActionBar().setTitle( "Your Contacts");
         ContactsList=new ArrayList<class_Buddy>();
+        diffList=new ArrayList<class_Buddy>();
         ArrayList<class_Buddy> ContactsListIP = getIntent().getParcelableArrayListExtra("List_Parcel");
         if(ContactsListIP!=null){
             ContactsList=ContactsListIP;
@@ -91,7 +97,7 @@ public class LoadContactsActivity extends AppCompatActivity {
             boolean isIt=cursor.moveToFirst ();
             int phoneIndex = cursor.getColumnIndex (ContactsContract.CommonDataKinds.Phone.NUMBER);
             int nameIndex= (cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String msg="Emergency";
+            String msg=getString(R.string.exceptional_sms_alarm);
             phoneNo = cursor.getString (phoneIndex);
             phoneNo=phoneNo.replaceAll("[^0-9]", "");
             String disp_name=cursor.getString(nameIndex);
@@ -127,6 +133,7 @@ public class LoadContactsActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.contact_already_exists, Toast.LENGTH_SHORT).show();
             } else {
                 ContactsList.add(buddy);
+                diffList.add(buddy);
                 refreshlistview(ContactsList);
             }
         }
@@ -141,9 +148,17 @@ public class LoadContactsActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent resultIntent = new Intent();
         resultIntent.putParcelableArrayListExtra("outputList", ContactsList);
+        resultIntent.putParcelableArrayListExtra("diffList", diffList);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
+
+
+
+
+
+
+
 }
 
 

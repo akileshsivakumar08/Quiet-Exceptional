@@ -10,11 +10,11 @@
 
     <View
         android:id="@+id/rightLine"
-        android:layout_width="290dp"
+        android:layout_width="250dp"
         android:layout_height="12dp"
         android:layout_above="@+id/FeatTitle"
         android:layout_marginTop="20dp"
-        android:background="#0C7B93"
+        android:background="#DDE1ED"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/taptotestvolume" />
 
@@ -50,7 +50,7 @@
         android:id="@+id/TapToEnable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:text="@string/Allfeat_Tap2Enable"
         android:textColor="#D8A7B1"
         app:layout_constraintStart_toStartOf="@+id/FeatTitle"
@@ -116,12 +116,14 @@
         android:layout_height="50dp"
         android:backgroundTint="#FFFBF2"
         android:textColor="#C5C5C5"
-        android:layout_marginRight="30dp"
-        app:tint="#2F435A"
         app:layout_constraintBottom_toBottomOf="@+id/rightLine"
-        app:layout_constraintEnd_toStartOf="@+id/rightLine"
+        app:layout_constraintEnd_toEndOf="@+id/settings_text"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/settings_text"
         app:layout_constraintTop_toTopOf="@+id/rightLine"
-        app:srcCompat="@drawable/baseline_settings_24" />
+        app:srcCompat="@drawable/baseline_settings_24"
+        app:tint="#2F435A" />
+
     <TextView
         android:id="@+id/settings_text"
         android:layout_width="wrap_content"
@@ -129,8 +131,10 @@
         android:text="@string/Allfeat_settings"
         android:textColor="#2F435A"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/settings_AMC"
-        app:layout_constraintStart_toStartOf="@+id/settings_AMC"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toStartOf="@+id/rightLine"
+        app:layout_constraintHorizontal_bias="0.35"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_AMC" />
 
 

@@ -35,6 +35,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+
+import AlertMissedCalls.feat_AlertMissedCalls;
+
 
 public class FragmentSMSAlarm extends Fragment {
     TextView FeatTitle;
@@ -45,6 +49,7 @@ public class FragmentSMSAlarm extends Fragment {
     final int PERMISSION_CODE_POSTNOTIFICATIONS=1;
     String EnabledColor="#064663";
     ImageView smsimage;
+    ImageView smsimage2;
     String DisabledColor="#72435C";
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
@@ -53,8 +58,11 @@ public class FragmentSMSAlarm extends Fragment {
     feat_SMSAlarm GUIobj_SA;
     int pingvolume;
     permissionhandler OBJ_Permissions;
+    ArrayList<class_Buddy> ContactstoSendSMS;
 
     private TextView manageContacts_text;
+    int start_length;
+    int differenceContactLength;
     private String settingscolor_enabled="#2F435A";
     private String settingscolor_disabled="#E4E5E8";
 
@@ -68,7 +76,21 @@ public class FragmentSMSAlarm extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Context context=getContext();
 
+        if (utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
+            process_featureState(false,context);
+            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
+        }
+        else{
+            process_featureState(true,context);
+            TapToEnable.setText(R.string.long_press_to_send_emergency);
+        }
+
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,13 +102,16 @@ public class FragmentSMSAlarm extends Fragment {
         manageContacts=(ImageView) getView().findViewById(R.id.manageContacts);
         manageContacts_text=(TextView) getView().findViewById(R.id.manageContacts_text);
         smsimage=(ImageView) getView().findViewById(R.id.smsimage);
+        smsimage2=(ImageView) getView().findViewById(R.id.smsimage2);
         //load managers
         GUIobj_SA =new feat_SMSAlarm(context);
         OBJ_Permissions=new permissionhandler(context);
+        ContactstoSendSMS=new ArrayList<class_Buddy>();
         //load from memory
 
         //initiate GUI Elements
-        animateScalePan(smsimage,1.1f);
+        animateScalePan(smsimage,1.07f,0);
+        //animateScalePan(smsimage2,1.1f,500);
         utilityHelpers.adjustTitleTextSize(FeatTitle,context);
 
         if (utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
@@ -117,6 +142,7 @@ public class FragmentSMSAlarm extends Fragment {
                     Intent intent = new Intent(context, LoadContactsActivity.class);
 
                 intent.putParcelableArrayListExtra("List_Parcel",GUIobj_SA.getSilExceptList());
+                start_length=GUIobj_SA.getSilExceptList().size();
                 LoadContactsActivityResultLauncher.launch(intent);
             }
         });
@@ -129,7 +155,8 @@ public class FragmentSMSAlarm extends Fragment {
             public boolean onLongClick(View view) {
                 if(GUIobj_SA.isFeatureActivated(context)){
                     if(!utilityHelpers.ispermissionpending(context,feat_SMSAlarm.permissions)) {
-                        GUIobj_SA.sendSMS(context);
+                        ContactstoSendSMS=GUIobj_SA.getSilExceptList();
+                        GUIobj_SA.sendSMS(context,1,ContactstoSendSMS);
                     }
                     else{
                         Toast.makeText(context, R.string.missing_permissions, Toast.LENGTH_SHORT).show();
@@ -198,7 +225,7 @@ public class FragmentSMSAlarm extends Fragment {
             }
         }
     }
-    private void animateScalePan(View v,float scale) {
+    private void animateScalePan(View v,float scale,long startDelay) {
         AnimatorSet animSetXY = new AnimatorSet();
 
         ObjectAnimator scaleanimY = ObjectAnimator.ofFloat(v,
@@ -213,6 +240,7 @@ public class FragmentSMSAlarm extends Fragment {
         animSetXY.playTogether(scaleanimX, scaleanimY);
         animSetXY.setInterpolator(new LinearInterpolator());
         animSetXY.setDuration(900);
+        animSetXY.setStartDelay(startDelay);
         animSetXY.start();
 
     }
@@ -248,7 +276,12 @@ public class FragmentSMSAlarm extends Fragment {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     // Here, no request code
                     Intent data = result.getData();
+                    ArrayList<class_Buddy> outputList=data.getParcelableArrayListExtra("outputList");
+                    ContactstoSendSMS =data.getParcelableArrayListExtra("diffList");
                     GUIobj_SA.setSMSAlarmList(getContext(), data.getParcelableArrayListExtra("outputList"));
+                    if(ContactstoSendSMS.size()>0){
+                        requestDialogShareSMS();
+                    }
                 }
             });
     private void process_featureState(boolean state,Context context) {
@@ -271,6 +304,40 @@ public class FragmentSMSAlarm extends Fragment {
         }
 
     }
+
+
+    private void requestDialogShareSMS() {
+        try {
+            //start a dialog box
+            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
+            noti_alertbuilder.setMessage(R.string.requestShareSMSAlarm).setPositiveButton(R.string.accept_menu, shareSMS_dialogClickListener)
+                    .setNegativeButton(R.string.reject_menu, shareSMS_dialogClickListener);
+            AlertDialog alertDialog = noti_alertbuilder.create();
+            alertDialog.show();
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    DialogInterface.OnClickListener shareSMS_dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            Context context=requireContext();
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+
+                    GUIobj_SA.sendSMS(context,2,ContactstoSendSMS);
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //No button clicked
+                    //smsReceiver.DND_OverridePermission=false;
+                    break;
+            }
+        }
+    };
+
 
 
     DialogInterface.OnClickListener noti_alert_dialogClickListener = new DialogInterface.OnClickListener() {
