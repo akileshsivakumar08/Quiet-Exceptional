@@ -6,8 +6,10 @@ import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.widget.Switch;
 import android.widget.Toast;
+
+import com.example.quietexceptional.R;
+
 
 public class ringtones {
 
@@ -34,7 +36,7 @@ public class ringtones {
     public ringtones(Context context,int feat_ID) {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         if(feat_ID==0){
-            mp = MediaPlayer.create(context, R.raw.nokia_sms);
+            mp = MediaPlayer.create(context, R.raw.wednesdayedited);
 
         }
         else if(feat_ID==1) {
@@ -43,7 +45,7 @@ public class ringtones {
             mp = MediaPlayer.create(context, ringtoneUri);
         }
         else if(feat_ID==2){
-            mp = MediaPlayer.create(context, R.raw.nokia_sms);
+            mp = MediaPlayer.create(context, R.raw.wednesdayedited);
         }
 
     }

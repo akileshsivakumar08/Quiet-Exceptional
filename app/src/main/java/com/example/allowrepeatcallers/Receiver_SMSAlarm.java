@@ -3,28 +3,17 @@ package com.example.allowrepeatcallers;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsMessage;
-import android.util.Log;
-import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Receiver_SMSAlarm extends BroadcastReceiver {
     public static final String SHARED_PREFS = "sharedPrefs";

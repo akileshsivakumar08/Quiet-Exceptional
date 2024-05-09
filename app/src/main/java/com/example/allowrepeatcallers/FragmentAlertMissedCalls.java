@@ -1,4 +1,4 @@
-package AlertMissedCalls;
+package com.example.allowrepeatcallers;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.AUDIO_SERVICE;
@@ -6,7 +6,6 @@ import static android.content.Context.AUDIO_SERVICE;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
@@ -31,15 +30,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.allowrepeatcallers.R;
-import com.example.allowrepeatcallers.permissionhandler;
-import com.example.allowrepeatcallers.ringtones;
-import com.example.allowrepeatcallers.settings;
-import com.example.allowrepeatcallers.utilityHelpers;
-
-import java.io.File;
-
-import AlertMissedCalls.feat_AlertMissedCalls;
+import com.example.quietexceptional.R;
 
 public class FragmentAlertMissedCalls extends Fragment {
     TextView FeatTitle;
@@ -77,60 +68,90 @@ public class FragmentAlertMissedCalls extends Fragment {
 
     @Override
     public void onResume() {
-        super.onResume();
-        Context context=getContext();
-        if(obj_AMC.isFeatureActivated(context)){
-            process_featureState(2,context);
+        try {
+            super.onResume();
+            Context context = getContext();
+            if (obj_AMC.isFeatureActivated(context)) {
+                process_featureState(2, context);
+            } else {
+                process_featureState(1, context);
+            }
+            if (utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
+                process_featureState(0, context);
+                TapToEnable.setText(R.string.Allfeat_Tap2Permission);
+            }
         }
-        else{
-            process_featureState(1,context);
+        catch (Exception e) {
+            String ErrorFlow="AMC_frag_Error On Resume";
+            utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+            //Error On Resume
+            throw new RuntimeException(e);
         }
-        if (utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
-            process_featureState(0,context);
-            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
-        }
-
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context=requireContext();
-        //utilityHelpers.createNotificationChannel(context);
-        TapToEnable=(SwitchCompat) getView().findViewById(R.id.TapToEnable);
-        taptotestvolume=(TextView) getView().findViewById(R.id.taptotestvolume);
-        FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
-        settings_AMC=(ImageView) getView().findViewById(R.id.settings_AMC);
-        settings_text=(TextView) getView().findViewById(R.id.settings_text);
-        seekbar=(SeekBar) getView().findViewById(R.id.seekBar);
 
-        leftLine=(View) getView().findViewById(R.id.leftLine);
-        rightLine=(View) getView().findViewById(R.id.rightLine);
-        utilityHelpers.adjustTitleTextSize(FeatTitle,context);
+        //Initialize GUI
+        try {
+            //utilityHelpers.createNotificationChannel(context);
+            TapToEnable = (SwitchCompat) getView().findViewById(R.id.TapToEnable);
+            taptotestvolume = (TextView) getView().findViewById(R.id.taptotestvolume);
+            FeatTitle = (TextView) getView().findViewById(R.id.FeatTitle);
+            settings_AMC = (ImageView) getView().findViewById(R.id.settings_AMC);
+            settings_text = (TextView) getView().findViewById(R.id.settings_text);
+            seekbar = (SeekBar) getView().findViewById(R.id.seekBar);
+
+            leftLine = (View) getView().findViewById(R.id.leftLine);
+            rightLine = (View) getView().findViewById(R.id.rightLine);
+            utilityHelpers.adjustTitleTextSize(FeatTitle, context);
+            Animation anima_scaleleft = AnimationUtils.loadAnimation(context, R.anim.scale_fromleft);
+            Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
+            leftLine.startAnimation(anima_scaleleft);
+            rightLine.startAnimation(anima_scaleright);
+        } catch (Exception e) {
+            String ErrorFlow="AMC_frag_Throw GUI INIT Exception";
+            utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+            //Throw GUI INIT Exception
+            throw new RuntimeException(e);
+        }
+        try{
         AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         seekbar.setMax(maxMusicVolume);
         obj_AMC=new feat_AlertMissedCalls(context);
         OBJ_Permissions=new permissionhandler(context);
 
-        Animation anima_scaleleft = AnimationUtils.loadAnimation(context, R.anim.scale_fromleft);
-        Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
-        leftLine.startAnimation(anima_scaleleft);
-        rightLine.startAnimation(anima_scaleright);
+
         // Set the current volume of the SeekBar to the current volume of the MediaPlayer:
         int lastSetMediaVolume=obj_AMC.getPingVolume(context);
         seekbar.setProgress(lastSetMediaVolume);
-        if(obj_AMC.isFeatureActivated(context)){
-            process_featureState(2,context);
-        }
-        else{
-            process_featureState(1,context);
-        }
-        if (utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
-            process_featureState(0,context);
-            TapToEnable.setText(R.string.Allfeat_Tap2Permission);
-        }
+    } catch (Exception e) {
+            String ErrorFlow="AMC_frag_Throw Feature Variables INIT Exception";
+            utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+        //Throw Feature Variables INIT Exception
+        throw new RuntimeException(e);
+    }
 
+try {
+    if (obj_AMC.isFeatureActivated(context)) {
+        process_featureState(2, context);
+    } else {
+        process_featureState(1, context);
+    }
+    if (utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
+        process_featureState(0, context);
+        TapToEnable.setText(R.string.Allfeat_Tap2Permission);
+    }
+}
+catch (Exception e) {
+    String ErrorFlow="AMC_frag_Throw feature state Exception";
+    utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+    //Throw feature state Exception
+    throw new RuntimeException(e);
+}
 
         taptotestvolume.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,29 +213,29 @@ public class FragmentAlertMissedCalls extends Fragment {
     }
 
     private void process_featureState(int state,Context context) {
-        Boolean bool_state=false;
-        if(state==2){
-            bool_state=true;
+        try {
+            Boolean bool_state = false;
+            if (state == 2) {
+                bool_state = true;
+            }
+            obj_AMC.setFeatureActivated(context, bool_state);
+            TapToEnable.setChecked(bool_state);
+            seekbar.setEnabled(bool_state);
+            taptotestvolume.setEnabled(bool_state);
+            //settings_AMC.setEnabled(bool_state);
+            if (state == 2) {
+                adjustInterfaceButton(EnabledColor, getString(R.string.tap_to_disable));
+            } else if (state == 1) {
+                adjustInterfaceButton(DisabledColor, getString(R.string.Allfeat_Tap2Enable));
+            } else if (state == 0) {
+                adjustInterfaceButton(DisabledColor, getString(R.string.Allfeat_Tap2Permission));
+            }
         }
-        obj_AMC.setFeatureActivated(context,bool_state);
-        TapToEnable.setChecked(bool_state);
-        seekbar.setEnabled(bool_state);
-        taptotestvolume.setEnabled(bool_state);
-        //settings_AMC.setEnabled(bool_state);
-        if(state==2){
-            adjustInterfaceButton(EnabledColor,getString(R.string.tap_to_disable));
-           // settings_AMC.setColorFilter(Color.parseColor(settingscolor_enabled));
-           // settings_text.setTextColor(Color.parseColor(settingscolor_enabled));
-        }
-        else if(state==1){
-            adjustInterfaceButton(DisabledColor,getString(R.string.Allfeat_Tap2Enable));
-            //settings_AMC.setColorFilter(Color.parseColor(settingscolor_disabled));
-           // settings_text.setTextColor(Color.parseColor(settingscolor_disabled));
-        }
-        else if(state==0){
-            adjustInterfaceButton(DisabledColor,getString(R.string.Allfeat_Tap2Permission));
-           // settings_AMC.setColorFilter(Color.parseColor(settingscolor_disabled));
-          //  settings_text.setTextColor(Color.parseColor(settingscolor_disabled));
+        catch (Exception e) {
+            String ErrorFlow="AMC_frag_Throw feature state Exception";
+            utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+            //errror processing feature state
+            throw new RuntimeException(e);
         }
 
     }
@@ -227,37 +248,46 @@ public class FragmentAlertMissedCalls extends Fragment {
     }
 
     private void userTap() {
-        Context context=requireContext();
-        if(obj_AMC.isFeatureActivated(context)){
-            process_featureState(1,context);
+    try{
+        Context context = requireContext();
+        if (obj_AMC.isFeatureActivated(context)) {
+            process_featureState(1, context);
 
-        }
-        else{
-                if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
-                    process_featureState(2,context);
-                    utilityHelpers.checkLogFormat(context);
+        } else {
+            if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
+                process_featureState(2, context);
+                utilityHelpers.checkLogFormat(context);
 
-                } else {
-                    String[] pend = utilityHelpers.getpendingpermissions(context, feat_AlertMissedCalls.permissions);
-                    Boolean permission_already_requested=OBJ_Permissions.werePermissionsRequested(pend);
-                    if (permission_already_requested == false) {
+            } else {
+                String[] pend = utilityHelpers.getpendingpermissions(context, feat_AlertMissedCalls.permissions);
+                Boolean permission_already_requested = OBJ_Permissions.werePermissionsRequested(pend);
+                if (permission_already_requested == false) {
 
-                        requestPermissionLauncher.launch(pend);
-                    } else if (permission_already_requested == true) {
-                        try {
-                            //start a dialog box
-                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                            builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
-                                    .setNegativeButton(R.string.cancel_menu, dialogClickListener);
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.show();
-                        } catch (Exception e) {
-                            Log.e(TAG, " Exception on dialog  " + e);
-                            Toast.makeText(context, " Exception on dialog ", Toast.LENGTH_SHORT).show();
-                        }
+                    requestPermissionLauncher.launch(pend);
+                } else if (permission_already_requested == true) {
+                    try {
+                        //start a dialog box
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
+                                .setNegativeButton(R.string.cancel_menu, dialogClickListener);
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    } catch (Exception e) {
+                        String ErrorFlow=" AMC_frag_Exception on dialog  ";
+                        utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+                        Log.e(TAG, " Exception on dialog  " + e);
+                        Toast.makeText(context, " Exception on dialog ", Toast.LENGTH_SHORT).show();
                     }
                 }
+            }
         }
+    }
+    catch (Exception e) {
+        String ErrorFlow="AMC_frag_Feature Enable User Tap exception";
+        utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+        //Feature Enable User Tap exception
+        throw new RuntimeException(e);
+    }
     }
 
     private ActivityResultLauncher<String[]> requestPermissionLauncher =

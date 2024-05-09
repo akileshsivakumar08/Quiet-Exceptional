@@ -7,6 +7,7 @@ import android.service.notification.StatusBarNotification;
 
 import androidx.work.OneTimeWorkRequest;
 
+import com.example.quietexceptional.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

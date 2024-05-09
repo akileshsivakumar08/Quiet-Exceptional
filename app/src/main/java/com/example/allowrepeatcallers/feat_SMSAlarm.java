@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+import com.example.quietexceptional.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,7 +40,6 @@ class feat_SMSAlarm {
 
 
     public static String description;
-    private String content= String.valueOf(R.string.emergency_message_swipe_to_stop_playing_tune);
     public ArrayList<class_Buddy> SMSAlarmList = new ArrayList<>();
     public static String[] permissions= {Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.RECEIVE_SMS,Manifest.permission.SEND_SMS, Manifest.permission.READ_CONTACTS,Manifest.permission.READ_SMS};
 
@@ -154,7 +154,7 @@ class feat_SMSAlarm {
                 .setContentTitle(title)
                 .setDeleteIntent(stopPendingIntent)
                 .addAction(R.drawable.baseline_account_circle_24, "Stop", stopPendingIntent)
-                .setContentText(content)
+                .setContentText(context.getString(R.string.emergency_message_swipe_to_stop_playing_tune))
                 .setSmallIcon(R.drawable.baseline_account_circle_24)
                 .build();
     }

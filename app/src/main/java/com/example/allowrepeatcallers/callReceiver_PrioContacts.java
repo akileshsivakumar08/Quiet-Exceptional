@@ -12,6 +12,9 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.quietexceptional.R;
+
+
 public class callReceiver_PrioContacts extends BroadcastReceiver {
     ringtones exceptionally_Ringtone;
     public static MediaPlayer local_mp;

@@ -2,6 +2,9 @@ package com.example.allowrepeatcallers;
 
 import android.content.Context;
 
+import com.example.quietexceptional.R;
+
+
 public class feat_QuickSwitch {
 
     public static int upcounter;

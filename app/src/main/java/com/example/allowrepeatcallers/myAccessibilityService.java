@@ -20,6 +20,9 @@ import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
+import com.example.quietexceptional.R;
+
+
 public class myAccessibilityService extends AccessibilityService {
     feat_QuickSwitch obj_QS;
     @Override

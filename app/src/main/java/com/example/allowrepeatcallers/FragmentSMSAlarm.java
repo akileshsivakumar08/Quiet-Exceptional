@@ -3,7 +3,6 @@ package com.example.allowrepeatcallers;
 import static android.content.ContentValues.TAG;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-import android.Manifest;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -12,11 +11,9 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -35,9 +32,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
+import com.example.quietexceptional.R;
 
-import AlertMissedCalls.feat_AlertMissedCalls;
+import java.util.ArrayList;
 
 
 public class FragmentSMSAlarm extends Fragment {
@@ -78,48 +75,77 @@ public class FragmentSMSAlarm extends Fragment {
 
     @Override
     public void onResume() {
+        try{
         super.onResume();
-        Context context=getContext();
+        Context context = getContext();
 
         if (utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
-            process_featureState(false,context);
+            process_featureState(false, context);
             TapToEnable.setText(R.string.Allfeat_Tap2Permission);
-        }
-        else{
-            process_featureState(true,context);
+        } else {
+            process_featureState(true, context);
             TapToEnable.setText(R.string.long_press_to_send_emergency);
         }
-
+    }
+        catch (Exception e) {
+            String ErrorFlow="SA_frag_Error On Resume";
+            utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+            throw new RuntimeException(e);
+        }
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context context=requireContext();
         utilityHelpers.createNotificationChannel(context);
-        //load GUI Elements
-        FeatTitle=(TextView) getView().findViewById(R.id.FeatTitle);
-        TapToEnable=(TextView) getView().findViewById(R.id.TapToEnable);
-        manageContacts=(ImageView) getView().findViewById(R.id.manageContacts);
-        manageContacts_text=(TextView) getView().findViewById(R.id.manageContacts_text);
-        smsimage=(ImageView) getView().findViewById(R.id.smsimage);
-        smsimage2=(ImageView) getView().findViewById(R.id.smsimage2);
-        //load managers
-        GUIobj_SA =new feat_SMSAlarm(context);
-        OBJ_Permissions=new permissionhandler(context);
-        ContactstoSendSMS=new ArrayList<class_Buddy>();
-        //load from memory
+        try {
+            //load GUI Elements
+            FeatTitle = (TextView) getView().findViewById(R.id.FeatTitle);
+            TapToEnable = (TextView) getView().findViewById(R.id.TapToEnable);
+            manageContacts = (ImageView) getView().findViewById(R.id.manageContacts);
+            manageContacts_text = (TextView) getView().findViewById(R.id.manageContacts_text);
+            smsimage = (ImageView) getView().findViewById(R.id.smsimage);
+            smsimage2 = (ImageView) getView().findViewById(R.id.smsimage2);
+            //load managers
 
-        //initiate GUI Elements
-        animateScalePan(smsimage,1.07f,0);
-        //animateScalePan(smsimage2,1.1f,500);
-        utilityHelpers.adjustTitleTextSize(FeatTitle,context);
+            //load from memory
 
-        if (utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
-            process_featureState(false,context);
+            //initiate GUI Elements
+            animateScalePan(smsimage, 1.07f, 0);
+            //animateScalePan(smsimage2,1.1f,500);
+            utilityHelpers.adjustTitleTextSize(FeatTitle, context);
         }
+        catch (Exception e) {
+            //Throw GUI INIT Exception
 
+            String ErrorFlow="SA_frag_Throw GUI INIT Exception";
+            utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+            throw new RuntimeException(e);
+        }
+        try {
+            GUIobj_SA = new feat_SMSAlarm(context);
+            OBJ_Permissions = new permissionhandler(context);
+            ContactstoSendSMS = new ArrayList<class_Buddy>();
 
-
+        }
+        catch (Exception e) {
+            String ErrorFlow="SA_frag_Throw Feature Variables INIT Exception";
+            utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+            //Throw Feature Variables INIT Exception
+            throw new RuntimeException(e);
+        }
+        try{
+            process_featureState(GUIobj_SA.isFeatureActivated(context),context);
+        if (utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
+            process_featureState(false, context);
+        }
+    }
+    catch (Exception e) {
+        //Throw feature state Exception
+        String ErrorFlow="SA_frag_Throw feature state Exception";
+        utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+        throw new RuntimeException(e);
+    }
         FeatTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,7 +174,7 @@ public class FragmentSMSAlarm extends Fragment {
         });
 
         //checkLogFormat();
-        process_featureState(GUIobj_SA.isFeatureActivated(context),context);
+
 
         FeatTitle.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -182,7 +208,8 @@ public class FragmentSMSAlarm extends Fragment {
                 AlertDialog alertDialog = noti_alertbuilder.create();
                 alertDialog.show();
             } catch (Exception e) {
-
+                String ErrorFlow="SA_frag_ Exception on dialog  ";
+                utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
                // Log.e(TAG, " Exception on dialog  " + e);
             }
 
@@ -254,6 +281,8 @@ public class FragmentSMSAlarm extends Fragment {
             alertDialog.show();
         } catch (Exception e) {
             Log.e(TAG, " Exception on dialog  " + e);
+            String ErrorFlow="SA_frag_ Exception on dialog  ";
+            utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
         }
     }
 
@@ -315,7 +344,8 @@ public class FragmentSMSAlarm extends Fragment {
             AlertDialog alertDialog = noti_alertbuilder.create();
             alertDialog.show();
         } catch (Exception e) {
-
+            String ErrorFlow="SA_frag_ requestDialogShareSMS";
+            utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
         }
 
     }

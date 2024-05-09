@@ -1,12 +1,8 @@
 package com.example.allowrepeatcallers;
 
-import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
-import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -19,36 +15,29 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.CallLog;
-import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
-
+import com.example.quietexceptional.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class utilityHelpers {
     public static final String SHARED_PREFS = "sharedPrefs";
 
     public static final String CHANNEL_ID = "Missed Call Notification";
-    public static String sortOrder;
+    private static final String TAG = "QuietExceptional";
+    private static String sortOrder;
     private static final String MEMCODE_SORTORDER="UPTODOWN";
 
 
@@ -66,23 +55,46 @@ public class utilityHelpers {
     public static void checkLogFormat(Context context) {
         Uri uriCallLogs = Uri.parse("content://call_log/calls");
         Cursor cursorCallLogs = null;
-        cursorCallLogs = context.getContentResolver().query(uriCallLogs, null, null, null);
-        cursorCallLogs.moveToLast();
-        int columnIndex=cursorCallLogs.getColumnIndex(CallLog.Calls.DATE);
-        if(columnIndex>=0) {
-            String logDate = cursorCallLogs.getString(columnIndex);
-            long lastTime = Long.parseLong(logDate);
-            cursorCallLogs.moveToFirst();
-            logDate = cursorCallLogs.getString(columnIndex);
-            long firstTime = Long.parseLong(logDate);
-            if (firstTime > lastTime) {
-                sortOrder = "firstTime";
-                utilityHelpers.saveStringToMemory(context, "UPTODOWN", sortOrder);
-            } else {
-                sortOrder = "lastTime";
-                utilityHelpers.saveStringToMemory(context, "UPTODOWN", sortOrder);
+        String columnorder=(CallLog.Calls.DEFAULT_SORT_ORDER);
+        if (columnorder.contains("date DESC")){
+            sortOrder = "date DESC";
+            utilityHelpers.saveStringToMemory(context, "UPTODOWN", sortOrder);
+            Log.i(TAG,"Sort order date DESC");
+        }
+        else if(columnorder.contains("date ASC")){
+            sortOrder = "date ASC";
+            utilityHelpers.saveStringToMemory(context, "UPTODOWN", sortOrder);
+            Log.i(TAG,"Sort order date ASC");
+        }
+        else {
+            try {
+                cursorCallLogs = context.getContentResolver().query(uriCallLogs, null, null, null);
+                cursorCallLogs.moveToLast();
+                int columnIndex = cursorCallLogs.getColumnIndex(CallLog.Calls.DATE);
+                if (columnIndex >= 0) {
+                    String logDate = cursorCallLogs.getString(columnIndex);
+                    long lastTime = Long.parseLong(logDate);
+                    cursorCallLogs.moveToFirst();
+                    logDate = cursorCallLogs.getString(columnIndex);
+                    long firstTime = Long.parseLong(logDate);
+                    if (firstTime > lastTime) {
+                        sortOrder = "date ASC";
+                        Log.i(TAG,"Sort order date ASC with timestamp");
+                        utilityHelpers.saveStringToMemory(context, "UPTODOWN", sortOrder);
+                    } else {
+                        sortOrder = "date DESC";
+                        Log.i(TAG,"Sort order date DSC with timestamp");
+                        utilityHelpers.saveStringToMemory(context, "UPTODOWN", sortOrder);
+                    }
+                }
+            }
+            catch (Exception e) {
+                //Error checking Log format with Time stamp
+                Log.e(TAG, "Error checking Log format with Time stamp");
+                throw new RuntimeException(e);
             }
         }
+
     }
 
     public static boolean ispermissionpending(Context context,String[] permissions){
@@ -187,6 +199,16 @@ public class utilityHelpers {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(DataID,stringdata);
+        editor.commit();
+
+    }
+    public static void saveErrorToMemory(Context context,String stringdata){
+        String Error=loadStringFromMemory(context,MainActivity.MEMCODE_ERRORMEMORY);
+        Error.concat("\n");
+        Error.concat(stringdata);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(MainActivity.MEMCODE_ERRORMEMORY,Error);
         editor.commit();
 
     }

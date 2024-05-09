@@ -2,10 +2,19 @@ package com.example.allowrepeatcallers;
 
 import static android.content.ContentValues.TAG;
 
-import static java.lang.Thread.sleep;
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,26 +22,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
-
+import com.example.quietexceptional.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
-import AlertMissedCalls.feat_AlertMissedCalls;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -44,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView rateapp;
     public ActionBarDrawerToggle actionBarDrawerToggle;
     public static int currentFragmentPosition;
+    public static final String MEMCODE_ERRORMEMORY = "ERRORMEMORY";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
@@ -114,6 +110,19 @@ public class MainActivity extends AppCompatActivity {
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
+                }
+                else if(id==R.id.troubleshoot)
+                {
+                    String loadedErrors=utilityHelpers.loadStringFromMemory(context,MEMCODE_ERRORMEMORY);
+                    if(loadedErrors.equals("null")){
+                        loadedErrors="No Errors";
+                    }
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("plain/text");
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "quietexceptional@gmail.com" });
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Exceptional Bugs from troubleshooting");
+                    intent.putExtra(Intent.EXTRA_TEXT,loadedErrors);
+                    startActivity(Intent.createChooser(intent, ""));
                 }
 
 
@@ -153,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     shareIntent.setType("text/plain");
                     shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
                     String shareMessage= "\nLet me recommend you this application\n\n";
-                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" +"\n\n";
+                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=com.QE.free" +"\n\n";
                     shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                     startActivity(Intent.createChooser(shareIntent, "choose one"));
                 } catch(Exception e) {
@@ -166,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(android.content.Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://play.google.com/store/apps/details?id=Quietexceptional "));
+                i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.QE.free"));
                 startActivity(i);
             }
         });

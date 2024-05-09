@@ -1,18 +1,15 @@
 package com.example.allowrepeatcallers;
 
 
-import static com.example.allowrepeatcallers.R.menu.popupmenu_loadedlist;
+import static com.example.quietexceptional.R.menu.popupmenu_loadedlist;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.Settings;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -20,9 +17,9 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.quietexceptional.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;

@@ -1,10 +1,8 @@
-package AlertMissedCalls;
+package com.example.allowrepeatcallers;
 
 import android.content.Context;
 
-import com.example.allowrepeatcallers.R;
-import com.example.allowrepeatcallers.ringtones;
-import com.example.allowrepeatcallers.utilityHelpers;
+import com.example.quietexceptional.R;
 
 public class feat_AlertMissedCalls {
 
