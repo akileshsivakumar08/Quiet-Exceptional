@@ -22,7 +22,7 @@ public class permissionhandler {
             requestedPermissions.put(Manifest.permission.READ_SMS, initState);
             saveToMemory(context,requestedPermissions);
         }else {
-            requestedPermissions = utilityHelpers.convertStringToHashMap(loadedmap);
+            requestedPermissions = utilityHelpers.convertStringToPermissionHashMap(loadedmap);
         }
     }
     private void saveToMemory(Context context,HashMap<String,Boolean> requestedPermissions){

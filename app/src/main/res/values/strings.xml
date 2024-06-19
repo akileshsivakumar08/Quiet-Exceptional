@@ -16,14 +16,14 @@
     <string name="ARC_Title">Allow\nRepeat\nCallers</string>
     <string name="ARC_description"> Device Rings on Successive calls, if a call was missed in Silent or Vibrate Mode.\n\nNotifications can be dismissed to disable the ringing.</string>
     <string name="ARC_Volume">Volume</string>
-    <string name="MCA_Title">Alert Missed Calls</string>
-    <string name="MCA_description">Device makes a short sound after a missed call in all ringer Modes.</string>
+    <string name="MCA_Title">Alert\nMissed\nCalls</string>
+    <string name="MCA_description">On getting a Notification for Missed calls, the device makes a Short sound in any Ringer mode.</string>
     <string name="QS_Title">Quick Switch</string>
     <string name="QS_description">Quickly change ringer modes by double pressing volume buttons when the screen is on</string>
     <string name="QS_RequestAccessibility">To use this feature, the app needs access to the volume buttons of the device. This is managed by the Accessibility permission.\nPress continue to provide these in the settings menu.\n
                         \nThis permission is only needed to access the volume buttons and no other information is used or created.\n\nYour privacy is most important and you can disable this feature or permission anytime.</string>
     <string name="PC_Title">Prio Contacts</string>
-    <string name="SA_Title">SMS\nAlarm</string>
+    <string name="SA_Title">Quiet\nExceptional\nAlarm</string>
     <string name="PC_description">Device Rings on if a call is received from marked Contacts, if the device is in silent or Vibrate mode.</string>
     <string name="TapVolumeTest">Tap Here To Test Volume</string>
     <string name="nav_open">Open</string>
@@ -37,18 +37,25 @@
     <string name="no_contact_selected">No Contact selected</string>
     <string name="contact_already_exists">Contact already exists</string>
     <string name="permission_already_requested">To use this app permisions are needed to read Contacts and detect incoming calls. Press continue to provide these in the app settings menu</string>
-    <string name="long_press_to_send_emergency">Long Press to Send Alarm</string>
+    <string name="long_press_to_send_emergency">Long press to alert Favourite</string>
     <string name="exception_on_receive_call">" Exception on receive CALL "</string>
     <string name="set_to_vibrate">set to vibrate</string>
     <string name="set_to_silent">set to silent</string>
     <string name="rate_app">Rate App</string>
     <string name="tap_to_disable">Tap To Disable</string>
-    <string name="SA_description">Device rings on receiving the SMS \"Exceptional SMS Alarm\" from selected contacts.\n\nLong-press to send Alarm to all the saved contacts.\n\nCarrier Charges may apply.</string>
+    <string name="SA_description">Device rings on receiving the Notifiaction message "Quiet Exceptional Alarm from selected contacts.\n\nLong-press to send Alarm to Favourite contact.\n\nCarrier Charges may apply.</string>
     <string name="emergency_message_swipe_to_stop_playing_tune">Alarm Message. Swipe to stop playing tune</string>
     <string name="no_contacts_found">No Contacts found</string>
     <string name="requestShareSMSAlarm">Its a good Idea to let the new Contacts know. \nSend a message that they can reach you with Alarm SMS? \nThis will also share a link to download the app.</string>
     <string name="accept_menu">Yes</string>
     <string name="reject_menu">No</string>
-    <string name="ShareSMSAlarm">"Hey, ive added you on Quiet Exceptional. \nYou can now send me the SMS \"Exceptional SMS Alarm\". \nMy phone will ring even if it is in silent or vibrate mode. "</string>
-    <string name="exceptional_sms_alarm">Exceptional SMS Alarm</string>
+    <string name="ShareSMSAlarm">"Hey, ive added you on Quiet Exceptional. \nYou can now send me the SMS \"Quiet Exceptional Alarm\". \nMy phone will ring even if it is in silent or vibrate mode. "</string>
+    <string name="Quiet_Exceptional_Alarm">Quiet Exceptional Alarm</string>
+    <string name="NotificationListener_desc">This Permission is needed to detect missed calls and SMS Alarms.</string>
+    <string name="enable_feature_to_access_settings">" Enable Feature to Access Settings "</string>
+    <string name="no_favourites_added">No Favourites Added</string>
+    <string name="welcome_dialog">Welcome ! Simply tap the Feature title to get started.\n\nTap the Info button for feature descriptions\n\nPermissions may be requested additionally at each feature. Description of how these are used is available in the Navigation menu</string>
+    <string name="confirm_missedcall_dialog_text">This text will be compared with the Notifications to confirm Missed Calls</string>
+    <string name="custom_match_text_input">Custom Match Text Input</string>
+    <string name="share_message_addedContact">Hi. Ive Listed you as an Alarm Contact on Quiet Exceptional.\nIf you send me the Message \"Quiet Exceptional Alarm\" My phone will ring on every ringer Mode.Click here to try the app!\n\n</string>
 </resources>

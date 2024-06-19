@@ -11,8 +11,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -27,10 +29,29 @@ import java.util.ArrayList;
 public class LoadContactsActivity extends AppCompatActivity {
 
     ListView listview;
+    TextView textView_emptylist;
     String featureIdentifier;
     ArrayList<class_Buddy> ContactsList;
     ArrayList<class_Buddy> diffList;
     Context context;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(ContactsList.size()==0){
+            textView_emptylist.setVisibility(View.VISIBLE);
+            textView_emptylist.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent in = new Intent (Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                    getResult.launch(in);
+                }
+            });
+        }
+        else{
+            textView_emptylist.setVisibility(View.GONE);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +61,28 @@ public class LoadContactsActivity extends AppCompatActivity {
         ContactsList=new ArrayList<class_Buddy>();
         diffList=new ArrayList<class_Buddy>();
         ArrayList<class_Buddy> ContactsListIP = getIntent().getParcelableArrayListExtra("List_Parcel");
+        setContentView(R.layout.activity_load_contacts);
+        textView_emptylist=findViewById(R.id.textView_emptylist);
         if(ContactsListIP!=null){
             ContactsList=ContactsListIP;
         }
-        setContentView(R.layout.activity_load_contacts);
+        if(ContactsList.size()==0){
+            textView_emptylist.setVisibility(View.VISIBLE);
+            textView_emptylist.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent in = new Intent (Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                    getResult.launch(in);
+                }
+            });
+        }
+        else{
+            textView_emptylist.setVisibility(View.GONE);
+        }
+
         featureIdentifier = getIntent().getStringExtra("FEATURE_IDENTIFIER");
         refreshlistview(ContactsList);
+
         FloatingActionButton AddButton = findViewById(R.id.add_fab);
 
         AddButton.setOnClickListener(view -> {
@@ -62,14 +99,34 @@ public class LoadContactsActivity extends AppCompatActivity {
         PopupMenu popupmenu = new PopupMenu(getApplicationContext(),listview);
         popupmenu.getMenuInflater().inflate(popupmenu_loadedlist,popupmenu.getMenu());
         popupmenu.show();
+
+
         popupmenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                ContactsList.remove(i);
-                refreshlistview(ContactsList);
+                if(menuItem.getItemId()==R.id.delete) {
+                    ContactsList.remove(i);
+                    refreshlistview(ContactsList);
+                } else if (menuItem.getItemId()==R.id.makefav) {
+                    int oldFav=findFavourite(ContactsList);
+                    if (oldFav!=255) {
+                        ContactsList.get(oldFav).setFavourite(false);
+                    }
+                    ContactsList.get(i).setFavourite(true);
+                    refreshlistview(ContactsList);
+                }
                 return false;
             }
         });
+    }
+
+    private int findFavourite(ArrayList<class_Buddy> contactsList) {
+        for(int i=0;i<contactsList.size();i++){
+            if(contactsList.get(i).isFavourite()){
+                return i;
+            }
+        }
+        return  255;
     }
 
     private void refreshlistview(ArrayList<class_Buddy> obj_BuddyLocal){
@@ -94,9 +151,9 @@ public class LoadContactsActivity extends AppCompatActivity {
             boolean isIt=cursor.moveToFirst ();
             int phoneIndex = cursor.getColumnIndex (ContactsContract.CommonDataKinds.Phone.NUMBER);
             int nameIndex= (cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String msg=getString(R.string.exceptional_sms_alarm);
+            String msg=getString(R.string.Quiet_Exceptional_Alarm);
             phoneNo = cursor.getString (phoneIndex);
-            phoneNo=phoneNo.replaceAll("[^0-9]", "");
+            phoneNo=phoneNo.replaceAll(" ", "");
             String disp_name=cursor.getString(nameIndex);
             buddy = new class_Buddy(disp_name,phoneNo,msg);
 

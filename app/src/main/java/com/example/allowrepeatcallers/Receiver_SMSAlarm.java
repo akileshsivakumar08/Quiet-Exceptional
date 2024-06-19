@@ -44,8 +44,8 @@ public class Receiver_SMSAlarm extends BroadcastReceiver {
                         MatchfoundinListID = smsReceiver.isMatchFoundInList(sender_message, senderNum);
 
                         if (MatchfoundinListID != 255) {
-                            objBuddyName = smsReceiver.SMSAlarmList.get(MatchID).getBuddy_name();
-                            objBuddyNumber = smsReceiver.SMSAlarmList.get(MatchID).getBuddy_PhNo();
+                            objBuddyName = smsReceiver.SMSAlarmList.get(MatchfoundinListID).getBuddy_name();
+                            objBuddyNumber = smsReceiver.SMSAlarmList.get(MatchfoundinListID).getBuddy_PhNo();
                             AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                             int Volume = (am.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
                             NotificationManager Notimanager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

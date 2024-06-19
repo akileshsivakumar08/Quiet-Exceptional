@@ -91,7 +91,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
         int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         seekbar_ARC.setMax(maxMusicVolume);
         seekbar_ARC.setProgress(lastSetMediaVolume);
-        utilityHelpers.adjustTitleTextSize(FeatTitle,context);
+        utilityHelpers.adjustTitleTextSize(FeatTitle,context,75);
         //utilityHelpers.adjustTitleTextSize(FeatTitle2,context);
 
 

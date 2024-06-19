@@ -106,7 +106,7 @@ public class FragmentPrioContacts extends Fragment {
         int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         seekBar_PrioContacts.setMax(maxMusicVolume);
         seekBar_PrioContacts.setProgress(lastSetMediaVolume);
-        utilityHelpers.adjustTitleTextSize(FeatTitle,context);
+        utilityHelpers.adjustTitleTextSize(FeatTitle,context,75);
 
         if (utilityHelpers.ispermissionpending(context, feat_PrioContacts.permissions)) {
             process_featureState(false,context);

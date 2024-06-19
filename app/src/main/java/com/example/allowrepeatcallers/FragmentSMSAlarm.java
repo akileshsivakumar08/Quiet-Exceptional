@@ -111,9 +111,8 @@ public class FragmentSMSAlarm extends Fragment {
             //load from memory
 
             //initiate GUI Elements
-            animateScalePan(smsimage, 1.07f, 0);
+            animateScalePan(smsimage, 1.2f, 0);
             //animateScalePan(smsimage2,1.1f,500);
-            utilityHelpers.adjustTitleTextSize(FeatTitle, context);
         }
         catch (Exception e) {
             //Throw GUI INIT Exception
@@ -181,14 +180,26 @@ public class FragmentSMSAlarm extends Fragment {
             public boolean onLongClick(View view) {
                 if(GUIobj_SA.isFeatureActivated(context)){
                     if(!utilityHelpers.ispermissionpending(context,feat_SMSAlarm.permissions)) {
-                        ContactstoSendSMS=GUIobj_SA.getSilExceptList();
-                        GUIobj_SA.sendSMS(context,1,ContactstoSendSMS);
+                        int favID=GUIobj_SA.findFavourite();
+                        if(favID!=255) {
+                            class_Buddy favContact = GUIobj_SA.getContact(favID);
+                            Intent intent = new Intent(Intent.ACTION_SENDTO);
+                            intent.setData(Uri.parse("smsto:" + favContact.getBuddy_PhNo()));
+
+                            //intent.setData(Uri.parse(favContact.getBuddy_PhNo()));
+                            intent.putExtra(Intent.EXTRA_TEXT, favContact.getBuddy_Message());
+                            startActivity(intent);
+                        }
+                        else{
+                            Toast.makeText(context, R.string.no_favourites_added, Toast.LENGTH_SHORT).show();
+                        }
                     }
                     else{
                         Toast.makeText(context, R.string.missing_permissions, Toast.LENGTH_SHORT).show();
                     }
                 }
                 return false;
+
             }
         });
 
@@ -258,15 +269,19 @@ public class FragmentSMSAlarm extends Fragment {
         ObjectAnimator scaleanimY = ObjectAnimator.ofFloat(v,
                 "ScaleY",1f, scale);
         scaleanimY.setRepeatCount(ValueAnimator.INFINITE);
-        scaleanimY.setRepeatMode(ValueAnimator.REVERSE);
+        //scaleanimY.setRepeatMode(ValueAnimator.REVERSE);
         ObjectAnimator scaleanimX = ObjectAnimator.ofFloat(v,
                 "ScaleX", 1f, scale);
+        ObjectAnimator fade = ObjectAnimator.ofFloat(v,
+                "alpha", 1f, 0f);
+        fade.setRepeatCount(ValueAnimator.INFINITE);
+
 
         scaleanimX.setRepeatCount(ValueAnimator.INFINITE);
-        scaleanimX.setRepeatMode(ValueAnimator.REVERSE);
-        animSetXY.playTogether(scaleanimX, scaleanimY);
+        //scaleanimX.setRepeatMode(ValueAnimator.REVERSE);
+        animSetXY.playTogether(scaleanimX, scaleanimY,fade);
         animSetXY.setInterpolator(new LinearInterpolator());
-        animSetXY.setDuration(900);
+        animSetXY.setDuration(1500);
         animSetXY.setStartDelay(startDelay);
         animSetXY.start();
 
@@ -357,7 +372,13 @@ public class FragmentSMSAlarm extends Fragment {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
 
-                    GUIobj_SA.sendSMS(context,2,ContactstoSendSMS);
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
+                    String shareMessage = getString(R.string.share_message_addedContact);
+                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=com.QE.free" + "\n\n";
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    startActivity(Intent.createChooser(shareIntent, "choose one"));
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:

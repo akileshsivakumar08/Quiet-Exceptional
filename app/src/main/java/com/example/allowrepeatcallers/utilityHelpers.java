@@ -41,13 +41,13 @@ public class utilityHelpers {
     private static final String MEMCODE_SORTORDER="UPTODOWN";
 
 
-    public static void adjustTitleTextSize(TextView text,Context context){
+    public static void adjustTitleTextSize(TextView text,Context context,int size){
         Configuration config = context.getResources().getConfiguration();
         if(config.getLocales().get(0).getLanguage().contains("en")){
-            text.setTextSize(75);
+            text.setTextSize(size);
         }
         else{
-            text.setTextSize(50);
+            text.setTextSize(size/2);
         }
     }
 
@@ -204,8 +204,14 @@ public class utilityHelpers {
     }
     public static void saveErrorToMemory(Context context,String stringdata){
         String Error=loadStringFromMemory(context,MainActivity.MEMCODE_ERRORMEMORY);
-        Error.concat("\n");
-        Error.concat(stringdata);
+        if(!Error.equals("null")){
+            Error=Error.concat("\n");
+            Error=Error.concat(stringdata);
+        }
+        else{
+            Error=stringdata;
+        }
+
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(MainActivity.MEMCODE_ERRORMEMORY,Error);
@@ -303,7 +309,7 @@ public class utilityHelpers {
     }
 
 
-    public static HashMap<String, Boolean> convertStringToHashMap(String loadedmap) {
+    public static HashMap<String, Boolean> convertStringToPermissionHashMap(String loadedmap) {
         Gson gson = new Gson();
         HashMap<String,Boolean> grantedPermissions= new HashMap<String, Boolean>();
         if(!loadedmap.equals("null")) {
@@ -311,6 +317,15 @@ public class utilityHelpers {
             }.getType());
         }
         return grantedPermissions;
+    }
+    public static HashMap<String, String> convertStringToLanguageHashMap(String loadedmap) {
+        Gson gson = new Gson();
+        HashMap<String,String> LanguagesMap= new HashMap<String, String>();
+        if(!loadedmap.equals("null")) {
+            LanguagesMap = gson.fromJson(loadedmap, new TypeToken<HashMap<String, String>>() {
+            }.getType());
+        }
+        return LanguagesMap;
     }
     public static String convertHashMapToString(Context context,HashMap<String,Boolean> requestedPermissions){
         Gson gson = new Gson();

@@ -2,14 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -33,12 +29,34 @@
         <activity
             android:name="com.example.allowrepeatcallers.LoadContactsActivity"
             android:exported="true" />
+        <activity
+            android:name="com.example.allowrepeatcallers.startup_permissions"
+            android:exported="true" />
 
         <activity android:name="com.example.allowrepeatcallers.settings"
             android:exported="true"
             android:screenOrientation="portrait" >
 
         </activity>
+
+        <service android:name="com.example.allowrepeatcallers.notificationlistener"
+            android:exported="true"
+            android:label="Notification Listener"
+            android:description="@string/NotificationListener_desc"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.notification.default_filter_types"
+                android:value="conversations|alerting">
+            </meta-data>
+            <meta-data
+                android:name="android.service.notification.disabled_filter_types"
+                android:value="ongoing|silent">
+            </meta-data>
+        </service>
+
        <!-- <service android:name=".myAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:label="@string/accessibility_service_label"
@@ -52,11 +70,11 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>-->
         <receiver android:name="com.example.allowrepeatcallers.callReceiver_AlertMissedCalls"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE"/>
-            </intent-filter>
-        </receiver>
+             android:exported="true">
+             <intent-filter>
+                 <action android:name="android.intent.action.PHONE_STATE"/>
+             </intent-filter>
+         </receiver>
         <receiver android:name="com.example.allowrepeatcallers.StopCountdownReceiver"
             android:exported="true">
             <intent-filter>
@@ -81,13 +99,13 @@
                 <action android:name="android.intent.action.PHONE_STATE"/>
             </intent-filter>
         </receiver>-->
-        <receiver android:name="com.example.allowrepeatcallers.Receiver_SMSAlarm"
+        <!--<receiver android:name="com.example.allowrepeatcallers.Receiver_SMSAlarm"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
     </application>
 
 </manifest>

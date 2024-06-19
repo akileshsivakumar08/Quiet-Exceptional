@@ -23,6 +23,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class feat_SMSAlarm {
     private static final String CHANNEL_ID = "SMS Notification";
@@ -41,13 +43,20 @@ class feat_SMSAlarm {
 
     public static String description;
     public ArrayList<class_Buddy> SMSAlarmList = new ArrayList<>();
-    public static String[] permissions= {Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.RECEIVE_SMS,Manifest.permission.SEND_SMS, Manifest.permission.READ_CONTACTS,Manifest.permission.READ_SMS};
+    public static String[] permissions= {Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.READ_CONTACTS};
 
     public void setSMSAlarmList(Context context,ArrayList<class_Buddy> SMSAlarmList) {
         this.SMSAlarmList = SMSAlarmList;
         saveDataToMemory(context);
     }
-
+    public int findFavourite() {
+        for(int i=0;i<SMSAlarmList.size();i++){
+            if(SMSAlarmList.get(i).isFavourite()){
+                return i;
+            }
+        }
+        return  255;
+    }
      public boolean isSilentExceptionRingActivated() {
          return silentExceptionRingActivated;
      }
@@ -60,17 +69,24 @@ class feat_SMSAlarm {
     public ArrayList<class_Buddy> getSilExceptList() {
         return SMSAlarmList;
     }
+public class_Buddy getContact(int ID){
+    return SMSAlarmList.get(ID);
+}
 
-    public int isMatchFoundInList(String sender_message, String senderNum) {
+    public int isMatchFoundInList(String sender_message, String senderName) {
         boolean MatchfoundinList=false;
         int MatchID=255;
         Log.d("myTag", "Object list obtained from Memory");
 
         for(int i=0;i<SMSAlarmList.size();i++) {
             Log.d("myTag", "Looping");
-
             if (((sender_message.trim()).equalsIgnoreCase(SMSAlarmList.get(i).getBuddy_Message()))) {
-                if (PhoneNumberUtils.compare(senderNum, SMSAlarmList.get(i).getBuddy_PhNo())){
+            Pattern p = Pattern.compile("\u2068(.*?)\u2069");
+            Matcher matchName = p.matcher(senderName);
+            if(matchName.find()) {
+                senderName=matchName.group(1);
+            }
+                if (senderName.equals(SMSAlarmList.get(i).getBuddy_name())){
                     MatchfoundinList=true;
                     MatchID=i;
                     Log.d("myTag", "Match found");
@@ -163,7 +179,7 @@ class feat_SMSAlarm {
         String phoneNo = "";
         String SMS;
         if(smstype==1) {
-            SMS = context.getString(R.string.exceptional_sms_alarm);
+            SMS = context.getString(R.string.Quiet_Exceptional_Alarm);
         }
         else{
             SMS = context.getString(R.string.ShareSMSAlarm);

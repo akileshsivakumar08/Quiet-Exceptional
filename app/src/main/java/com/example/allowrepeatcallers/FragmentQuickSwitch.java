@@ -62,7 +62,7 @@ public class FragmentQuickSwitch extends Fragment {
 
         obj_quickswitch=new feat_QuickSwitch(context);
 
-        utilityHelpers.adjustTitleTextSize(FeatTitle,context);
+        utilityHelpers.adjustTitleTextSize(FeatTitle,context,75);
         int softwaretype=utilityHelpers.loadIntFromMemory(context,"SOFTWARETYPE",0);
         if(softwaretype==1) {
 

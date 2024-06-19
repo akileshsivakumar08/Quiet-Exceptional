@@ -28,9 +28,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.quietexceptional.R;
+
+import java.util.Set;
 
 public class FragmentAlertMissedCalls extends Fragment {
     TextView FeatTitle;
@@ -49,6 +52,7 @@ public class FragmentAlertMissedCalls extends Fragment {
     View rightLine;
     SeekBar seekbar;
     feat_AlertMissedCalls obj_AMC;
+
     TextView taptotestvolume;
     permissionhandler OBJ_Permissions;
     private String settingscolor_enabled="#2F435A";
@@ -71,12 +75,16 @@ public class FragmentAlertMissedCalls extends Fragment {
         try {
             super.onResume();
             Context context = getContext();
+            Log.i(TAG,"onResume AMC");
             if (obj_AMC.isFeatureActivated(context)) {
+                Log.i(TAG,"onResume AMC Feat Activated");
                 process_featureState(2, context);
             } else {
+                Log.i(TAG,"onResume AMC  Permission Granted But Deactivated");
                 process_featureState(1, context);
             }
             if (utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
+                Log.i(TAG,"onResume AMC  Permission Not Granted");
                 process_featureState(0, context);
                 TapToEnable.setText(R.string.Allfeat_Tap2Permission);
             }
@@ -84,6 +92,7 @@ public class FragmentAlertMissedCalls extends Fragment {
         catch (Exception e) {
             String ErrorFlow="AMC_frag_Error On Resume";
             utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
+            Log.e(TAG,"AMC_frag_Error On Resume");
             //Error On Resume
             throw new RuntimeException(e);
         }
@@ -106,13 +115,14 @@ public class FragmentAlertMissedCalls extends Fragment {
 
             leftLine = (View) getView().findViewById(R.id.leftLine);
             rightLine = (View) getView().findViewById(R.id.rightLine);
-            utilityHelpers.adjustTitleTextSize(FeatTitle, context);
+            utilityHelpers.adjustTitleTextSize(FeatTitle, context,75);
             Animation anima_scaleleft = AnimationUtils.loadAnimation(context, R.anim.scale_fromleft);
             Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
             leftLine.startAnimation(anima_scaleleft);
             rightLine.startAnimation(anima_scaleright);
         } catch (Exception e) {
             String ErrorFlow="AMC_frag_Throw GUI INIT Exception";
+            Log.e(TAG,"AMC_frag_Throw GUI INIT Exception");
             utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
             //Throw GUI INIT Exception
             throw new RuntimeException(e);
@@ -125,11 +135,14 @@ public class FragmentAlertMissedCalls extends Fragment {
         OBJ_Permissions=new permissionhandler(context);
 
 
+
+
         // Set the current volume of the SeekBar to the current volume of the MediaPlayer:
         int lastSetMediaVolume=obj_AMC.getPingVolume(context);
         seekbar.setProgress(lastSetMediaVolume);
     } catch (Exception e) {
             String ErrorFlow="AMC_frag_Throw Feature Variables INIT Exception";
+            Log.e(TAG,"AMC_frag_Throw Feature Variables INIT Exception");
             utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
         //Throw Feature Variables INIT Exception
         throw new RuntimeException(e);
@@ -148,6 +161,7 @@ try {
 }
 catch (Exception e) {
     String ErrorFlow="AMC_frag_Throw feature state Exception";
+    Log.e(TAG,"AMC_frag_Throw feature state Exception");
     utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
     //Throw feature state Exception
     throw new RuntimeException(e);
@@ -203,7 +217,7 @@ catch (Exception e) {
                     startActivity(intent);
                 }
                 else{
-                    Toast.makeText(context, " Enable Feature to Access Settings ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.enable_feature_to_access_settings, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -211,6 +225,8 @@ catch (Exception e) {
 
 
     }
+
+
 
     private void process_featureState(int state,Context context) {
         try {
@@ -233,6 +249,7 @@ catch (Exception e) {
         }
         catch (Exception e) {
             String ErrorFlow="AMC_frag_Throw feature state Exception";
+            Log.e(TAG,"AMC_frag_Throw feature state Exception");
             utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
             //errror processing feature state
             throw new RuntimeException(e);
@@ -256,7 +273,6 @@ catch (Exception e) {
         } else {
             if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
                 process_featureState(2, context);
-                utilityHelpers.checkLogFormat(context);
 
             } else {
                 String[] pend = utilityHelpers.getpendingpermissions(context, feat_AlertMissedCalls.permissions);
@@ -267,7 +283,7 @@ catch (Exception e) {
                 } else if (permission_already_requested == true) {
                     try {
                         //start a dialog box
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogStyle);
                         builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
                                 .setNegativeButton(R.string.cancel_menu, dialogClickListener);
                         AlertDialog alertDialog = builder.create();
@@ -284,6 +300,7 @@ catch (Exception e) {
     }
     catch (Exception e) {
         String ErrorFlow="AMC_frag_Feature Enable User Tap exception";
+        Log.e(TAG,"AMC_frag_Feature Enable User Tap exception");
         utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
         //Feature Enable User Tap exception
         throw new RuntimeException(e);

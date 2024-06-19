@@ -1,13 +1,17 @@
 package com.example.allowrepeatcallers;
 
+import android.Manifest;
 import android.content.Context;
+
+import androidx.work.OneTimeWorkRequest;
 
 import com.example.quietexceptional.R;
 
 public class feat_AlertMissedCalls {
 
+    public OneTimeWorkRequest twoSecondPause;
     private boolean featureActivated=false;
-    public static String[] permissions= {android.Manifest.permission.READ_PHONE_STATE, android.Manifest.permission.READ_CALL_LOG};
+    public static String[] permissions= {Manifest.permission.READ_PHONE_STATE};
     public static boolean permission_already_requested;
     private static String description;
 

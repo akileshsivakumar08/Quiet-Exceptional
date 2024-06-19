@@ -1,10 +1,12 @@
 package com.example.allowrepeatcallers;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +34,10 @@ public class PersonAdapter extends ArrayAdapter<class_Buddy> {
             TextView txtPhno = convertView.findViewById(R.id.txtPhNo);
             txtName.setText(getItem(position).getBuddy_name());
             txtPhno.setText(getItem(position).getBuddy_PhNo());
+            if(getItem(position).isFavourite()) {
+                ImageView favouriteheart = convertView.findViewById(R.id.favouriteheart);
+                favouriteheart.setColorFilter(Color.parseColor("#F2F1E8"));
+            }
         }
         return convertView;
     }
