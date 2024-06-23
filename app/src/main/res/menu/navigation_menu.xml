@@ -14,4 +14,9 @@
     <item
         android:id="@+id/Permissions"
         android:title="Permission Summary" />
+    <item
+        android:id="@+id/HelpTranslate"
+        android:title="Help Translate the App" />
+    <item
+        android:title="Version: CTR_115" />
 </menu>

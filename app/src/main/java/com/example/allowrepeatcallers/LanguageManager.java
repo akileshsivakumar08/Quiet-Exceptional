@@ -28,6 +28,10 @@ public class LanguageManager {
         if(loadedmap.equals("null")){
             loadedLanguages_missedCallText_map.put("en","Missed call");
             loadedLanguages_missedCallText_map.put("de","Entgangener Anruf");
+            loadedLanguages_missedCallText_map.put("es","Llamada perdida");
+            loadedLanguages_missedCallText_map.put("fr","Appel manqué");
+            loadedLanguages_missedCallText_map.put("pt","Chamada perdida");
+            loadedLanguages_missedCallText_map.put("tr","Cevapsız çağrı");
         }else {
             loadedLanguages_missedCallText_map = utilityHelpers.convertStringToLanguageHashMap(loadedmap);
         }

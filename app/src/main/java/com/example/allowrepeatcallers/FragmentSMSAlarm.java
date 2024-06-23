@@ -353,7 +353,7 @@ public class FragmentSMSAlarm extends Fragment {
     private void requestDialogShareSMS() {
         try {
             //start a dialog box
-            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
+            AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext(),R.style.AlertDialogStyle);
             noti_alertbuilder.setMessage(R.string.requestShareSMSAlarm).setPositiveButton(R.string.accept_menu, shareSMS_dialogClickListener)
                     .setNegativeButton(R.string.reject_menu, shareSMS_dialogClickListener);
             AlertDialog alertDialog = noti_alertbuilder.create();

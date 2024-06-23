@@ -146,6 +146,15 @@ public class MainActivity extends AppCompatActivity {
                         i.setData(Uri.parse(url));
                         startActivity(i);
                     }
+                    else if (id==R.id.HelpTranslate) {
+                        Log.i(TAG, "Navigation Item Permission Summary");
+                        String url = "https://docs.google.com/spreadsheets/d/1QTO0LC_-P1CI6QgYknMFThlibRo0WjG61T60VEcYJO8/edit?usp=sharing";
+
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(url));
+                        startActivity(i);
+                    }
+
 
 
                     return true;
@@ -246,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             //start a dialog box
             AlertDialog.Builder TS_alertbuilder = new AlertDialog.Builder(this,R.style.AlertDialogStyle);
-            TS_alertbuilder.setMessage(description).setPositiveButton(R.string.continue_menu, TSdialogListener).setNegativeButton(R.string.cancel_menu, TSdialogListener);
+            TS_alertbuilder.setMessage(description).setPositiveButton(R.string.continue_menu, TSdialogListener).setNeutralButton("View Last Log",TSdialogListener).setNegativeButton(R.string.cancel_menu, TSdialogListener);
             AlertDialog alertDialog = TS_alertbuilder.create();
             alertDialog.show();
         } catch (Exception e) {
@@ -269,6 +278,12 @@ public class MainActivity extends AppCompatActivity {
 
                 case DialogInterface.BUTTON_NEGATIVE:
 
+                    break;
+                case DialogInterface.BUTTON_NEUTRAL:
+                    String SA_logstring= utilityHelpers.loadStringFromMemory(getApplicationContext(),"NL_SA_FLOW");
+                    String AMC_logstring= utilityHelpers.loadStringFromMemory(getApplicationContext(),"NL_AMC_FLOW");
+                    String logString="Alert Missed Calls: "+AMC_logstring+"\n\n"+"Quiet Exceptional Alarm: "+SA_logstring;
+                    postInfoDialog(logString);
                     break;
             }
         }

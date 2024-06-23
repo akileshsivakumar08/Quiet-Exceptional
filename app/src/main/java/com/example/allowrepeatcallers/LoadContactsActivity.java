@@ -97,7 +97,15 @@ public class LoadContactsActivity extends AppCompatActivity {
 
     private void popupmenu(int i,String featureIdentifier) {
         PopupMenu popupmenu = new PopupMenu(getApplicationContext(),listview);
+
         popupmenu.getMenuInflater().inflate(popupmenu_loadedlist,popupmenu.getMenu());
+        if(ContactsList.get(i).isFavourite()){
+            popupmenu.getMenu().getItem(1).setTitle("Remove Favourite");
+        }
+        else{
+            popupmenu.getMenu().getItem(1).setTitle("Make Favourite");
+        }
+
         popupmenu.show();
 
 
@@ -112,7 +120,11 @@ public class LoadContactsActivity extends AppCompatActivity {
                     if (oldFav!=255) {
                         ContactsList.get(oldFav).setFavourite(false);
                     }
-                    ContactsList.get(i).setFavourite(true);
+                    if(oldFav==i){
+                        ContactsList.get(i).setFavourite(false);
+                    }else {
+                        ContactsList.get(i).setFavourite(true);
+                    }
                     refreshlistview(ContactsList);
                 }
                 return false;

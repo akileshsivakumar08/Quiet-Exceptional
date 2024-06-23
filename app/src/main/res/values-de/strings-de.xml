@@ -21,10 +21,12 @@
     <string name="provide_dnd_permissions">Diese Feature braucht Berechtigung für DND bzw. \"Nicht Stören\" . Bitte auf \"Weiter\" tippen diese zu erteilen.</string>
     <string name="continue_menu">Weiter</string>
     <string name="cancel_menu">Abbrechen</string>
+    <string name="exception_on_dialog">" Dialog Fehler"</string>
     <string name="no_contact_selected">Keine Kontakte ausgewählt</string>
     <string name="contact_already_exists">Kontakt schon in der Liste vorhanden</string>
     <string name="permission_already_requested">Weitere Berechtigungen sind notwendig, diese Feature zu benutzen. Bitte diese in den App Einstellungen erteilen.</string>
     <string name="long_press_to_send_emergency">Lange drücken Alarm zu schiken</string>
+    <string name="exception_on_receive_call">Fehler beim einkommenden Anruf</string>
     <string name="set_to_vibrate">Vibrationsmodus</string>
     <string name="set_to_silent">Leisemodus</string>
     <string name="rate_app">Bewerten</string>
@@ -41,9 +43,19 @@
     <string name="SA_Title">Quiet\nExceptional\nAlarm</string>
     <string name="PC_description">Anrufe von ausgewählten Kontakten werden in Leisemodus und Vibrationsmodus klingeln</string>
     <string name="TapVolumeTest">Lautstärke Testen</string>
-    <string name="emergency_message_swipe_to_stop_playing_tune">Alarm SMS wurde Empfangen. swipen zum stoppen.</string>
+    <string name="emergency_message_swipe_to_stop_playing_tune">Alarm NAchricht wurde Empfangen. swipen zum stoppen.</string>
     <string name="no_contacts_found">Keine Kontakte gefunden</string>
+    <string name="requestShareSMSAlarm">Möchten Sie Mit den neuen Kontakten mitteilen dass sie ihnen in Notfall erreichen können?\\nsie bekommen auch einen Link Quiet Exceptional zu herunterladen.</string>
     <string name="accept_menu">Ja</string>
     <string name="reject_menu">Nein</string>
+    <string name="ShareSMSAlarm">Hi, Ich habe dich als Alarm Kontakt in Quiet Exceptional ausgewählt. Wenn du mir die Nachricht \"Quiet Exceptional Alarm\" schickst, wird mein Handy auch im Lautlosen modus klingeln.</string>
     <string name="Quiet_Exceptional_Alarm">Quiet Exceptional Alarm</string>
+    <string name="NotificationListener_desc">Diese Berechtigung ist nötig verpasste Anrufe und Alarm Texte zu detektieren.</string>
+    <string name="enable_feature_to_access_settings">Bitte Feature Aktivieren</string>
+    <string name="no_favourites_added">Keine Favourit gefunden.</string>
+    <string name="welcome_dialog">Wilkommen in der App!</string>
+    <string name="confirm_missedcall_dialog_text">Dieses Text wird mit der Benachrichtigungstext verglichen, um zu bestätigen dass ein Anruf verpasst wurde.</string>
+    <string name="custom_match_text_input">Vergleichstext Configurieren</string>
+    <string name="share_message_addedContact">Hi, Ich habe dich als Alarm Kontakt in Quiet Exceptional ausgewählt. Wenn du mir die Nachricht \"Quiet Exceptional Alarm\" schickst, wird mein Handy auch im Lautlosen modus klingeln.</string>
+    <string name="ThanksForChoosing">Danke dass Sie für Quiet Exceptional entschieden haben.</string>
 </resources>

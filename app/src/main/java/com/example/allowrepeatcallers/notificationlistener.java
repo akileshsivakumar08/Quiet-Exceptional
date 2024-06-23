@@ -33,7 +33,7 @@ public class notificationlistener extends NotificationListenerService {
             ErrorFlow = "notificationListener:Extras contain title and Text";
             if ((extras.getCharSequence("android.title") != null) && (extras.getCharSequence("android.text") != null)) {
                 try {
-                    title = extras.getString("android.title");
+                    title = extras.getCharSequence("android.title").toString();
                     text = extras.getCharSequence("android.text").toString();
                 } catch (Exception e) {
                     ErrorFlow = "notificationListener:Error Obtaining Notification title or Text";
@@ -46,6 +46,9 @@ public class notificationlistener extends NotificationListenerService {
                             if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
                                 ErrorFlow = "CR_AMC_Permissions Provided";
                                 feat_AlertMissedCalls obj_AMC = new feat_AlertMissedCalls(context);
+                                if (obj_AMC.isFeatureActivated(context)) {
+                                    ErrorFlow = "Feature Activated";
+                                    ErrorFlow = "CR_AMC_Missed Call Detected";
                                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                                 notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                                 ErrorFlow = "CR_AMC_Init Complete";
@@ -54,9 +57,7 @@ public class notificationlistener extends NotificationListenerService {
                                     ErrorFlow = "CR_AMC_Ring Device Activated";
                                     if ((am.getMode() != AudioManager.MODE_IN_COMMUNICATION) && (am.getMode() != AudioManager.MODE_IN_CALL)) {
                                         ErrorFlow = "CR_AMC_No Active calls";
-                                        if (obj_AMC.isFeatureActivated(context)) {
-                                            ErrorFlow = "Feature Activated";
-                                            ErrorFlow = "CR_AMC_Missed Call Detected";
+
                                             utilityHelpers.turnSpeakerON(am);
                                             int setVolume = obj_AMC.getPingVolume(context);
                                             am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
@@ -67,11 +68,24 @@ public class notificationlistener extends NotificationListenerService {
                                             }
 
                                             shorttune.playShorttune(context);
+                                        ErrorFlow = "CR_AMC_PlayingTune";
                                             //am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
                                         }
+                                    else{
+                                        ErrorFlow = "CR_AMC_Not playing due to ongoing call";
                                     }
+                                    }
+                                else{
+                                    ErrorFlow = "CR_AMC_Ring Device Not Active";
+                                }
                                     //  Toast.makeText(context, "This a toast message", Toast.LENGTH_LONG).show();
                                 }
+                                else{
+                                    ErrorFlow = "CR_AMC_Feature Not Active";
+                                }
+                            }
+                            else{
+                                ErrorFlow = "CR_AMC_Permission Pending";
                             }
                             utilityHelpers.saveStringToMemory(context, "NL_AMC_FLOW", ErrorFlow);
                         } catch (Exception e) {
@@ -134,9 +148,21 @@ public class notificationlistener extends NotificationListenerService {
                                     //if media playback was interrupted by a phone call, decide if tone should be played during the call.
                                     //if incoming call during media playback is from number that sent the message, should call be allowed?
                                 }
+                                else{
+                                    ErrorFlow = "NR_SA_MatchNotFoundInList";
+                                }
 
                             }
+                            else{
+                                ErrorFlow = "NR_SA_SilentExceptionAlreadyActive";
+                            }
                         }
+                        else{
+                            ErrorFlow = "NR_SA_FeatureNotActivated";
+                        }
+                    }
+                    else{
+                        ErrorFlow = "NR_SA_PermissionPending";
                     }
                     utilityHelpers.saveStringToMemory(context, "NL_SA_FLOW", ErrorFlow);
                 } catch (Exception e) {

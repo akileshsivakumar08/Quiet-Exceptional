@@ -182,7 +182,7 @@ public class_Buddy getContact(int ID){
             SMS = context.getString(R.string.Quiet_Exceptional_Alarm);
         }
         else{
-            SMS = context.getString(R.string.ShareSMSAlarm);
+            SMS = context.getString(R.string.share_message_addedContact);
         }
         try {
             loadsilExceptListFromMemory(context);
