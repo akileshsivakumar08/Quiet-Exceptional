@@ -14,7 +14,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
+
     </ListView>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Save and Exit" />
     <TextView
         android:id="@+id/textView_emptylist"
         android:layout_width="wrap_content"
@@ -24,16 +33,17 @@
         android:text="Tap to add contacts"
         android:textColor="@color/white"
         android:textSize="30sp"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab"
         android:layout_width="70dp"
         android:layout_height="70dp"
 
+        android:layout_above="@+id/saveButton"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
         android:layout_gravity="end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="12dp"
         android:src="@drawable/baseline_add_24"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"

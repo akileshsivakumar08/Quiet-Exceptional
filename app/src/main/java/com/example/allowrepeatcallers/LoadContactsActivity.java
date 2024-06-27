@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -58,6 +59,7 @@ public class LoadContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         context=getApplicationContext();
         getSupportActionBar().setTitle( "Your Contacts");
+
         ContactsList=new ArrayList<class_Buddy>();
         diffList=new ArrayList<class_Buddy>();
         ArrayList<class_Buddy> ContactsListIP = getIntent().getParcelableArrayListExtra("List_Parcel");
@@ -84,7 +86,17 @@ public class LoadContactsActivity extends AppCompatActivity {
         refreshlistview(ContactsList);
 
         FloatingActionButton AddButton = findViewById(R.id.add_fab);
-
+        Button saveButton=findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent resultIntent = new Intent();
+                resultIntent.putParcelableArrayListExtra("outputList", ContactsList);
+                resultIntent.putParcelableArrayListExtra("diffList", diffList);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
+            }
+        });
         AddButton.setOnClickListener(view -> {
 
             Intent in = new Intent (Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);

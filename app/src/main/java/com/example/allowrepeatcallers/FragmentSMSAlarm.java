@@ -8,6 +8,8 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.NotificationManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -182,6 +184,11 @@ public class FragmentSMSAlarm extends Fragment {
                     if(!utilityHelpers.ispermissionpending(context,feat_SMSAlarm.permissions)) {
                         int favID=GUIobj_SA.findFavourite();
                         if(favID!=255) {
+
+                            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("QE Alarm", feat_SMSAlarm.SA_MESSAGE);
+                            clipboard.setPrimaryClip(clip);
+                            Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
                             class_Buddy favContact = GUIobj_SA.getContact(favID);
                             Intent intent = new Intent(Intent.ACTION_SENDTO);
                             intent.setData(Uri.parse("smsto:" + favContact.getBuddy_PhNo()));

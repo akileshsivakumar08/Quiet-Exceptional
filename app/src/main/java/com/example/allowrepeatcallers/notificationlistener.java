@@ -21,6 +21,8 @@ public class notificationlistener extends NotificationListenerService {
     private static final String TAG = "QuietExceptional";
     String title = "";
     String text;
+    String subtext;
+    String bigtext;
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         String pack = sbn.getPackageName();
@@ -35,6 +37,8 @@ public class notificationlistener extends NotificationListenerService {
                 try {
                     title = extras.getCharSequence("android.title").toString();
                     text = extras.getCharSequence("android.text").toString();
+                    subtext=extras.getCharSequence("android.subtext").toString();
+                    bigtext=extras.getCharSequence("android.bigtext").toString();
                 } catch (Exception e) {
                     ErrorFlow = "notificationListener:Error Obtaining Notification title or Text";
                 }
@@ -117,7 +121,12 @@ public class notificationlistener extends NotificationListenerService {
                             ErrorFlow = "NR_SA_FeatureActivated";
                             if (!obj_SMSAlarm.isSilentExceptionRingActivated()) {
                                 ErrorFlow = "NR_SA_NoRingActivated";
-                                MatchfoundinListID = smsReceiver.isMatchFoundInList(sender_message, senderName);
+                                Boolean messageMatch = smsReceiver.checkMessageMatch(sender_message);
+                                if (messageMatch) {
+
+                                MatchfoundinListID=smsReceiver.checkSenderMatch(senderName);
+
+                               // MatchfoundinListID = smsReceiver.isMatchFoundInList(sender_message, senderName);
 
                                 if (MatchfoundinListID != 255) {
                                     ErrorFlow = "NR_SA_MatchFoundInList";
@@ -149,7 +158,12 @@ public class notificationlistener extends NotificationListenerService {
                                     //if incoming call during media playback is from number that sent the message, should call be allowed?
                                 }
                                 else{
-                                    ErrorFlow = "NR_SA_MatchNotFoundInList";
+                                    ErrorFlow = "NR_SA_SenderMatchFailed"+senderName;
+                                }
+                            }
+                                else{
+
+                                    ErrorFlow = "NR_SA_MessageMatchFailed\n"+ sender_message+"\n"+subtext+"\n"+bigtext;
                                 }
 
                             }
@@ -164,6 +178,7 @@ public class notificationlistener extends NotificationListenerService {
                     else{
                         ErrorFlow = "NR_SA_PermissionPending";
                     }
+                    Log.d(TAG,sender_message+"\n"+subtext+"\n"+bigtext);
                     utilityHelpers.saveStringToMemory(context, "NL_SA_FLOW", ErrorFlow);
                 } catch (Exception e) {
                     Log.e(TAG, ErrorFlow);

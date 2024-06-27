@@ -32,6 +32,7 @@ class feat_SMSAlarm {
     private static final String MEMCODE_SMSALARM="STRINGSET_SMSALARM";
     private static final String MEMCODE_PERMISSIONREQUESTED="SMSALARM_PERMISSIONREQUESTED";
     private static final String MEMCODE_ACTIVATEFEAT="FEAT_SMSALARM_ACTIVE";
+    public static final String SA_MESSAGE="Quiet Exceptional Alarm";
     private final int feat_ID=1;
     public static NotificationManager notificationManager;
     public static ringtones AlarmSound ;
@@ -86,12 +87,12 @@ public class_Buddy getContact(int ID){
             if(matchName.find()) {
                 senderName=matchName.group(1);
             }
-                if (senderName.equals(SMSAlarmList.get(i).getBuddy_name())){
-                    MatchfoundinList=true;
-                    MatchID=i;
-                    Log.d("myTag", "Match found");
-                    break;
-                }
+            if (senderName.equals(SMSAlarmList.get(i).getBuddy_name())){
+                MatchfoundinList=true;
+                MatchID=i;
+                Log.d("myTag", "Match found");
+                break;
+            }
             }
             else {
                 MatchID=255;
@@ -213,6 +214,33 @@ public class_Buddy getContact(int ID){
             totalSize=totalSize-1;
         }
         return ContactstoSendSMS;
+    }
+
+    public Boolean checkMessageMatch(String sender_message) {
+        if (((sender_message.trim()).equalsIgnoreCase(SA_MESSAGE))) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public int checkSenderMatch(String senderName) {
+        boolean MatchfoundinList=false;
+        int MatchID=255;
+        for(int i=0;i<SMSAlarmList.size();i++) {
+            Log.d("myTag", "Looping");
+                Pattern p = Pattern.compile("\u2068(.*?)\u2069");
+                Matcher matchName = p.matcher(senderName);
+                if(matchName.find()) {
+                    senderName=matchName.group(1);
+                }
+                if (senderName.equals(SMSAlarmList.get(i).getBuddy_name())){
+                    MatchID=i;
+                    Log.d("myTag", "Match found");
+                    break;
+                }
+        }
+        return MatchID;
     }
 }
 
