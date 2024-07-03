@@ -220,16 +220,7 @@ public class LoadContactsActivity extends AppCompatActivity {
             refreshlistview(ContactsList);
         }
     }
-
-
-    @Override
-    public void onBackPressed() {
-        Intent resultIntent = new Intent();
-        resultIntent.putParcelableArrayListExtra("outputList", ContactsList);
-        resultIntent.putParcelableArrayListExtra("diffList", diffList);
-        setResult(Activity.RESULT_OK, resultIntent);
-        finish();
-    }
+    
 
 
 

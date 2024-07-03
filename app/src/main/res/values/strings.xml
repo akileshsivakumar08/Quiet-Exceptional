@@ -64,4 +64,9 @@
     <string name="Notification_Permissions">Notification Permissions</string>
     <string name="continue_string">Continue</string>
     <string name="copied_to_clipboard">Message Copied to Clipboard</string>
+    <string-array name="time_options">
+        <item>30 Minutes</item>
+        <item>One Hour</item>
+        <item>2 Hours</item>
+    </string-array>
 </resources>

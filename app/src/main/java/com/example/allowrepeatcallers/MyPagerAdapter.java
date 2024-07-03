@@ -19,6 +19,8 @@ public class MyPagerAdapter extends FragmentStateAdapter {
 
             case 1:
                 return new FragmentSMSAlarm();
+            case 2:
+                return new FragmentTemporarydnd();
             default:
                 throw new IllegalArgumentException("Invalid position: " + position);
         }
@@ -26,6 +28,6 @@ public class MyPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
 }
