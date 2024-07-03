@@ -16,6 +16,7 @@ import java.time.Duration;
 
 public class feat_tempdnd {
 
+    private static final String MEMCODE_TIMERCHOICE = "TEMPDND_TIMERCHOICE";
     public OneTimeWorkRequest tempDND;
     private static NotificationManager notificationManager;
     private boolean featureActivated=false;
@@ -43,8 +44,27 @@ public class feat_tempdnd {
 public void starttempDND(Context context){
 
     notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+    String timerChoice=utilityHelpers.loadStringFromMemory(context,MEMCODE_TIMERCHOICE);
+    int time_int=0;
+    switch (timerChoice){
+        case "10 Minutes":
+            time_int=10;
+            break;
+        case "30 Minutes":
+            time_int=30;
+            break;
+        case "1 Hour":
+            time_int=60;
+            break;
+        case "2 Hours":
+            time_int=120;
+            break;
+        default:
+            time_int=2;
+            break;
+    }
     tempDND=new OneTimeWorkRequest.Builder(manageWork_tempDND.class)
-            .setInitialDelay(Duration.ofSeconds(10))
+            .setInitialDelay(Duration.ofMinutes(time_int))
             .addTag("TEMP_DND")
             .build();
     WorkManager.getInstance(context).enqueue(tempDND);
@@ -69,5 +89,19 @@ public void starttempDND(Context context){
     public static boolean loadBOOL_Permission_already_requested(Context context){
             boolean Permission_already_requested=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_PERMISSIONREQUESTED);
         return Permission_already_requested;
+    }
+
+    public String getSelectedTimerChoice(Context context) {
+        String timerchoice=utilityHelpers.loadStringFromMemory(context,MEMCODE_TIMERCHOICE);
+        if(!timerchoice.equals("null")){
+            return timerchoice;
+        }
+         else{
+             return "10 Seconds";
+        }
+    }
+
+    public void savetimerChoice(Context context, String selectedItem) {
+        utilityHelpers.saveStringToMemory(context,MEMCODE_TIMERCHOICE,selectedItem);
     }
 }

@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -112,18 +113,19 @@ public class FragmentTemporarydnd extends Fragment {
 
         CustomTileService.requestListeningState(context, new ComponentName(context, CustomTileService.class));
         tileServiceIntent = new Intent(context, CustomTileService.class);
-
+        ArrayAdapter<CharSequence> adapter;
         //Initialize GUI
         try {
             TapToEnable = (SwitchCompat) getView().findViewById(R.id.TapToEnable);
             FeatTitle = (TextView) getView().findViewById(R.id.FeatTitle);
             timechoices = (Spinner) getView().findViewById(R.id.timechoices);
 
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
+            adapter = ArrayAdapter.createFromResource(context,
                     R.array.time_options, android.R.layout.simple_spinner_item);
 
-
-            utilityHelpers.adjustTitleTextSize(FeatTitle, context,75);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            timechoices.setAdapter(adapter);
+            utilityHelpers.adjustTitleTextSize(FeatTitle, context,50);
         } catch (Exception e) {
             String ErrorFlow="AMC_frag_Throw GUI INIT Exception";
             Log.e(TAG,"AMC_frag_Throw GUI INIT Exception");
@@ -134,6 +136,10 @@ public class FragmentTemporarydnd extends Fragment {
         try{
         obj_tempDND=new feat_tempdnd(context);
         OBJ_Permissions=new permissionhandler(context);
+
+            String choice=obj_tempDND.getSelectedTimerChoice(context);
+            int position=adapter.getPosition(choice);
+            timechoices.setSelection(position);
 
     } catch (Exception e) {
             String ErrorFlow="AMC_frag_Throw Feature Variables INIT Exception";
@@ -162,7 +168,20 @@ catch (Exception e) {
     throw new RuntimeException(e);
 }
 
-
+        timechoices.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                obj_tempDND.savetimerChoice(context,selectedItem);
+                // Handle the item selection here
+                // For example, display a toast message
+                 Toast.makeText(context, "Selected: " + selectedItem, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Handle the case where nothing is selected
+            }
+        });
 
         FeatTitle.setOnClickListener(new View.OnClickListener() {
             @Override

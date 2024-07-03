@@ -64,9 +64,12 @@
     <string name="Notification_Permissions">Notification Permissions</string>
     <string name="continue_string">Continue</string>
     <string name="copied_to_clipboard">Message Copied to Clipboard</string>
+    <string name="Exit">Exit</string>
+    <string name="SavenExit"><![CDATA[Save & Exit]]></string>
     <string-array name="time_options">
+        <item>10 Minutes</item>
         <item>30 Minutes</item>
-        <item>One Hour</item>
+        <item>1 Hour</item>
         <item>2 Hours</item>
     </string-array>
 </resources>

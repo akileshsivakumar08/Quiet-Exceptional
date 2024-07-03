@@ -1,15 +1,18 @@
 package com.example.allowrepeatcallers;
 
 
+import static android.content.ContentValues.TAG;
 import static com.example.quietexceptional.R.menu.popupmenu_loadedlist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.quietexceptional.R;
@@ -35,6 +39,7 @@ public class LoadContactsActivity extends AppCompatActivity {
     ArrayList<class_Buddy> ContactsList;
     ArrayList<class_Buddy> diffList;
     Context context;
+    Boolean changesmade=false;
 
     @Override
     protected void onResume() {
@@ -90,11 +95,7 @@ public class LoadContactsActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent resultIntent = new Intent();
-                resultIntent.putParcelableArrayListExtra("outputList", ContactsList);
-                resultIntent.putParcelableArrayListExtra("diffList", diffList);
-                setResult(Activity.RESULT_OK, resultIntent);
-                finish();
+                savenExit();
             }
         });
         AddButton.setOnClickListener(view -> {
@@ -139,6 +140,7 @@ public class LoadContactsActivity extends AppCompatActivity {
                     }
                     refreshlistview(ContactsList);
                 }
+                changesmade=true;
                 return false;
             }
         });
@@ -219,14 +221,56 @@ public class LoadContactsActivity extends AppCompatActivity {
             ContactsList.add(buddy);
             refreshlistview(ContactsList);
         }
+        changesmade=true;
     }
-    
 
 
+    @Override
+    public void onBackPressed() {
 
+        if(changesmade) {
+            postQuestionDialog("Exit Without Saving?");
+        }
+        else{
+            super.onBackPressed();
+        }
+       //
+    }
+    private void postQuestionDialog(String description) {
+        try {
+            //start a dialog box
+            AlertDialog.Builder TS_alertbuilder = new AlertDialog.Builder(this,R.style.AlertDialogStyle);
+            TS_alertbuilder.setMessage(description).setPositiveButton(R.string.Exit, TSdialogListener).setNegativeButton(R.string.SavenExit, TSdialogListener);
+            AlertDialog alertDialog = TS_alertbuilder.create();
+            alertDialog.show();
+        } catch (Exception e) {
 
+            Log.e(TAG, " Exception on dialog  " + e);
+            Toast.makeText(getApplicationContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    DialogInterface.OnClickListener TSdialogListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    finish();
+                    break;
 
+                case DialogInterface.BUTTON_NEGATIVE:
+                    savenExit();
+                    break;
+            }
+        }
+    };
+    private void savenExit(){
+        Intent resultIntent = new Intent();
+        resultIntent.putParcelableArrayListExtra("outputList", ContactsList);
+        resultIntent.putParcelableArrayListExtra("diffList", diffList);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
+    }
 
 }
 
