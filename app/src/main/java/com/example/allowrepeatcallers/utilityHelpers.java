@@ -218,6 +218,15 @@ public class utilityHelpers {
         editor.commit();
 
     }
+
+    public static void clearMemory(Context context,String DataID)
+    {
+        SharedPreferences preferences =context.getSharedPreferences("sharedPrefs",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(DataID);
+        editor.commit();
+    }
+
     public static boolean loadBooleanFromMemory(Context context,String DataID){
         boolean variable;
         SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPrefs", MODE_PRIVATE);

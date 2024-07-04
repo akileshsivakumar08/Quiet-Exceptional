@@ -19,7 +19,7 @@ public class feat_tempdnd {
     private static final String MEMCODE_TIMERCHOICE = "TEMPDND_TIMERCHOICE";
     public OneTimeWorkRequest tempDND;
     private static NotificationManager notificationManager;
-    private boolean featureActivated=false;
+    private static boolean featureActivated=false;
     public static String[] permissions= {};
     public static boolean permission_already_requested;
     private static String description;
@@ -30,14 +30,14 @@ public class feat_tempdnd {
     public feat_tempdnd(Context context) {
         featureActivated=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_ACTIVATEFEAT);
         notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-        description = context.getString(R.string.MCA_description);
+        description = context.getString(R.string.tempdnddesc);
     }
 
     public static String getDescription() {
         return description;
     }
 
-    public boolean isFeatureActivated(Context context) {
+    public static boolean isFeatureActivated(Context context) {
         featureActivated= utilityHelpers.loadBooleanFromMemory(context, MEMCODE_ACTIVATEFEAT);
         return featureActivated;
     }

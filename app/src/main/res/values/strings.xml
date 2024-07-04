@@ -66,6 +66,7 @@
     <string name="copied_to_clipboard">Message Copied to Clipboard</string>
     <string name="Exit">Exit</string>
     <string name="SavenExit"><![CDATA[Save & Exit]]></string>
+    <string name="tempdnddesc">Temporarily silence the device. DND Mode is removed after the set duration.\\n\\nFor best experience, drag from the top and add to Quick Settings.</string>
     <string-array name="time_options">
         <item>10 Minutes</item>
         <item>30 Minutes</item>

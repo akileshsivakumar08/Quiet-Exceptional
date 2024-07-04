@@ -274,7 +274,7 @@ catch (Exception e) {
             if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
                 process_featureState(2, context);
 
-            } else {
+            }  else {
                 String[] pend = utilityHelpers.getpendingpermissions(context, feat_AlertMissedCalls.permissions);
                 Boolean permission_already_requested = OBJ_Permissions.werePermissionsRequested(pend);
                 if (permission_already_requested == false) {

@@ -13,6 +13,8 @@ import android.service.notification.StatusBarNotification;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -29,6 +31,8 @@ public class notificationlistener extends NotificationListenerService {
         Bundle extras = sbn.getNotification().extras;
         String ErrorFlow = "notificationListener:Start";
         Context context = getApplicationContext();
+        String todaydate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
         if ((sbn.getNotification().flags & Notification.FLAG_GROUP_SUMMARY) != 0) {
 
         } else if (extras.containsKey("android.title") && (extras.containsKey("android.text"))) {
@@ -37,10 +41,10 @@ public class notificationlistener extends NotificationListenerService {
                 try {
                     title = extras.getCharSequence("android.title").toString();
                     text = extras.getCharSequence("android.text").toString();
-                    subtext=extras.getCharSequence("android.subtext").toString();
-                    bigtext=extras.getCharSequence("android.bigtext").toString();
+                    /*subtext=extras.getCharSequence("android.subtext").toString();
+                    bigtext=extras.getCharSequence("android.bigtext").toString();*/
                 } catch (Exception e) {
-                    ErrorFlow = "notificationListener:Error Obtaining Notification title or Text";
+                    ErrorFlow = todaydate+"-"+"notificationListener:Error Obtaining Notification title or Text";
                     Log.e(TAG, ErrorFlow);
                     utilityHelpers.saveErrorToMemory(context, "ERROR"+ErrorFlow);
                     throw new RuntimeException(e);
@@ -64,7 +68,7 @@ public class notificationlistener extends NotificationListenerService {
                                     ErrorFlow = "NR_AMC_Ring Device Activated";
                                     if ((am.getMode() != AudioManager.MODE_IN_COMMUNICATION) && (am.getMode() != AudioManager.MODE_IN_CALL)) {
                                         ErrorFlow = "NR_AMC_No Active calls";
-
+                                        if(feat_tempdnd.isFeatureActivated(context)){
                                             utilityHelpers.turnSpeakerON(am);
                                             int setVolume = obj_AMC.getPingVolume(context);
                                             am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
@@ -75,8 +79,15 @@ public class notificationlistener extends NotificationListenerService {
                                             }
 
                                             shorttune.playShorttune(context);
-                                        ErrorFlow = "NR_AMC_PlayingTune";
+                                            ErrorFlow = "NR_AMC_PlayingTune";
                                             //am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
+
+                                    }
+                                    else {
+                                        ErrorFlow = "NR_AMC_Tempdnd_activated";
+                                    }
+
+
                                         }
                                     else{
                                         ErrorFlow = "NR_AMC_Not playing due to ongoing call";
@@ -112,7 +123,7 @@ public class notificationlistener extends NotificationListenerService {
                     String objBuddyName = "";
                 String objBuddyNumber = "";
                 String sender_message = text;
-                String senderName = title;
+                CharSequence senderName = title;
                 int MatchfoundinListID = 255;
                 try {
                     feat_SMSAlarm obj_SMSAlarm = new feat_SMSAlarm(context);
@@ -166,7 +177,7 @@ public class notificationlistener extends NotificationListenerService {
                             }
                                 else{
 
-                                    ErrorFlow = "NR_SA_MessageMatchFailed\n"+ sender_message+"\n"+subtext+"\n"+bigtext;
+                                    ErrorFlow = "NR_SA_MessageMatchFailed\n"+ sender_message;
                                 }
 
                             }
@@ -181,7 +192,7 @@ public class notificationlistener extends NotificationListenerService {
                     else{
                         ErrorFlow = "NR_SA_PermissionPending";
                     }
-                    Log.d(TAG,sender_message+"\n"+subtext+"\n"+bigtext);
+                    Log.d(TAG,sender_message);
                     utilityHelpers.saveStringToMemory(context, "NL_SA_FLOW", ErrorFlow);
                 } catch (Exception e) {
                     Log.e(TAG, ErrorFlow);
@@ -191,7 +202,15 @@ public class notificationlistener extends NotificationListenerService {
             }
 
         }
+            else{
+                ErrorFlow = "Title or Text is null";
+                utilityHelpers.saveStringToMemory(context, "NL_General_FLOW", ErrorFlow);
+            }
     }
+        else{
+            ErrorFlow = "Title or Text Key is not found";
+            utilityHelpers.saveStringToMemory(context, "NL_General_FLOW", ErrorFlow);
+        }
     }
 
 

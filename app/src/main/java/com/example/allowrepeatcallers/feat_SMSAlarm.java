@@ -224,7 +224,7 @@ public class_Buddy getContact(int ID){
             return false;
         }
     }
-    public int checkSenderMatch(String senderName) {
+    public int checkSenderMatch(CharSequence senderName) {
         boolean MatchfoundinList=false;
         int MatchID=255;
         for(int i=0;i<SMSAlarmList.size();i++) {

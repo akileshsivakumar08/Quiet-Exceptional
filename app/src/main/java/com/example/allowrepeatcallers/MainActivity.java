@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"quietexceptional@gmail.com"});
                             intent.putExtra(Intent.EXTRA_SUBJECT, "Exceptional Bugs from troubleshooting");
                             intent.putExtra(Intent.EXTRA_TEXT, loadedErrors);
+                            utilityHelpers.clearMemory(context,MEMCODE_ERRORMEMORY);
                             startActivity(intent);
                         }
                     } else if (id==R.id.Permissions) {
@@ -272,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
                 case DialogInterface.BUTTON_POSITIVE:
                     Intent i = new Intent(android.content.Intent.ACTION_VIEW);
                     i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.QE.free"));
+
                     startActivity(i);
                     //Yes button clicked
                     break;
@@ -282,7 +284,8 @@ public class MainActivity extends AppCompatActivity {
                 case DialogInterface.BUTTON_NEUTRAL:
                     String SA_logstring= utilityHelpers.loadStringFromMemory(getApplicationContext(),"NL_SA_FLOW");
                     String AMC_logstring= utilityHelpers.loadStringFromMemory(getApplicationContext(),"NL_AMC_FLOW");
-                    String logString="Alert Missed Calls: "+AMC_logstring+"\n\n"+"Quiet Exceptional Alarm: "+SA_logstring;
+                    String NR_logstring= utilityHelpers.loadStringFromMemory(getApplicationContext(),"NL_General_FLOW");
+                    String logString="Alert Missed Calls: "+AMC_logstring+"\n\n"+"Quiet Exceptional Alarm: "+SA_logstring+"\n\n"+"General Log String"+NR_logstring;
                     postInfoDialog(logString);
                     break;
             }
