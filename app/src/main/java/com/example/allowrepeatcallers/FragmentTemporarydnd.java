@@ -80,24 +80,24 @@ public class FragmentTemporarydnd extends Fragment {
         try {
             super.onResume();
             Context context = getContext();
-            Log.i(TAG,"onResume AMC");
+            Log.i(TAG,"onResume TempDND");
             if (obj_tempDND.isFeatureActivated(context)) {
-                Log.i(TAG,"onResume AMC Feat Activated");
+                Log.i(TAG,"onResume TempDND Feat Activated");
                 process_featureState(2, context);
             } else {
-                Log.i(TAG,"onResume AMC  Permission Granted But Deactivated");
+                Log.i(TAG,"onResume TempDND  Permission Granted But Deactivated");
                 process_featureState(1, context);
             }
             if (utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
-                Log.i(TAG,"onResume AMC  Permission Not Granted");
+                Log.i(TAG,"onResume TempDND  Permission Not Granted");
                 process_featureState(0, context);
                 TapToEnable.setText(R.string.Allfeat_Tap2Permission);
             }
         }
         catch (Exception e) {
-            String ErrorFlow="AMC_frag_Error On Resume";
+            String ErrorFlow="TempDND_frag_Error On Resume";
             utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
-            Log.e(TAG,"AMC_frag_Error On Resume");
+            Log.e(TAG,"TempDND_frag_Error On Resume");
             //Error On Resume
             throw new RuntimeException(e);
         }
@@ -127,23 +127,22 @@ public class FragmentTemporarydnd extends Fragment {
             timechoices.setAdapter(adapter);
             utilityHelpers.adjustTitleTextSize(FeatTitle, context,50);
         } catch (Exception e) {
-            String ErrorFlow="AMC_frag_Throw GUI INIT Exception";
-            Log.e(TAG,"AMC_frag_Throw GUI INIT Exception");
+            String ErrorFlow="TempDND_frag_Throw GUI INIT Exception";
+            Log.e(TAG,"TempDND_frag_Throw GUI INIT Exception");
             utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
             //Throw GUI INIT Exception
             throw new RuntimeException(e);
         }
         try{
         obj_tempDND=new feat_tempdnd(context);
-        OBJ_Permissions=new permissionhandler(context);
 
             String choice=obj_tempDND.getSelectedTimerChoice(context);
             int position=adapter.getPosition(choice);
             timechoices.setSelection(position);
 
     } catch (Exception e) {
-            String ErrorFlow="AMC_frag_Throw Feature Variables INIT Exception";
-            Log.e(TAG,"AMC_frag_Throw Feature Variables INIT Exception");
+            String ErrorFlow="TempDND_frag_Throw Feature Variables INIT Exception";
+            Log.e(TAG,"TempDND_frag_Throw Feature Variables INIT Exception");
             utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
         //Throw Feature Variables INIT Exception
         throw new RuntimeException(e);
@@ -155,14 +154,10 @@ try {
     } else {
         process_featureState(1, context);
     }
-    if (utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
-        process_featureState(0, context);
-        TapToEnable.setText(R.string.Allfeat_Tap2Permission);
-    }
 }
 catch (Exception e) {
-    String ErrorFlow="AMC_frag_Throw feature state Exception";
-    Log.e(TAG,"AMC_frag_Throw feature state Exception");
+    String ErrorFlow="TempDND_frag_Throw feature state Exception";
+    Log.e(TAG,"TempDND_frag_Throw feature state Exception");
     utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
     //Throw feature state Exception
     throw new RuntimeException(e);
@@ -175,7 +170,7 @@ catch (Exception e) {
                 obj_tempDND.savetimerChoice(context,selectedItem);
                 // Handle the item selection here
                 // For example, display a toast message
-                 Toast.makeText(context, "Selected: " + selectedItem, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context, "Selected: " + selectedItem, Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -258,8 +253,8 @@ catch (Exception e) {
             }
         }
         catch (Exception e) {
-            String ErrorFlow="AMC_frag_Throw feature state Exception";
-            Log.e(TAG,"AMC_frag_Throw feature state Exception");
+            String ErrorFlow="TempDND_frag_Throw feature state Exception";
+            Log.e(TAG,"TempDND_frag_Throw feature state Exception");
             utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
             //errror processing feature state
             throw new RuntimeException(e);
@@ -292,41 +287,17 @@ catch (Exception e) {
             obj_tempDND.setFeatureActivated(context, false);
 
         } else {
-            if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
                 //StopCustomTileService
                 tileServiceIntent.putExtra("isActive", true);
                 context.startService(tileServiceIntent);
                 obj_tempDND.setFeatureActivated(context, true);
                 process_featureState(2, context);
 
-
-            } else {
-                String[] pend = utilityHelpers.getpendingpermissions(context, feat_AlertMissedCalls.permissions);
-                Boolean permission_already_requested = OBJ_Permissions.werePermissionsRequested(pend);
-                if (permission_already_requested == false) {
-
-                    requestPermissionLauncher.launch(pend);
-                } else if (permission_already_requested == true) {
-                    try {
-                        //start a dialog box
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogStyle);
-                        builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
-                                .setNegativeButton(R.string.cancel_menu, dialogClickListener);
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-                    } catch (Exception e) {
-                        String ErrorFlow=" AMC_frag_Exception on dialog  ";
-                        utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
-                        Log.e(TAG, " Exception on dialog  " + e);
-                        Toast.makeText(context, " Exception on dialog ", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
         }
     }
     catch (Exception e) {
-        String ErrorFlow="AMC_frag_Feature Enable User Tap exception";
-        Log.e(TAG,"AMC_frag_Feature Enable User Tap exception");
+        String ErrorFlow="TempDND_frag_Feature Enable User Tap exception";
+        Log.e(TAG,"TempDND_frag_Feature Enable User Tap exception");
         utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
         //Feature Enable User Tap exception
         throw new RuntimeException(e);
