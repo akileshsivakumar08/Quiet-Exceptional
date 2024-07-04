@@ -11,25 +11,26 @@
     <View
         android:id="@+id/leftLine"
         android:layout_width="70dp"
-        android:layout_height="250dp"
+        android:layout_height="400dp"
         android:layout_above="@+id/FeatTitle"
-        android:background="#DDE1ED"
+        android:background="#AADDE1ED"
+        android:rotation="30"
+        android:layout_marginBottom="-50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent" />
 
     <View
         android:id="@+id/rightLine"
         android:layout_width="70dp"
-        android:layout_height="249dp"
+        android:layout_height="300dp"
         android:layout_above="@+id/FeatTitle"
-
-        android:background="#0C7B93"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="-40dp"
+        android:background="#AA0C7B93"
+        android:rotation="30"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
-        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,5 +72,15 @@
         app:layout_constraintTop_toTopOf="@+id/TapToEnable"
         app:layout_constraintVertical_bias="0.0" />
 
+    <TextView
+        android:id="@+id/taptotestvolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:textAlignment="center"
+        android:text="Drag down from the Top to open Quick Settings.\nAdd Temp DNDto Quick Settings for best Experience."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TapToEnable" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

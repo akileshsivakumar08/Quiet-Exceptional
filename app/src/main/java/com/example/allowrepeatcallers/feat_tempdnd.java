@@ -20,7 +20,7 @@ public class feat_tempdnd {
     public OneTimeWorkRequest tempDND;
     private static NotificationManager notificationManager;
     private boolean featureActivated=false;
-    public static String[] permissions= {Manifest.permission.READ_PHONE_STATE};
+    public static String[] permissions= {};
     public static boolean permission_already_requested;
     private static String description;
     public String[] timeOptions={"5 Minutes","30 Minutes","60 Minutes"};

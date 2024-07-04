@@ -41,6 +41,9 @@ public class notificationlistener extends NotificationListenerService {
                     bigtext=extras.getCharSequence("android.bigtext").toString();
                 } catch (Exception e) {
                     ErrorFlow = "notificationListener:Error Obtaining Notification title or Text";
+                    Log.e(TAG, ErrorFlow);
+                    utilityHelpers.saveErrorToMemory(context, "ERROR"+ErrorFlow);
+                    throw new RuntimeException(e);
                 }
                 if (checkpossibleMissedCall(context)) {
                     if (callStateManager.notificationWindow) {
@@ -48,53 +51,53 @@ public class notificationlistener extends NotificationListenerService {
 
                         try {
                             if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
-                                ErrorFlow = "CR_AMC_Permissions Provided";
+                                ErrorFlow = "NR_AMC_Permissions Provided";
                                 feat_AlertMissedCalls obj_AMC = new feat_AlertMissedCalls(context);
                                 if (obj_AMC.isFeatureActivated(context)) {
                                     ErrorFlow = "Feature Activated";
-                                    ErrorFlow = "CR_AMC_Missed Call Detected";
+                                    ErrorFlow = "NR_AMC_Missed Call Detected";
                                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                                 notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                                ErrorFlow = "CR_AMC_Init Complete";
+                                ErrorFlow = "NR_AMC_Init Complete";
                                 boolean ringDevice = utilityHelpers.isDNDOverriden(context);
                                 if (ringDevice) {
-                                    ErrorFlow = "CR_AMC_Ring Device Activated";
+                                    ErrorFlow = "NR_AMC_Ring Device Activated";
                                     if ((am.getMode() != AudioManager.MODE_IN_COMMUNICATION) && (am.getMode() != AudioManager.MODE_IN_CALL)) {
-                                        ErrorFlow = "CR_AMC_No Active calls";
+                                        ErrorFlow = "NR_AMC_No Active calls";
 
                                             utilityHelpers.turnSpeakerON(am);
                                             int setVolume = obj_AMC.getPingVolume(context);
                                             am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
                                             ringtones shorttune = new ringtones(context, 2);
                                             if (utilityHelpers.isDeviceConnected(am)) {
-                                                ErrorFlow = "CR_AMC_Playing on connected Device";
+                                                ErrorFlow = "NR_AMC_Playing on connected Device";
                                                 am.setStreamVolume(AudioManager.STREAM_MUSIC, (am.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) / 2, 0);
                                             }
 
                                             shorttune.playShorttune(context);
-                                        ErrorFlow = "CR_AMC_PlayingTune";
+                                        ErrorFlow = "NR_AMC_PlayingTune";
                                             //am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
                                         }
                                     else{
-                                        ErrorFlow = "CR_AMC_Not playing due to ongoing call";
+                                        ErrorFlow = "NR_AMC_Not playing due to ongoing call";
                                     }
                                     }
                                 else{
-                                    ErrorFlow = "CR_AMC_Ring Device Not Active";
+                                    ErrorFlow = "NR_AMC_Ring Device Not Active";
                                 }
                                     //  Toast.makeText(context, "This a toast message", Toast.LENGTH_LONG).show();
                                 }
                                 else{
-                                    ErrorFlow = "CR_AMC_Feature Not Active";
+                                    ErrorFlow = "NR_AMC_Feature Not Active";
                                 }
                             }
                             else{
-                                ErrorFlow = "CR_AMC_Permission Pending";
+                                ErrorFlow = "NR_AMC_Permission Pending";
                             }
                             utilityHelpers.saveStringToMemory(context, "NL_AMC_FLOW", ErrorFlow);
                         } catch (Exception e) {
                             Log.e(TAG, ErrorFlow);
-                            utilityHelpers.saveErrorToMemory(context, ErrorFlow);
+                            utilityHelpers.saveErrorToMemory(context, "ERROR"+ErrorFlow);
                             throw new RuntimeException(e);
                         }
 
@@ -182,7 +185,7 @@ public class notificationlistener extends NotificationListenerService {
                     utilityHelpers.saveStringToMemory(context, "NL_SA_FLOW", ErrorFlow);
                 } catch (Exception e) {
                     Log.e(TAG, ErrorFlow);
-                    utilityHelpers.saveErrorToMemory(context, ErrorFlow);
+                    utilityHelpers.saveErrorToMemory(context, "ERROR"+ErrorFlow);
                     throw new RuntimeException(e);
                 }
             }
