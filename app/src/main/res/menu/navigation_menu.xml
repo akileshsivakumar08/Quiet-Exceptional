@@ -4,10 +4,10 @@
     <item
         android:id="@+id/privacy"
         android:title="Privacy Policy" />
-
     <item
         android:id="@+id/terms"
         android:title="Terms of use" />
+
     <item
         android:id="@+id/troubleshoot"
         android:title="Troubleshoot" />
@@ -17,6 +17,7 @@
     <item
         android:id="@+id/HelpTranslate"
         android:title="Help Translate the App" />
+
     <item
-        android:title="Version: CTR_115" />
+        android:title="@string/version" />
 </menu>

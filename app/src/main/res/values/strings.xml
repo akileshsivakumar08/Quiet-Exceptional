@@ -43,7 +43,7 @@
     <string name="set_to_silent">set to silent</string>
     <string name="rate_app">Rate App</string>
     <string name="tap_to_disable">Tap To Disable</string>
-    <string name="SA_description">Device rings on receiving the Notification message Quiet Exceptional Alarm from selected contacts.  Long-press to send Alarm to Favourite contact.  Carrier Charges may apply.</string>
+    <string name="SA_description">Device rings on receiving the Notification message "Quiet Exceptional Alarm" from selected contacts.  Long-press to send Alarm to Favourite contact.  Carrier Charges may apply.</string>
     <string name="emergency_message_swipe_to_stop_playing_tune">Alarm Message. Swipe to stop playing tune</string>
     <string name="no_contacts_found">No Contacts found</string>
     <string name="requestShareSMSAlarm">Its a good Idea to let the new Contacts know. Send a message that they can reach you with Alarm SMS? This will also share a link to download the app.</string>
@@ -65,8 +65,11 @@
     <string name="continue_string">Continue</string>
     <string name="copied_to_clipboard">Message Copied to Clipboard</string>
     <string name="Exit">Exit</string>
-    <string name="SavenExit"><![CDATA[Save & Exit]]></string>
-    <string name="tempdnddesc">Temporarily silence the device. DND Mode is removed after the set duration.\\n\\nFor best experience, drag from the top and add to Quick Settings.</string>
+    <string name="SavenExit">Save and Exit</string>
+    <string name="tempdnddesc">Temporarily silence the device. DND mode is removed after the set duration.  For best experience, drag from the top and add to Quick Settings.</string>
+    <string name="version">Version: CTR_119</string>
+    <string name="addCustomtile_suggestion">Drag down from the top to open Quick Settings. Add Temp DND to Quick Settings for best experience.</string>
+    <string name="share_message">" Hi, Im using the app Quiet Exceptional. With this app, you don't have to worry about misplacing your device in silent mode! Your Loved contact can still reach you in case of urgencies. You can also silence the device temporarily.The app takes care of resetting the ringer mode. You can download the app here! "</string>
     <string-array name="time_options">
         <item>10 Minutes</item>
         <item>30 Minutes</item>

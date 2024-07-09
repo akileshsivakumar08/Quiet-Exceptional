@@ -25,13 +25,14 @@ public class notificationlistener extends NotificationListenerService {
     String text;
     String subtext;
     String bigtext;
+    String todaydate;
+    String currentTime;
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         String pack = sbn.getPackageName();
         Bundle extras = sbn.getNotification().extras;
         String ErrorFlow = "notificationListener:Start";
         Context context = getApplicationContext();
-        String todaydate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         if ((sbn.getNotification().flags & Notification.FLAG_GROUP_SUMMARY) != 0) {
 
@@ -44,7 +45,7 @@ public class notificationlistener extends NotificationListenerService {
                     /*subtext=extras.getCharSequence("android.subtext").toString();
                     bigtext=extras.getCharSequence("android.bigtext").toString();*/
                 } catch (Exception e) {
-                    ErrorFlow = todaydate+"-"+"notificationListener:Error Obtaining Notification title or Text";
+                    ErrorFlow = todaydate+"-"+currentTime+"-"+"notificationListener:Error Obtaining Notification title or Text";
                     Log.e(TAG, ErrorFlow);
                     utilityHelpers.saveErrorToMemory(context, "ERROR"+ErrorFlow);
                     throw new RuntimeException(e);
@@ -68,7 +69,7 @@ public class notificationlistener extends NotificationListenerService {
                                     ErrorFlow = "NR_AMC_Ring Device Activated";
                                     if ((am.getMode() != AudioManager.MODE_IN_COMMUNICATION) && (am.getMode() != AudioManager.MODE_IN_CALL)) {
                                         ErrorFlow = "NR_AMC_No Active calls";
-                                        if(feat_tempdnd.isFeatureActivated(context)){
+                                        if(!feat_tempdnd.isFeatureActivated(context)){
                                             utilityHelpers.turnSpeakerON(am);
                                             int setVolume = obj_AMC.getPingVolume(context);
                                             am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
@@ -105,9 +106,11 @@ public class notificationlistener extends NotificationListenerService {
                             else{
                                 ErrorFlow = "NR_AMC_Permission Pending";
                             }
-                            utilityHelpers.saveStringToMemory(context, "NL_AMC_FLOW", ErrorFlow);
+                            saveFlowToMemory(context,ErrorFlow,feat_AlertMissedCalls.FLOW);
+
                         } catch (Exception e) {
                             Log.e(TAG, ErrorFlow);
+                            ErrorFlow = todaydate+"-"+currentTime+"-"+ErrorFlow;
                             utilityHelpers.saveErrorToMemory(context, "ERROR"+ErrorFlow);
                             throw new RuntimeException(e);
                         }
@@ -193,10 +196,11 @@ public class notificationlistener extends NotificationListenerService {
                         ErrorFlow = "NR_SA_PermissionPending";
                     }
                     Log.d(TAG,sender_message);
-                    utilityHelpers.saveStringToMemory(context, "NL_SA_FLOW", ErrorFlow);
+                    saveFlowToMemory(context,ErrorFlow,feat_SMSAlarm.FLOW);
                 } catch (Exception e) {
                     Log.e(TAG, ErrorFlow);
-                    utilityHelpers.saveErrorToMemory(context, "ERROR"+ErrorFlow);
+                    ErrorFlow = todaydate+"-"+currentTime+"-"+ErrorFlow;
+                    utilityHelpers.saveErrorToMemory(context, "ERROR "+ErrorFlow);
                     throw new RuntimeException(e);
                 }
             }
@@ -213,6 +217,11 @@ public class notificationlistener extends NotificationListenerService {
         }
     }
 
+    void saveFlowToMemory(Context context,String flowString, String FlowCode) {
+        String DateAndTime=utilityHelpers.getDateAndTime();
+        flowString=DateAndTime+"-"+flowString;
+        utilityHelpers.saveStringToMemory(context, FlowCode, flowString);
+    }
 
 
     private boolean checkpossibleMissedCall(Context context) {

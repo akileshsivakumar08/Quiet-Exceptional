@@ -111,33 +111,33 @@ public class MainActivity extends AppCompatActivity {
                     int id = item.getItemId();
                     if (id == R.id.privacy) {
                         Log.i(TAG, "Navigation Item Privacy");
-                        String url = "https://sites.google.com/view/quietexceptional/privacy-policy?authuser=9";
+                        String url = "https://sites.google.com/view/quietexceptional/privacy-policy";
 
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setData(Uri.parse(url));
                         startActivity(i);
-                    } else if (id == R.id.terms) {
+                    }else if (id==R.id.terms) {
                         Log.i(TAG, "Navigation Item Terms");
-                        String url = "https://sites.google.com/view/quietexceptional/terms-and-conditions?authuser=9";
+                        String url = "https://sites.google.com/view/quietexceptional/terms-of-use";
 
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setData(Uri.parse(url));
                         startActivity(i);
-                    } else if (id == R.id.troubleshoot) {
+                    }
+                    else if (id == R.id.troubleshoot) {
                         Log.i(TAG, "Navigation Item Troubleshoot");
 
                         String loadedErrors = utilityHelpers.loadStringFromMemory(context, MEMCODE_ERRORMEMORY);
+
                         if (loadedErrors.equals("null")) {
                             loadedErrors = "No Errors Found. Rate App?";
                             postQuestionDialog(loadedErrors);
                         } else {
-                            Intent intent = new Intent(Intent.ACTION_SEND);
-                            intent.setType("plain/text");
-                            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"quietexceptional@gmail.com"});
-                            intent.putExtra(Intent.EXTRA_SUBJECT, "Exceptional Bugs from troubleshooting");
-                            intent.putExtra(Intent.EXTRA_TEXT, loadedErrors);
-                            utilityHelpers.clearMemory(context,MEMCODE_ERRORMEMORY);
-                            startActivity(intent);
+                            loadedErrors="Version:"+getString(R.string.version)+"\n"+"Errors:"+"\n"+loadedErrors+"\n\n\n"+"LogString:\n"+getLogString(context);
+
+                            SendEmailToDev(context,loadedErrors,"Crash Logs");
+
+
                         }
                     } else if (id==R.id.Permissions) {
                         Log.i(TAG, "Navigation Item Permission Summary");
@@ -181,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
                         case 1:
                             description = feat_SMSAlarm.getDescription();
                             break;
+                        case 2:
+                            description = feat_tempdnd.getDescription();
+                            break;
                     }
                     postInfoDialog(description);
                 }
@@ -193,8 +196,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "Menu Item Share");
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.setType("text/plain");
-                        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                        String shareMessage = "\nLet me recommend you this cool app\n\n";
+                        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Quiet Exceptional");
+                        String shareMessage = getString(R.string.share_message);
                         shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=com.QE.free" + "\n\n";
                         shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                         startActivity(Intent.createChooser(shareIntent, "choose one"));
@@ -220,6 +223,22 @@ public class MainActivity extends AppCompatActivity {
                 postInfoDialog(getString(R.string.welcome_dialog));
             }
 
+        }
+    }
+
+    private void SendEmailToDev(Context context, String logs ,String Title) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"quietexceptional@gmail.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, Title);
+        intent.putExtra(Intent.EXTRA_TEXT, logs);
+        utilityHelpers.clearMemory(context,MEMCODE_ERRORMEMORY);
+        try {
+            Toast.makeText(this, "Select Email App", Toast.LENGTH_SHORT).show();
+            startActivity(Intent.createChooser(intent, "Send mail..."));
+
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -256,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             //start a dialog box
             AlertDialog.Builder TS_alertbuilder = new AlertDialog.Builder(this,R.style.AlertDialogStyle);
-            TS_alertbuilder.setMessage(description).setPositiveButton(R.string.continue_menu, TSdialogListener).setNeutralButton("View Last Log",TSdialogListener).setNegativeButton(R.string.cancel_menu, TSdialogListener);
+            TS_alertbuilder.setMessage(description).setPositiveButton(R.string.continue_menu, TSdialogListener).setNeutralButton("Send Reports",TSdialogListener).setNegativeButton(R.string.cancel_menu, TSdialogListener);
             AlertDialog alertDialog = TS_alertbuilder.create();
             alertDialog.show();
         } catch (Exception e) {
@@ -282,14 +301,17 @@ public class MainActivity extends AppCompatActivity {
 
                     break;
                 case DialogInterface.BUTTON_NEUTRAL:
-                    String SA_logstring= utilityHelpers.loadStringFromMemory(getApplicationContext(),"NL_SA_FLOW");
-                    String AMC_logstring= utilityHelpers.loadStringFromMemory(getApplicationContext(),"NL_AMC_FLOW");
-                    String NR_logstring= utilityHelpers.loadStringFromMemory(getApplicationContext(),"NL_General_FLOW");
-                    String logString="Alert Missed Calls: "+AMC_logstring+"\n\n"+"Quiet Exceptional Alarm: "+SA_logstring+"\n\n"+"General Log String"+NR_logstring;
-                    postInfoDialog(logString);
+                    String lastLog=getLogString(getApplicationContext());
+                    SendEmailToDev(getApplicationContext(),lastLog,"Flow Logs");
                     break;
             }
         }
     };
-
+private String getLogString(Context context){
+    String SA_logstring= utilityHelpers.loadStringFromMemory(context,"NL_SA_FLOW");
+    String AMC_logstring= utilityHelpers.loadStringFromMemory(context,"NL_AMC_FLOW");
+    String NR_logstring= utilityHelpers.loadStringFromMemory(context,"NL_General_FLOW");
+    String logString="Alert Missed Calls: "+AMC_logstring+"\n\n"+"Quiet Exceptional Alarm: "+SA_logstring+"\n\n"+"Notification Pre-Check Log String"+NR_logstring;
+return logString;
+}
 }

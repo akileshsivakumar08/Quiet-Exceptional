@@ -30,6 +30,9 @@ public class manageWork_tempDND extends Worker {
             broadcastIntent.setAction("com.example.allowrepeatcallers.TIMERWORK_OVER");
             context.sendBroadcast(broadcastIntent);
         }
+        else{
+            utilityHelpers.saveStringToMemory(context, "WorkManager_TempDND", "TempDND_Inactive in manage work");
+        }
 
         return null;
     }

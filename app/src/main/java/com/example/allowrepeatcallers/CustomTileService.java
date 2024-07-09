@@ -13,6 +13,7 @@ public class CustomTileService extends TileService {
     feat_tempdnd obj_tempDND;
     @Override
     public void onClick() {
+
         Context context=getApplicationContext();
         obj_tempDND=new feat_tempdnd(context);
         // Handle click action
@@ -66,9 +67,11 @@ public class CustomTileService extends TileService {
                 String enable=intent.getStringExtra("TDND_State");
                 if(enable.equals("STOP_WORKOVER")){
                     tile.setState(Tile.STATE_INACTIVE);
+                    obj_tempDND.setFeatureActivated(context,false);
                 }
                 else{
                     tile.setState(Tile.STATE_ACTIVE);
+                    obj_tempDND.setFeatureActivated(context,true);
                 }
                 // Toast.makeText(context, "SMS SENT!!", Toast.LENGTH_SHORT).show();
 
@@ -85,7 +88,6 @@ public class CustomTileService extends TileService {
     @Override
     public void onTileAdded() {
         super.onTileAdded();
-        updateTileState(false);
     }
 
     @Override

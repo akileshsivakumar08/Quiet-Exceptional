@@ -7,6 +7,10 @@ import androidx.work.OneTimeWorkRequest;
 
 import com.example.quietexceptional.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class feat_AlertMissedCalls {
 
     public OneTimeWorkRequest twoSecondPause;
@@ -14,6 +18,7 @@ public class feat_AlertMissedCalls {
     public static String[] permissions= {Manifest.permission.READ_PHONE_STATE};
     public static boolean permission_already_requested;
     private static String description;
+    static String FLOW="NL_AMC_FLOW";
 
     public int getPingVolume(Context context) {
         int pingVolume= utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME, ringtones.getCurrent_MediaVolume(context));
@@ -53,4 +58,6 @@ public class feat_AlertMissedCalls {
             boolean Permission_already_requested=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_PERMISSIONREQUESTED);
         return Permission_already_requested;
     }
+
+
 }

@@ -28,9 +28,12 @@ import com.example.quietexceptional.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class utilityHelpers {
     public static final String SHARED_PREFS = "sharedPrefs";
@@ -233,6 +236,15 @@ public class utilityHelpers {
         variable=sharedPreferences.getBoolean(DataID,false);
         return variable;
     }
+
+    public static String getDateAndTime(){
+        String todaydate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        // Get the current date and time
+        String currentTime = sdf.format(new Date());
+        return todaydate+"-"+currentTime;
+    }
+
     public static int loadIntFromMemory(Context context,String DataID,int init){
         int variable;
         SharedPreferences sharedPreferences = context.getSharedPreferences("sharedPrefs", MODE_PRIVATE);

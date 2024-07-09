@@ -1,11 +1,13 @@
 package com.example.allowrepeatcallers;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -42,39 +44,50 @@ public class feat_tempdnd {
         return featureActivated;
     }
 public void starttempDND(Context context){
-
+try {
     notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
-    String timerChoice=utilityHelpers.loadStringFromMemory(context,MEMCODE_TIMERCHOICE);
-    int time_int=0;
-    switch (timerChoice){
+    String timerChoice = utilityHelpers.loadStringFromMemory(context, MEMCODE_TIMERCHOICE);
+    int time_int = 0;
+    switch (timerChoice) {
         case "10 Minutes":
-            time_int=10;
+            time_int = 10;
             break;
         case "30 Minutes":
-            time_int=30;
+            time_int = 30;
             break;
         case "1 Hour":
-            time_int=60;
+            time_int = 60;
             break;
         case "2 Hours":
-            time_int=120;
+            time_int = 120;
             break;
         default:
-            time_int=2;
+            time_int = 2;
             break;
     }
-    tempDND=new OneTimeWorkRequest.Builder(manageWork_tempDND.class)
+    tempDND = new OneTimeWorkRequest.Builder(manageWork_tempDND.class)
             .setInitialDelay(Duration.ofMinutes(time_int))
             .addTag("TEMP_DND")
             .build();
     WorkManager.getInstance(context).enqueue(tempDND);
+}
+catch (Exception e){
+    String ErrorFlow="Tempdnd_error in feat_StarttempDND";
+    Log.e(TAG,"Tempdnd_error in feat_StarttempDND");
+    utilityHelpers.saveErrorToMemory(context,ErrorFlow);
+}
 
 }
     public void stoptempdnd(Context context){
-        WorkManager.getInstance(context).cancelAllWorkByTag("TEMP_DND");
-        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
-        setFeatureActivated(context, false);
-
+        try {
+            WorkManager.getInstance(context).cancelAllWorkByTag("TEMP_DND");
+            notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
+            setFeatureActivated(context, false);
+        }catch (Exception e){
+            String ErrorFlow="Tempdnd_error in feat_StoptempDND";
+            Log.e(TAG,"Tempdnd_error in feat_StoptempDND");
+            utilityHelpers.saveErrorToMemory(context,ErrorFlow);
+        }
 
     }
     public void setFeatureActivated(Context context,boolean featureActivated) {

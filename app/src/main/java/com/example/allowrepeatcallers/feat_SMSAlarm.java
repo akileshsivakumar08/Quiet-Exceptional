@@ -39,6 +39,7 @@ class feat_SMSAlarm {
     public static MediaPlayer player;
     private boolean featureActivated=false;
     public static int interruptionFilter;
+    public static String FLOW="NL_SA_FLOW";
 
 
 
@@ -170,9 +171,9 @@ public class_Buddy getContact(int ID){
         return new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(title)
                 .setDeleteIntent(stopPendingIntent)
-                .addAction(R.drawable.baseline_account_circle_24, "Stop", stopPendingIntent)
+                .addAction(R.drawable.letter_q, "Stop", stopPendingIntent)
                 .setContentText(context.getString(R.string.emergency_message_swipe_to_stop_playing_tune))
-                .setSmallIcon(R.drawable.baseline_account_circle_24)
+                .setSmallIcon(R.drawable.letter_q)
                 .build();
     }
 

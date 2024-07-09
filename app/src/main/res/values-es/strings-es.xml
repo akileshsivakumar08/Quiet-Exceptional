@@ -56,4 +56,15 @@
     <string name="custom_match_text_input">Configuración</string>
     <string name="share_message_addedContact">¡Hola! Te he añadido en Quiet Exceptional. Ahora puedes enviarme el SMS \'Alarma Silenciosa Excepcional\'. Mi teléfono sonará aunque esté en modo silencioso o vibración.</string>
     <string name="ThanksForChoosing">Gracias por elegir Quiet Exceptional.</string>
+    <string name="welcome1">Esta aplicación le permite hacer sonar brevemente el teléfono en cualquier modo de timbre después de llamadas perdidas. También puede configurar el teléfono para sonar después de recibir mensajes de alarma de contactos seleccionados.</string>
+    <string name="welcome2">" Quiet Exceptional escanea las notificaciones en su teléfono para detectar llamadas perdidas y mensajes de alarma. Su privacidad es muy importante para nosotros. La aplicación no necesita internet y ningún dato saldrá del teléfono sin su participación activa."</string>
+    <string name="welcome3">"Para leer un resumen y descripción de los permisos, por favor toque aquí.    "</string>
+    <string name="Notification_Permissions">"Conceder permiso      "</string>
+    <string name="continue_string">Continuar</string>
+    <string name="copied_to_clipboard">Mensaje copiado al portapapeles</string>
+    <string name="Exit">Salir</string>
+    <string name="SavenExit">\"Guardar y salir.\"</string>
+    <string name="tempdnddesc">Silenciar temporalmente el dispositivo. El modo No Molestar se desactiva después de la duración establecida. Para una mejor experiencia, desliza desde la parte superior y añádelo a los ajustes rápidos.</string>
+    <string name="addCustomtile_suggestion">Para la mejor experiencia, desliza de arriba hacia abajo y añádelo a los ajustes rápidos.</string>
+    <string name="share_message">Hola, estoy usando la aplicación Quiet Exceptional. ¡Con esta app, no tienes que preocuparte por perder tu dispositivo en modo silencioso! Tus contactos queridos aún pueden comunicarse contigo en caso de urgencias. También puedes silenciar el dispositivo temporalmente. La aplicación se encarga de restablecer el modo de timbre. ¡Puedes descargar la aplicación aquí!</string>
 </resources>

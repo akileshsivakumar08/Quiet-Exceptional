@@ -78,7 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:textAlignment="center"
-        android:text="Drag down from the Top to open Quick Settings.\nAdd Temp DNDto Quick Settings for best Experience."
+        android:text="@string/addCustomtile_suggestion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TapToEnable" />
