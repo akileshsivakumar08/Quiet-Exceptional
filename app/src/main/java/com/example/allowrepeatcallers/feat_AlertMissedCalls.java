@@ -16,6 +16,7 @@ public class feat_AlertMissedCalls {
     public OneTimeWorkRequest twoSecondPause;
     private boolean featureActivated=false;
     public static String[] permissions= {Manifest.permission.READ_PHONE_STATE};
+    public static String[] addedPermissions={Manifest.permission.MODIFY_AUDIO_SETTINGS};
     public static boolean permission_already_requested;
     private static String description;
     static String FLOW="NL_AMC_FLOW";

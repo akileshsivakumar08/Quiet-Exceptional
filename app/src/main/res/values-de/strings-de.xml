@@ -48,7 +48,7 @@
     <string name="requestShareSMSAlarm">Möchten Sie Mit den neuen Kontakten mitteilen dass sie ihnen in Notfall erreichen können?\\nsie bekommen auch einen Link Quiet Exceptional zu herunterladen.</string>
     <string name="accept_menu">Ja</string>
     <string name="reject_menu">Nein</string>
-    <string name="welcome1">Diese App ermöglicht ihnen nach verpassten Anrufen das Handy in jedem Klingelmodus ganz kurtz klingeln zu lassen. Sie können auch Anach dem Empfang von Alarm Nachrichten von ausgewählten Kontakten, das Handy melden lassen.</string>
+    <string name="welcome1">Diese App ermöglicht ihnen nach verpassten Anrufen das Handy in jedem Klingelmodus ganz kurtz klingeln zu lassen. Sie können auch nach dem Empfang von Alarm Nachrichten von ausgewählten Kontakten, das Handy melden lassen.</string>
     <string name="welcome2">Quiet Exceptional liest die Benachrichtigungen in dem Handy , verpasste Anrufe und Alarm Nachrichten zu detektieren. Ihre private Sphere ist uns sehr wichtig. Die App braucht kein Internet und keine Daten verlassen das Handy ohne ihre aktive Teilnahme.</string>
     <string name="welcome3">"Um eine Zusammenfassung und Beschreibung der Berechtigungen zu lesen, tippen Sie bitte hier. "</string>
     <string name="Notification_Permissions">Berechtigung erteilen</string>

@@ -15,12 +15,12 @@ public class MyPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new FragmentAlertMissedCalls();
+                return new FragmentTemporarydnd() ;
 
             case 1:
                 return new FragmentSMSAlarm();
             case 2:
-                return new FragmentTemporarydnd();
+                return new FragmentAlertMissedCalls();
             default:
                 throw new IllegalArgumentException("Invalid position: " + position);
         }

@@ -210,7 +210,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
                     process_featureState(true,context);
 
                 } else {
-                    String[] pend = utilityHelpers.getpendingpermissions(context, feat_AllowRepeatCallers.permissions);
+                    String[] pend = utilityHelpers.getpendingpermissions_Mandatory(context, feat_AllowRepeatCallers.permissions);
                     Boolean permission_already_requested=OBJ_Permissions.werePermissionsRequested(pend);
                     if (permission_already_requested == false) {
                         requestPermissionLauncher.launch(pend);

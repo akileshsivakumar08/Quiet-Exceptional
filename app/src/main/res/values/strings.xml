@@ -53,7 +53,7 @@
     <string name="NotificationListener_desc">This Permission is needed to detect missed calls and SMS Alarms.</string>
     <string name="enable_feature_to_access_settings">" Enable Feature to Access Settings "</string>
     <string name="no_favourites_added">No Favourites Added</string>
-    <string name="welcome_dialog">Welcome ! Simply tap the Feature title to get started.  Tap the Info button for feature descriptions  Permissions may be requested additionally at each feature. Description of how these are used is available in the Navigation menu</string>
+    <string name="welcome_dialog">Welcome ! Simply tap the Feature title to get started.  Tap the Info button for feature descriptions.  Permissions may be requested additionally at each feature. Description of how these are used is available in the Navigation menu</string>
     <string name="confirm_missedcall_dialog_text">This text will be compared with the Notifications to confirm Missed Calls</string>
     <string name="custom_match_text_input">Configure Match Text</string>
     <string name="share_message_addedContact">Hi.I have Listed you as an Alarm Contact on Quiet Exceptional.\nIf you send me the Message \"Quiet Exceptional Alarm\" My phone will ring on every ringer Mode.Click here to try the app!\n\n</string>
@@ -67,9 +67,14 @@
     <string name="Exit">Exit</string>
     <string name="SavenExit">Save and Exit</string>
     <string name="tempdnddesc">Temporarily silence the device. DND mode is removed after the set duration.  For best experience, drag from the top and add to Quick Settings.</string>
-    <string name="version">Version: CTR_119</string>
+    <string name="version">Version: IR_122</string>
     <string name="addCustomtile_suggestion">Drag down from the top to open Quick Settings. Add Temp DND to Quick Settings for best experience.</string>
     <string name="share_message">" Hi, Im using the app Quiet Exceptional. With this app, you don't have to worry about misplacing your device in silent mode! Your Loved contact can still reach you in case of urgencies. You can also silence the device temporarily.The app takes care of resetting the ringer mode. You can download the app here! "</string>
+    <string name="permissions_needed">Permissions Needed</string>
+    <string name="SA_PermissionsNeeded">This feature needs access to notifications and Contacts detect Alarm Messages. Please grant permissions to continue.</string>
+    <string name="AMC_PermissionsNeeded">This feature uses notifications and call states to detect missed calls. Please grant permissions to continue.</string>
+    <string name="TempDND_Permissionsneeded">This feature needs to be able to toggle Do not Disturb settings. Please provide permission to continue</string>
+    <string name="permissions_needed_title">Permissions needed</string>
     <string-array name="time_options">
         <item>10 Minutes</item>
         <item>30 Minutes</item>

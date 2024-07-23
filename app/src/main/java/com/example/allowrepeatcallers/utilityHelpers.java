@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.example.quietexceptional.R;
 import com.google.gson.Gson;
@@ -34,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class utilityHelpers {
     public static final String SHARED_PREFS = "sharedPrefs";
@@ -114,7 +116,7 @@ public class utilityHelpers {
         return ispending;
     }
 
-    public static String[] getpendingpermissions(Context context,String[] permissions){
+    public static String[] getpendingpermissions_Mandatory(Context context,String[] permissions){
         ArrayList<String> pendingpermissions=new ArrayList<>();
         //String[] pendingpermissions_array=new String[permissions.length];
         int j=0;
@@ -128,6 +130,25 @@ public class utilityHelpers {
         return pendingpermissions_array;
     }
 
+    public static String[] getpendingpermissions_All(Context context,String[] permissions,String[] addedPermissions){
+        ArrayList<String> pendingpermissions=new ArrayList<>();
+        //String[] pendingpermissions_array=new String[permissions.length];
+        int j=0;
+        for(int i=0;i< permissions.length;i++){
+
+            if((ActivityCompat.checkSelfPermission(context, permissions[i]) != PackageManager.PERMISSION_GRANTED)){
+                pendingpermissions.add(permissions[i]);
+            }
+        }
+        for(int i=0;i< addedPermissions.length;i++){
+
+            if((ActivityCompat.checkSelfPermission(context, addedPermissions[i]) != PackageManager.PERMISSION_GRANTED)){
+                pendingpermissions.add(addedPermissions[i]);
+            }
+        }
+        String[] pendingpermissions_array=pendingpermissions.toArray(new String[pendingpermissions.size()]);
+        return pendingpermissions_array;
+    }
 
     //public static int listLoopSearch(String number, List<class_Buddy> myList) {
     public static int listLoopSearchObj(String number, List<class_Buddy> myList) {
@@ -243,6 +264,12 @@ public class utilityHelpers {
         // Get the current date and time
         String currentTime = sdf.format(new Date());
         return todaydate+"-"+currentTime;
+    }
+
+    public static boolean isNotificationServiceEnabled(Context context) {
+        // Check if the notification listener service is enabled
+        Set<String> enabledListenerServices = NotificationManagerCompat.getEnabledListenerPackages(context);
+        return enabledListenerServices.contains(context.getPackageName());
     }
 
     public static int loadIntFromMemory(Context context,String DataID,int init){

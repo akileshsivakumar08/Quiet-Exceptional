@@ -94,7 +94,7 @@ public class FragmentTemporarydnd extends Fragment {
                 Log.i(TAG,"onResume TempDND  Permission Granted But Deactivated");
                 process_featureState(1, context);
             }
-            if (utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
+            if (obj_tempDND.arePermissionsPending(context)) {
                 Log.i(TAG,"onResume TempDND  Permission Not Granted");
                 process_featureState(0, context);
                 TapToEnable.setText(R.string.Allfeat_Tap2Permission);
@@ -134,6 +134,8 @@ public class FragmentTemporarydnd extends Fragment {
             timechoices.setAdapter(adapter);
             utilityHelpers.adjustTitleTextSize(FeatTitle, context,50);
 
+
+            //animateScalePan(leftLine,  0);
         } catch (Exception e) {
             String ErrorFlow="TempDND_frag_Throw GUI INIT Exception";
             Log.e(TAG,"TempDND_frag_Throw GUI INIT Exception");
@@ -161,6 +163,9 @@ try {
         process_featureState(2, context);
     } else {
         process_featureState(1, context);
+    }
+    if(obj_tempDND.arePermissionsPending(context)){
+        process_featureState(0, context);
     }
 }
 catch (Exception e) {
@@ -286,21 +291,26 @@ catch (Exception e) {
 
 
 
+        if (obj_tempDND.arePermissionsPending(context)) {
+            postPermissionDialog(context);
+        }
 
-        if (obj_tempDND.isFeatureActivated(context)) {
-            //startCustomTileService
-            tileServiceIntent.putExtra("isActive", false);
-            context.startService(tileServiceIntent);
-            process_featureState(1, context);
-            obj_tempDND.setFeatureActivated(context, false);
+        else {
+            if (obj_tempDND.isFeatureActivated(context)) {
+                //startCustomTileService
+                tileServiceIntent.putExtra("isActive", false);
+                context.startService(tileServiceIntent);
+                process_featureState(1, context);
+                obj_tempDND.setFeatureActivated(context, false);
 
-        } else {
+            } else {
                 //StopCustomTileService
                 tileServiceIntent.putExtra("isActive", true);
                 context.startService(tileServiceIntent);
                 obj_tempDND.setFeatureActivated(context, true);
                 process_featureState(2, context);
 
+            }
         }
     }
     catch (Exception e) {
@@ -312,45 +322,30 @@ catch (Exception e) {
     }
     }
 
-    private ActivityResultLauncher<String[]> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
-                Context context =requireContext();
-                OBJ_Permissions.setPermissionRequested(context,isGranted);
-                if(isGranted.containsValue(false)){
-                    process_featureState(0,context);
 
-                }
-                else{
-                    process_featureState(1,context);
-                    utilityHelpers.checkLogFormat(context);
-                }
-            });
+    private void postPermissionDialog(Context context) {
+
+        DialogUtils.showAlertDialog(context,
+                getString(R.string.permissions_needed),
+                getString(R.string.TempDND_Permissionsneeded),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
 
-    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            Context context=requireContext();
-            switch (which){
-                case DialogInterface.BUTTON_POSITIVE:
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    intent.setData(Uri.parse("package:" + context.getPackageName()));
+                        Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                        Toast.makeText(context, " Select Quiet Exceptional from the list ", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
+                    }
+                },
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
-                    startActivity(intent);
-                    //Yes button clicked
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    TapToEnable.setChecked(false);
-                    //No button clicked
-                    //smsReceiver.DND_OverridePermission=false;
-                    break;
-            }
-        }
-    };
-
-
-
+    }
 
 
 }

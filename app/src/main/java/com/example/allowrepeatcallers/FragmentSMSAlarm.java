@@ -214,25 +214,6 @@ public class FragmentSMSAlarm extends Fragment {
 
 
 
-    private void Dialog_requestDND() {
-        NotificationManager policy_notificationManager =
-                (NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE);
-        if (!policy_notificationManager.isNotificationPolicyAccessGranted()) {
-            try {
-                //start a dialog box
-                AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(requireContext());
-                noti_alertbuilder.setMessage(R.string.provide_dnd_permissions).setPositiveButton(R.string.continue_menu, noti_alert_dialogClickListener)
-                        .setNegativeButton(R.string.cancel_menu, noti_alert_dialogClickListener);
-                AlertDialog alertDialog = noti_alertbuilder.create();
-                alertDialog.show();
-            } catch (Exception e) {
-                String ErrorFlow="SA_frag_ Exception on dialog  ";
-                utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
-               // Log.e(TAG, " Exception on dialog  " + e);
-            }
-
-        }
-    }
 
     private void adjustInterfaceButton(String ipColor, String ipText) {
         TapToEnable.setText(ipText);
@@ -241,24 +222,41 @@ public class FragmentSMSAlarm extends Fragment {
         manageContacts.setBackgroundColor(Color.parseColor(ipColor));
     }
 
+    private void postPermissionDialog(Context context) {
+
+        DialogUtils.showAlertDialog(context,
+                getString(R.string.permissions_needed),
+                getString(R.string.SA_PermissionsNeeded),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
+                        Toast.makeText(context, " Select Quiet Exceptional from the list ", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
+                    }
+                },
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+    }
+
     private void userTap() {
         Context context=requireContext();
-        NotificationManager tap_notificationManager =
-                (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
         if(!GUIobj_SA.isFeatureActivated(context)){
-
-            if (!tap_notificationManager.isNotificationPolicyAccessGranted()) {
-
-                process_featureState(false,context);
-                TapToEnable.setText(R.string.Allfeat_Tap2Permission);
-                Dialog_requestDND();
-            } else {
+            if ((!utilityHelpers.isNotificationServiceEnabled(context))) {
+                postPermissionDialog(context);
+            }
+            else {
                 if (!utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
 
                     process_featureState(true,context);
 
                 } else {
-                    String[] pend = utilityHelpers.getpendingpermissions(context, feat_SMSAlarm.permissions);
+                    String[] pend = utilityHelpers.getpendingpermissions_All(context, feat_SMSAlarm.permissions,feat_SMSAlarm.addedPermissions);
                     Boolean permission_already_requested=OBJ_Permissions.werePermissionsRequested(pend);
                     if (!permission_already_requested) {
                         requestPermissionLauncher.launch(pend);
@@ -299,6 +297,7 @@ public class FragmentSMSAlarm extends Fragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
                     .setNegativeButton(R.string.cancel_menu, dialogClickListener);
+            builder.setMessage(getString(R.string.permissions_needed_title));
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         } catch (Exception e) {

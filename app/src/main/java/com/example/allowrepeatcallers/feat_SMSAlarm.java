@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 class feat_SMSAlarm {
     private static final String CHANNEL_ID = "SMS Notification";
+    public static String[] addedPermissions={Manifest.permission.MODIFY_AUDIO_SETTINGS};
     private static boolean silentExceptionRingActivated;
     private static final String MEMCODE_SMSALARM="STRINGSET_SMSALARM";
     private static final String MEMCODE_PERMISSIONREQUESTED="SMSALARM_PERMISSIONREQUESTED";

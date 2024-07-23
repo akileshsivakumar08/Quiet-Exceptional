@@ -95,7 +95,16 @@ catch (Exception e){
         this.featureActivated = featureActivated;
     }
 
-
+public boolean arePermissionsPending(Context context){
+    NotificationManager tap_notificationManager =
+            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    if ((!utilityHelpers.isNotificationServiceEnabled(context)) && (!tap_notificationManager.isNotificationPolicyAccessGranted())) {
+        return true;
+    }
+    else{
+        return false;
+    }
+}
     public void setPermissionRequested(Context context) {
         utilityHelpers.saveBooleanToMemory(context,MEMCODE_PERMISSIONREQUESTED,true);
     }

@@ -50,6 +50,8 @@ public class startup_permissions extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        NotiPermissions = (Button) findViewById(R.id.NotiPermissions);
+        continuebtn = (Button) findViewById(R.id.continuebtn);
         Context context=getApplicationContext();
         checkButtonStates(context);
 
@@ -66,10 +68,12 @@ public class startup_permissions extends AppCompatActivity {
                 setButtonState(NotiPermissions, false);
             }
             if ((isNotificationServiceEnabled())) {
+                continuebtn.setText("Continue");
                 continuebtn.setEnabled(true);
                 continuebtn.setBackgroundColor(Color.parseColor(EnabledColor));
             } else {
-                continuebtn.setEnabled(false);
+                continuebtn.setText("Continue without permissions");
+                //continuebtn.setEnabled(false);
                 continuebtn.setBackgroundColor(Color.parseColor(ContinueDisabledColor));
             }
         }
@@ -115,9 +119,12 @@ public class startup_permissions extends AppCompatActivity {
                 }
             });
 
+
             continuebtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                  //  utilityHelpers.saveBooleanToMemory(context,MainActivity.MEMCODE_CONTINUEPRESSED,true);
+                    utilityHelpers.saveBooleanToMemory(context,MainActivity.MEMCODE_APPALREADYLAUNCHED,true);
                     Intent intent = new Intent(context, MainActivity.class);
                     startActivity(intent);
                     finish();

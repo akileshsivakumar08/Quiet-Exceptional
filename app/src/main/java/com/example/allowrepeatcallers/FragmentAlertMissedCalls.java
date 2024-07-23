@@ -3,6 +3,7 @@ package com.example.allowrepeatcallers;
 import static android.content.ContentValues.TAG;
 import static android.content.Context.AUDIO_SERVICE;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.quietexceptional.R;
 
+import java.util.Arrays;
 import java.util.Set;
 
 public class FragmentAlertMissedCalls extends Fragment {
@@ -271,11 +273,19 @@ catch (Exception e) {
             process_featureState(1, context);
 
         } else {
-            if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
+            NotificationManager tap_notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if ((!utilityHelpers.isNotificationServiceEnabled(context)) || (!tap_notificationManager.isNotificationPolicyAccessGranted())) {
+                postPermissionDialog(context);
+              //  Intent intent = new Intent(context, startup_permissions.class);
+              //  startActivity(intent);
+            }
+            else if ((!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions))&&(!utilityHelpers.ispermissionpending(context,feat_AlertMissedCalls.addedPermissions))) {
                 process_featureState(2, context);
 
             }  else {
-                String[] pend = utilityHelpers.getpendingpermissions(context, feat_AlertMissedCalls.permissions);
+                String[] pend = utilityHelpers.getpendingpermissions_All(context, feat_AlertMissedCalls.permissions,feat_AlertMissedCalls.addedPermissions);
+
                 Boolean permission_already_requested = OBJ_Permissions.werePermissionsRequested(pend);
                 if (permission_already_requested == false) {
 
@@ -286,6 +296,7 @@ catch (Exception e) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogStyle);
                         builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
                                 .setNegativeButton(R.string.cancel_menu, dialogClickListener);
+                        builder.setTitle(getString(R.string.permissions_needed_title));
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
                     } catch (Exception e) {
@@ -305,6 +316,28 @@ catch (Exception e) {
         //Feature Enable User Tap exception
         throw new RuntimeException(e);
     }
+    }
+
+    private void postPermissionDialog(Context context) {
+
+        DialogUtils.showAlertDialog(context,
+                getString(R.string.permissions_needed),
+                getString(R.string.AMC_PermissionsNeeded),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
+                        Toast.makeText(context, " Select Quiet Exceptional from the list ", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
+                    }
+                },
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
     }
 
     private ActivityResultLauncher<String[]> requestPermissionLauncher =

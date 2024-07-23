@@ -220,7 +220,7 @@ public class FragmentPrioContacts extends Fragment {
                     process_featureState(true,context);
 
                 } else {
-                    String[] pend = utilityHelpers.getpendingpermissions(context, feat_PrioContacts.permissions);
+                    String[] pend = utilityHelpers.getpendingpermissions_Mandatory(context, feat_PrioContacts.permissions);
                     Boolean permission_already_requested=OBJ_Permissions.werePermissionsRequested(pend);
                     if (!permission_already_requested) {
                         requestPermissionLauncher.launch(pend);

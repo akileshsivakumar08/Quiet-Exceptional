@@ -38,6 +38,7 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_NOTIFICATION_PERMISSION = 1 ;
+    private static final String MEMCODE_WELCOMESHOWN ="WELCOMESHOWN" ;
     ImageView infoButton;
     public final int SoftwareType=1;
     public DrawerLayout drawerLayout;
@@ -47,15 +48,27 @@ public class MainActivity extends AppCompatActivity {
     public ActionBarDrawerToggle actionBarDrawerToggle;
     public static int currentFragmentPosition;
     public static final String MEMCODE_ERRORMEMORY = "ERRORMEMORY";
+    public  static final String MEMCODE_CONTINUEPRESSED="CONTINUEPRESSED";
+    public  static final String MEMCODE_APPALREADYLAUNCHED="APPALREADYLAUNCHED";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Context context = getApplicationContext();
-        NotificationManager tap_notificationManager =
+        /*NotificationManager tap_notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if ((!isNotificationServiceEnabled()) || (!tap_notificationManager.isNotificationPolicyAccessGranted())) {
+            Intent intent = new Intent(context, startup_permissions.class);
+            startActivity(intent);
+            finish();
+        }*/
+        Boolean continuePressed=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_CONTINUEPRESSED);
+
+        //if not continued, launch startup permissions,
+        // if continued, launch app
+        Boolean appAlreadyLaunched=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_APPALREADYLAUNCHED);
+        if((!appAlreadyLaunched)){
             Intent intent = new Intent(context, startup_permissions.class);
             startActivity(intent);
             finish();
@@ -131,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (loadedErrors.equals("null")) {
                             loadedErrors = "No Errors Found. Rate App?";
-                            postQuestionDialog(loadedErrors);
+                            postQuestionDialogWithNeutralButton(loadedErrors);
                         } else {
                             loadedErrors="Version:"+getString(R.string.version)+"\n"+"Errors:"+"\n"+loadedErrors+"\n\n\n"+"LogString:\n"+getLogString(context);
 
@@ -176,13 +189,14 @@ public class MainActivity extends AppCompatActivity {
                     Log.i(TAG, "Menu Item InfoButton");
                     switch (currentFragmentPosition) {
                         case 0:
-                            description = feat_AlertMissedCalls.getDescription();
+
+                            description = feat_tempdnd.getDescription();
                             break;
                         case 1:
                             description = feat_SMSAlarm.getDescription();
                             break;
                         case 2:
-                            description = feat_tempdnd.getDescription();
+                            description = feat_AlertMissedCalls.getDescription();
                             break;
                     }
                     postInfoDialog(description);
@@ -216,10 +230,10 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(i);
                 }
             });
-            Boolean appAlreadyLaunched=utilityHelpers.loadBooleanFromMemory(context,"APPALREADYLAUNCHED");
-            if(!appAlreadyLaunched){
-                appAlreadyLaunched=true;
-                utilityHelpers.saveBooleanToMemory(context,"APPALREADYLAUNCHED",appAlreadyLaunched);
+            Boolean welcomeshown=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_WELCOMESHOWN);
+            if(!welcomeshown){
+                welcomeshown=true;
+                utilityHelpers.saveBooleanToMemory(context,MEMCODE_WELCOMESHOWN,welcomeshown);
                 postInfoDialog(getString(R.string.welcome_dialog));
             }
 
@@ -263,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
             //start a dialog box
             AlertDialog.Builder noti_alertbuilder = new AlertDialog.Builder(this,R.style.AlertDialogStyle);
             noti_alertbuilder.setMessage(description);
+            noti_alertbuilder.setTitle("Description");
             AlertDialog alertDialog = noti_alertbuilder.create();
             alertDialog.show();
         } catch (Exception e) {
@@ -271,11 +286,12 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
         }
     }
-    private void postQuestionDialog(String description) {
+    private void postQuestionDialogWithNeutralButton(String description) {
         try {
             //start a dialog box
             AlertDialog.Builder TS_alertbuilder = new AlertDialog.Builder(this,R.style.AlertDialogStyle);
             TS_alertbuilder.setMessage(description).setPositiveButton(R.string.continue_menu, TSdialogListener).setNeutralButton("Send Reports",TSdialogListener).setNegativeButton(R.string.cancel_menu, TSdialogListener);
+            TS_alertbuilder.setTitle("Troubleshoot");
             AlertDialog alertDialog = TS_alertbuilder.create();
             alertDialog.show();
         } catch (Exception e) {
@@ -284,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), " Exception on dialog ", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     DialogInterface.OnClickListener TSdialogListener = new DialogInterface.OnClickListener() {
         @Override
