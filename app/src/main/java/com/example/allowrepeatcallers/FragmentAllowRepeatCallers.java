@@ -223,6 +223,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
         }
     }
 
+
     private void permissionAlreadyRequested_RequestDialog(Context context) {
         try {
             //start a dialog box

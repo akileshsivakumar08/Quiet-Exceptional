@@ -40,6 +40,11 @@
             android:screenOrientation="portrait" >
 
         </activity>
+        <activity android:name="com.example.allowrepeatcallers.custom_text_list"
+            android:exported="true"
+            android:screenOrientation="portrait" >
+
+        </activity>
 
         <service android:name="com.example.allowrepeatcallers.notificationlistener"
             android:exported="true"
@@ -77,6 +82,7 @@
                  <action android:name="android.intent.action.PHONE_STATE"/>
              </intent-filter>
          </receiver>
+
         <receiver android:name="com.example.allowrepeatcallers.StopCountdownReceiver"
             android:exported="true">
             <intent-filter>

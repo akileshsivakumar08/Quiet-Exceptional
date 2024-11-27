@@ -19,6 +19,7 @@ public class manageWork_AlertMissedCalls extends Worker {
     @Override
     public Result doWork() {
         callStateManager.notificationWindow = false;
+
         return null;
     }
 }

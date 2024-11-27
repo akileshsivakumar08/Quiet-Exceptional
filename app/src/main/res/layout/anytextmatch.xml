@@ -7,18 +7,43 @@
     android:background="#FFFBF2"
     tools:context=".MainActivity">
 
+
+    <ImageView
+        android:id="@+id/managecustomText"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#FFFBF2"
+        android:textColor="#C5C5C5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintStart_toStartOf="@+id/FeatTitle"
+        app:layout_constraintTop_toBottomOf="@+id/taptotestvolume"
+        app:srcCompat="@drawable/baseline_add_24" />
+
+    <TextView
+        android:id="@+id/managecustomText_string"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Text"
+        android:textColor="#2F435A"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/managecustomText"
+        app:layout_constraintStart_toStartOf="@+id/managecustomText"
+        app:layout_constraintTop_toBottomOf="@+id/managecustomText" />
+
+
     <TextView
         android:id="@+id/spinnerdesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
         android:text="@string/ping_again_after"
-        android:textColor="#525252"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/timechoices"
+        android:textColor="#2F435A"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/timechoices"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/timechoices" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/timechoices"
+        app:layout_constraintTop_toBottomOf="@+id/timechoices" />
 
     <Spinner
         android:id="@+id/timechoices"
@@ -27,20 +52,19 @@
         android:layout_gravity="left"
         app:layout_constraintBottom_toBottomOf="@+id/TapToEnable"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.593"
+        app:layout_constraintHorizontal_bias="0.603"
         app:layout_constraintStart_toEndOf="@+id/TapToEnable"
         app:layout_constraintTop_toTopOf="@+id/TapToEnable"
-        app:layout_constraintVertical_bias="0.541" />
-
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/FeatTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
-        android:text="@string/MCA_Title"
+        android:text="@string/ATM_Title"
         android:textColor="#F79489"
-        android:textSize="75sp"
+        android:textSize="50sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -114,33 +138,27 @@
         app:layout_constraintStart_toStartOf="@+id/seekBar"
         app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
-    <ImageView
-        android:id="@+id/settings_AMC"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="#FFFBF2"
-        android:textColor="#C5C5C5"
-        app:layout_constraintBottom_toBottomOf="@+id/rightLine"
-        app:layout_constraintEnd_toEndOf="@+id/seekBar"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="@+id/seekBar"
-        app:layout_constraintTop_toBottomOf="@+id/taptotestvolume"
-        app:srcCompat="@drawable/baseline_settings_24"
-        app:tint="#2F435A" />
-
-    <TextView
-        android:id="@+id/settings_text"
+    <Switch
+        android:id="@+id/overridednd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Allfeat_settings"
-        android:textAlignment="center"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.827"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/taptotestvolume"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <TextView
+        android:id="@+id/switchtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ping in Silent mode"
         android:textColor="#2F435A"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/settings_AMC"
-        app:layout_constraintHorizontal_bias="0.35"
-        app:layout_constraintStart_toStartOf="@+id/settings_AMC"
-        app:layout_constraintTop_toBottomOf="@+id/settings_AMC" />
-
+        app:layout_constraintBottom_toBottomOf="@+id/managecustomText_string"
+        app:layout_constraintEnd_toEndOf="@+id/overridednd"
+        app:layout_constraintStart_toStartOf="@+id/overridednd"
+        app:layout_constraintTop_toBottomOf="@+id/managecustomText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

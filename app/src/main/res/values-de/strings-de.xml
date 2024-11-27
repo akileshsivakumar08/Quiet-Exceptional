@@ -6,7 +6,7 @@
     <string name="Settings">Einstellungen</string>
     <string name="troubleshoot">Troubleshoot</string>
     <string name="App_Language">App Sprache</string>
-    <string name="RingInDND">Im Modus "Nicht Stören" Klingeln</string>
+    <string name="RingInDND">Im Modus "Nicht Stören" oder im Stumm Modus Klingeln</string>
     <string name="RingInDND_desc">Gilt für Missedcall Alerts</string>
     <string name="Allfeat_Tap2Enable">Tippen zum aktivieren</string>
     <string name="Allfeat_settings">Einstellugen</string>

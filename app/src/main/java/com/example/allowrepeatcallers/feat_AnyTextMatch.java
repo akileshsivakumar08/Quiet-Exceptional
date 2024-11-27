@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.media.AudioManager;
+import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.work.Data;
@@ -14,29 +15,55 @@ import com.example.quietexceptional.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.SplittableRandom;
 
-public class feat_AlertMissedCalls{
+public class feat_AnyTextMatch {
 
-    private static final String MEMCODE_MC_NOTIKEY = "MC_NOTIKEY";
+    private static final String MEMCODE_MC_NOTIKEY = "ATM_MC_NOTIKEY";
     public OneTimeWorkRequest twoSecondPause;
     public OneTimeWorkRequest work_additionalPing;
     private static final String TAG = "QuietExceptional";
     public boolean additionalPingDismissed=false;
     private boolean featureActivated=false;
-    public static String[] permissions= {Manifest.permission.READ_PHONE_STATE};
-    public static String[] addedPermissions={Manifest.permission.MODIFY_AUDIO_SETTINGS};
+    public static String[] permissions= {};
     public static boolean permission_already_requested;
     private static String description;
-    static String FLOW="NL_AMC_FLOW";
-    private String MEMCODE_ADDITIONALPING="MEMCODE_ADDITIONALPING";
+    private ArrayList<String> customTextList=new ArrayList<>();
+    static String FLOW="NL_ATM_FLOW";
+    private String MEMCODE_ADDITIONALPING="MEMCODE_ATM_ADDITIONALPING";
 
-    private String MEMCODE_AMCTIMERCHOICE="MEMCODE_AMCTIMERCHOICE";
+    private String MEMCODE_ATMTIMERCHOICE="MEMCODE_ATMTIMERCHOICE";
+    private static String MEMCODE_CUSTOM_TEXT_LIST="MEMCODE_CUSTOMTEXTLIST";
+
+    public void saveCustomTextToMemory(Context context, String customString) {
+       customTextList=loadCustomTextFromMemory(context);
+       customTextList.add(customString);
+        utilityHelpers.saveArrayListToMemory(context,MEMCODE_CUSTOM_TEXT_LIST,customTextList);
+    }
+
+    public void pingifCustomTextMatch(Context context,String text,String notikey,int type) {
+        customTextList=loadCustomTextFromMemory(context);
+        if(ismatchfoundinList(text)){
+            pingcustomText(context,notikey,type);
+        }
+
+    }
+private boolean ismatchfoundinList(String msgtext){
+for(int i=0;i<customTextList.size();i++){
+    String listtext=customTextList.get(i);
+    msgtext=msgtext.toLowerCase();
+    msgtext=msgtext.trim();
+    listtext=listtext.toLowerCase();
+    listtext=listtext.trim();
+    if(msgtext.contains(listtext)){
+        return true;
+    }
+}
+return false;
+}
     public int getPingVolume(Context context) {
         int pingVolume= utilityHelpers.loadIntFromMemory(context,MEMCODE_VOLUME, ringtones.getCurrent_MediaVolume(context));
         return pingVolume;
@@ -44,13 +71,14 @@ public class feat_AlertMissedCalls{
     public void saveVolume(Context context,int inputVolume){
         utilityHelpers.saveIntToMemory(context,MEMCODE_VOLUME,inputVolume);
     }
-private static  final String MEMCODE_OVERRIDEDND="AMC_OVERRIDE_DND";
-    private static final String MEMCODE_ACTIVATEFEAT="IS_AMC_ACTIVATED";
-    private static final String MEMCODE_VOLUME="AMC_VOLUME";
-    private static final String MEMCODE_PERMISSIONREQUESTED="AMC_PERMISSIONREQUESTED";
-    public feat_AlertMissedCalls(Context context) {
+
+    private static final String MEMCODE_ACTIVATEFEAT="IS_ATM_ACTIVATED";
+    private static  final String MEMCODE_OVERRIDEDND="ATM_OVERRIDE_DND";
+    private static final String MEMCODE_VOLUME="ATM_VOLUME";
+    private static final String MEMCODE_PERMISSIONREQUESTED="ATM_PERMISSIONREQUESTED";
+    public feat_AnyTextMatch(Context context) {
         featureActivated=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_ACTIVATEFEAT);
-        description = context.getString(R.string.MCA_description);
+        description = context.getString(R.string.ATM_description);
     }
 
     public static String getDescription() {
@@ -76,80 +104,67 @@ private static  final String MEMCODE_OVERRIDEDND="AMC_OVERRIDE_DND";
         return Permission_already_requested;
     }
 
-    public String pingMissedCall(Context context,String notiKey,int type){
-        String ErrorFlow="Enteredfeat_AMC";
+    public String pingcustomText(Context context,String notiKey,int type){
+        String ErrorFlow="Enteredfeat_ATM";
         try {
 
-            if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
-                ErrorFlow = "NR_AMC_Permissions Provided";
+                ErrorFlow = "NR_ATM_Permissions Provided";
                 if (isFeatureActivated(context)) {
                     ErrorFlow = "Feature Activated";
-                    ErrorFlow = "NR_AMC_Missed Call Detected";
+                    ErrorFlow = "NR_ATM_Missed Call Detected";
                     AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                     NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    ErrorFlow = "NR_AMC_Init Complete";
+                    ErrorFlow = "NR_ATM_Init Complete";
                     boolean ringDevice = (utilityHelpers.isSilentOverriden(context,MEMCODE_OVERRIDEDND));
                     if (ringDevice) {
-                        ErrorFlow = "NR_AMC_Ring Device Activated";
+                        ErrorFlow = "NR_ATM_Ring Device Activated";
                         if ((am.getMode() != AudioManager.MODE_IN_COMMUNICATION) && (am.getMode() != AudioManager.MODE_IN_CALL)) {
-                            ErrorFlow = "NR_AMC_No Active calls";
-                            if(!feat_tempdnd.isFeatureActivated(context)){
+                            ErrorFlow = "NR_ATM_No Active calls";
+                            if (!feat_tempdnd.isFeatureActivated(context)) {
                                 utilityHelpers.turnSpeakerON(am);
                                 int setVolume = getPingVolume(context);
                                 am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
                                 ringtones shorttune = new ringtones(context, 2);
                                 if (utilityHelpers.isDeviceConnected(am)) {
-                                    ErrorFlow = "NR_AMC_Playing on connected Device";
+                                    ErrorFlow = "NR_ATM_Playing on connected Device";
                                     am.setStreamVolume(AudioManager.STREAM_MUSIC, (am.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) / 2, 0);
                                 }
 
                                 shorttune.playShorttune(context);
                                 /*type =1 means the function has been called form notification listener.type =0 means the function has been called from manage_work*/
-                                if(type==1) {
+                                if (type == 1) {
                                     utilityHelpers.saveKeyToMemory(context, MEMCODE_MC_NOTIKEY, notiKey);
                                     int AddPingTime = getAddPingTime(context);
-                                    if (AddPingTime != 0)
-                                    {
-                                        String additionalPing = utilityHelpers.loadStringFromMemory(context, MEMCODE_ADDITIONALPING);
-                                    if (!additionalPing.equals("None")) {
+                                    if (AddPingTime != 0) {
                                         Data inputData = new Data.Builder()
                                                 .putString("key", notiKey)
                                                 .build();
-                                        work_additionalPing = new OneTimeWorkRequest.Builder(manageWork_AMC_ExtraPing.class)
+                                        work_additionalPing = new OneTimeWorkRequest.Builder(manageWork_ATM_ExtraPing.class)
                                                 .setInitialDelay(Duration.ofMinutes(AddPingTime))
                                                 .setInputData(inputData)
                                                 .build();
                                         WorkManager.getInstance(context).enqueue(work_additionalPing);
+
                                     }
                                 }
-                                }
-                                ErrorFlow = "NR_AMC_PlayingTune"+"savedVolume"+ am.getStreamVolume(AudioManager.STREAM_MUSIC);
+                                ErrorFlow = "NR_ATM_PlayingTune" + "savedVolume" + am.getStreamVolume(AudioManager.STREAM_MUSIC);
                                 //am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
 
-                            }
-                            else {
-                                ErrorFlow = "NR_AMC_Tempdnd_activated";
+                            } else {
+                                ErrorFlow = "NR_ATM_Tempdnd_activated";
                             }
 
 
+                        } else {
+                            ErrorFlow = "NR_ATM_Not playing due to ongoing call";
                         }
-                        else{
-                            ErrorFlow = "NR_AMC_Not playing due to ongoing call";
-                        }
+                        //  Toast.makeText(context, "This a toast message", Toast.LENGTH_LONG).show();
                     }
-                    else{
-                        ErrorFlow = "NR_AMC_Ring Device Not Active";
-                    }
-                    //  Toast.makeText(context, "This a toast message", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    ErrorFlow = "NR_AMC_Feature Not Active";
+                    ErrorFlow = "NR_ATM_Feature Not Active";
                 }
-            }
-            else{
-                ErrorFlow = "NR_AMC_Permission Pending";
-            }
-            utilityHelpers.saveFlowToMemory(context,ErrorFlow,feat_AlertMissedCalls.FLOW);
+            utilityHelpers.saveFlowToMemory(context,ErrorFlow, feat_AnyTextMatch.FLOW);
 
         } catch (Exception e) {
             Log.e(TAG, ErrorFlow);
@@ -162,7 +177,7 @@ private static  final String MEMCODE_OVERRIDEDND="AMC_OVERRIDE_DND";
     }
 
     private int getAddPingTime(Context context) {
-        String timerChoice = utilityHelpers.loadStringFromMemory(context, MEMCODE_AMCTIMERCHOICE);
+        String timerChoice = utilityHelpers.loadStringFromMemory(context, MEMCODE_ATMTIMERCHOICE);
         int time_int = 0;
         switch (timerChoice) {
             case "None":
@@ -184,13 +199,43 @@ private static  final String MEMCODE_OVERRIDEDND="AMC_OVERRIDE_DND";
         return time_int;
     }
 
-    public void playTuneAMC(){
+    public void playTuneATM(){
 
     }
 
-    public void removeMissedCall(Context context,String notiKey) {
+    public void savetimerChoice(Context context, String selectedItem) {
+        utilityHelpers.saveStringToMemory(context,MEMCODE_ATMTIMERCHOICE,selectedItem);
+    }
+    public String getSelectedTimerChoice(Context context) {
+        String timerchoice=utilityHelpers.loadStringFromMemory(context,MEMCODE_ATMTIMERCHOICE);
+        if(!timerchoice.equals("null")){
+            return timerchoice;
+        }
+        else{
+            return "10 Seconds";
+        }
+    }
+    public static ArrayList<String> loadCustomTextFromMemory(Context context) {
+        Gson gson = new Gson();
+        ArrayList<String> customTextList=new ArrayList<>();
+        String String_ctl = utilityHelpers.loadStringFromMemory(context,MEMCODE_CUSTOM_TEXT_LIST);
+        if(!String_ctl.equals("null")) {
+            customTextList = gson.fromJson(String_ctl, new TypeToken<List<String>>() {}.getType());
+        }
+        return customTextList;
+    }
+    public static ArrayList<String> loadATM_KeysFromMemory(Context context) {
+        Gson gson = new Gson();
         ArrayList<String> storedKeys=new ArrayList<>();
-        storedKeys=loadMissedCallListFromMemory(context);
+        String String_KeyList = utilityHelpers.loadStringFromMemory(context,MEMCODE_MC_NOTIKEY);
+        if(!String_KeyList.equals("null")) {
+            storedKeys = gson.fromJson(String_KeyList, new TypeToken<List<String>>() {}.getType());
+        }
+        return storedKeys;
+    }
+    public void remove_ATM_Key(Context context,String notiKey) {
+        ArrayList<String> storedKeys=new ArrayList<>();
+        storedKeys=loadATM_KeysFromMemory(context);
         if(storedKeys.contains(notiKey)){
             for(int i =0;i<storedKeys.size();i++){
                 if(storedKeys.get(i).equals(notiKey)){
@@ -201,25 +246,15 @@ private static  final String MEMCODE_OVERRIDEDND="AMC_OVERRIDE_DND";
         }
 
     }
-    public void savetimerChoice(Context context, String selectedItem) {
-        utilityHelpers.saveStringToMemory(context,MEMCODE_AMCTIMERCHOICE,selectedItem);
+    public void saveCustomTextList(Context context, ArrayList<String> outputList) {
+        utilityHelpers.saveArrayListToMemory(context,MEMCODE_CUSTOM_TEXT_LIST,outputList);
     }
-    public String getSelectedTimerChoice(Context context) {
-        String timerchoice=utilityHelpers.loadStringFromMemory(context,MEMCODE_AMCTIMERCHOICE);
-        if(!timerchoice.equals("null")){
-            return timerchoice;
-        }
-        else{
-            return "10 Seconds";
-        }
+
+    public Boolean getpinginSilentMode(Context context) {
+        return utilityHelpers.loadBooleanFromMemory(context,MEMCODE_OVERRIDEDND);
     }
-    public static ArrayList<String> loadMissedCallListFromMemory(Context context) {
-        Gson gson = new Gson();
-        ArrayList<String> storedKeys=new ArrayList<>();
-        String String_KeyList = utilityHelpers.loadStringFromMemory(context,MEMCODE_MC_NOTIKEY);
-        if(!String_KeyList.equals("null")) {
-            storedKeys = gson.fromJson(String_KeyList, new TypeToken<List<String>>() {}.getType());
-        }
-        return storedKeys;
+
+    public void setOverrideDND(Context context,boolean b) {
+        utilityHelpers.saveBooleanToMemory(context,MEMCODE_OVERRIDEDND,b);
     }
 }

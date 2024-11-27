@@ -10,8 +10,8 @@ android {
         applicationId "com.QE.free"
         minSdk 26
         targetSdk 34
-        versionCode 122
-        versionName "1.2"
+        versionCode 126
+        versionName "1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

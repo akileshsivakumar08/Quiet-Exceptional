@@ -68,7 +68,7 @@ public class ringtones {
     }
 
     public void playShorttune(Context context) {
-        Toast.makeText(context,"Playing Ringtext",Toast.LENGTH_LONG).show();
+        //Toast.makeText(context,"Playing Ringtext",Toast.LENGTH_LONG).show();
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
         //mp = MediaPlayer.create(context, R.raw.nokia_sms);
@@ -79,7 +79,7 @@ public class ringtones {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 mp.stop();
-                am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
+              //  am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
             }
         });
     }

@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -67,8 +68,6 @@ public class FragmentTemporarydnd extends Fragment {
     Intent tileServiceIntent;
     private String settingscolor_enabled="#2F435A";
     private String settingscolor_disabled="#E4E5E8";
-    View leftLine;
-    View rightLine;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -125,8 +124,6 @@ public class FragmentTemporarydnd extends Fragment {
             TapToEnable = (SwitchCompat) getView().findViewById(R.id.TapToEnable);
             FeatTitle = (TextView) getView().findViewById(R.id.FeatTitle);
             timechoices = (Spinner) getView().findViewById(R.id.timechoices);
-            leftLine=(View) getView().findViewById(R.id.leftLine);
-            rightLine=(View) getView().findViewById(R.id.rightLine);
             adapter = ArrayAdapter.createFromResource(context,
                     R.array.time_options, android.R.layout.simple_spinner_item);
 

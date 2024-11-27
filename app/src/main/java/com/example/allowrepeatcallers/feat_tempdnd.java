@@ -49,17 +49,14 @@ try {
     String timerChoice = utilityHelpers.loadStringFromMemory(context, MEMCODE_TIMERCHOICE);
     int time_int = 0;
     switch (timerChoice) {
-        case "10 Minutes":
-            time_int = 10;
+        case "2 Minutes":
+            time_int = 2;
             break;
-        case "30 Minutes":
-            time_int = 30;
+        case "5 Minutes":
+            time_int = 5;
             break;
-        case "1 Hour":
-            time_int = 60;
-            break;
-        case "2 Hours":
-            time_int = 120;
+        case "8 Minutes":
+            time_int = 8;
             break;
         default:
             time_int = 2;

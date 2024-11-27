@@ -218,7 +218,7 @@ public class_Buddy getContact(int ID){
         return ContactstoSendSMS;
     }
 
-    public Boolean checkMessageMatch(String sender_message) {
+    public static Boolean checkMessageMatch(String sender_message) {
         if (((sender_message.trim()).equalsIgnoreCase(SA_MESSAGE))) {
             return true;
         }

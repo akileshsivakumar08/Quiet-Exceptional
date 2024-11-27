@@ -11,7 +11,10 @@ import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,15 +30,19 @@ public class settings extends AppCompatActivity {
 
     SwitchCompat overridednd;
     TextView configure;
+    Spinner timechoices;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
         Context context=getApplicationContext();
+        ArrayAdapter<CharSequence> adapter;
+        feat_AlertMissedCalls obj_AMC=new feat_AlertMissedCalls(context);
         overridednd=findViewById(R.id.overridednd);
         configure=findViewById(R.id.configuretext);
-        boolean overridechecked=utilityHelpers.loadBooleanFromMemory(context,"OVERRIDE_DND");
+
+        boolean overridechecked=utilityHelpers.loadBooleanFromMemory(context,"AMC_OVERRIDE_DND");
         if(overridechecked){
             overridednd.setChecked(true);
         }
@@ -43,6 +50,9 @@ public class settings extends AppCompatActivity {
         else{
             overridednd.setChecked(false);
         }
+
+
+
         configure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +69,7 @@ public class settings extends AppCompatActivity {
                 else{
                     overridednd_bool=false;
                 }
-                utilityHelpers.saveBooleanToMemory(context,"OVERRIDE_DND",overridednd_bool);
+                utilityHelpers.saveBooleanToMemory(context,"AMC_OVERRIDE_DND",overridednd_bool);
             }
         });
 
@@ -82,7 +92,14 @@ public class settings extends AppCompatActivity {
                     builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            LanguageManager.setCustomText(context,textInput.getText().toString());
+                            String text= textInput.getText().toString();
+                            if (text.isEmpty()) {
+
+                            } else {
+                                LanguageManager.setCustomText(context, textInput.getText().toString());
+                            }
+
+
                         }
                     });
                     builder.setNegativeButton(R.string.cancel_menu, new DialogInterface.OnClickListener() {

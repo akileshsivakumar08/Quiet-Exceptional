@@ -6,7 +6,7 @@
     <string name="Settings">Settings</string>
     <string name="troubleshoot">Troubleshoot</string>
     <string name="App_Language">App Language</string>
-    <string name="RingInDND">Ring in Do Not Disturb Mode</string>
+    <string name="RingInDND">Ring in Do Not Disturb or Silent Mode</string>
     <string name="RingInDND_desc">This applies to the feature Missedcall Alerts</string>
     <string name="Allfeat_Tap2Enable">Tap to Enable</string>
     <string name="Allfeat_settings">Settings</string>
@@ -17,7 +17,7 @@
     <string name="ARC_description"> Device Rings on Successive calls, if a call was missed in Silent or Vibrate Mode.\n\nNotifications can be dismissed to disable the ringing.</string>
     <string name="ARC_Volume">Volume</string>
     <string name="MCA_Title">Alert\nMissed\nCalls</string>
-    <string name="MCA_description">On getting a Notification for Missed calls, the device makes a Short sound in any Ringer mode.</string>
+    <string name="MCA_description">On getting a Notification for Missed calls, the device makes a Short sound in any Ringer mode.\nSwipe away the Notification to stop the additional ping</string>
     <string name="QS_Title">Quick Switch</string>
     <string name="QS_description">Quickly change ringer modes by double pressing volume buttons when the screen is on</string>
     <string name="QS_RequestAccessibility">To use this feature, the app needs access to the volume buttons of the device. This is managed by the Accessibility permission.\nPress continue to provide these in the settings menu.\n
@@ -67,7 +67,7 @@
     <string name="Exit">Exit</string>
     <string name="SavenExit">Save and Exit</string>
     <string name="tempdnddesc">Temporarily silence the device. DND mode is removed after the set duration.  For best experience, drag from the top and add to Quick Settings.</string>
-    <string name="version">Version: IR_122</string>
+    <string name="version">Version: PR_125</string>
     <string name="addCustomtile_suggestion">Drag down from the top to open Quick Settings. Add Temp DND to Quick Settings for best experience.</string>
     <string name="share_message">" Hi, Im using the app Quiet Exceptional. With this app, you don't have to worry about misplacing your device in silent mode! Your Loved contact can still reach you in case of urgencies. You can also silence the device temporarily.The app takes care of resetting the ringer mode. You can download the app here! "</string>
     <string name="permissions_needed">Permissions Needed</string>
@@ -75,10 +75,18 @@
     <string name="AMC_PermissionsNeeded">This feature uses notifications and call states to detect missed calls. Please grant permissions to continue.</string>
     <string name="TempDND_Permissionsneeded">This feature needs to be able to toggle Do not Disturb settings. Please provide permission to continue</string>
     <string name="permissions_needed_title">Permissions needed</string>
+    <string name="ping_again_after">Extra Ping</string>
+    <string name="ATM_Title">Ping \nCustom \nText</string>
+    <string name="ATM_description">Device Pings if a Notification contains one of the custom texts.\nSwipe away the Notification to stop the additional ping</string>
     <string-array name="time_options">
-        <item>10 Minutes</item>
-        <item>30 Minutes</item>
-        <item>1 Hour</item>
-        <item>2 Hours</item>
+        <item>2 Minutes</item>
+        <item>5 Minutes</item>
+        <item>8 Minutes</item>
+    </string-array>
+    <string-array name="extraping_options">
+        <item>None</item>
+        <item>2 Minutes</item>
+        <item>5 Minutes</item>
+        <item>8 Minutes</item>
     </string-array>
 </resources>

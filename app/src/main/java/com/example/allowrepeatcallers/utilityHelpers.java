@@ -47,13 +47,15 @@ public class utilityHelpers {
 
 
     public static void adjustTitleTextSize(TextView text,Context context,int size){
-        Configuration config = context.getResources().getConfiguration();
+      /*  Configuration config = context.getResources().getConfiguration();
         if(config.getLocales().get(0).getLanguage().contains("en")){
             text.setTextSize(size);
         }
         else{
             text.setTextSize(size/2);
-        }
+        }*/
+        text.setTextSize(50);
+
     }
 
 
@@ -128,6 +130,12 @@ public class utilityHelpers {
         }
         String[] pendingpermissions_array=pendingpermissions.toArray(new String[pendingpermissions.size()]);
         return pendingpermissions_array;
+    }
+
+    public static void saveFlowToMemory(Context context,String flowString, String FlowCode) {
+        String DateAndTime=utilityHelpers.getDateAndTime();
+        flowString=DateAndTime+"-"+flowString;
+        utilityHelpers.saveStringToMemory(context, FlowCode, flowString);
     }
 
     public static String[] getpendingpermissions_All(Context context,String[] permissions,String[] addedPermissions){
@@ -330,16 +338,25 @@ public class utilityHelpers {
         return sortOrder;
     }
 
-    public static boolean isDNDOverriden(Context context) {
+    public static boolean isSilentOverriden(Context context,String MemKey) {
+        Boolean deviceQuiet=false;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         int dndstatus = notificationManager.getCurrentInterruptionFilter();
         boolean ring = false;
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        boolean overridednd_bool = loadBooleanFromMemory(context, MemKey);
 
-        boolean overridednd_bool = loadBooleanFromMemory(context, "OVERRIDE_DND");
+        if ((dndstatus != NotificationManager.INTERRUPTION_FILTER_ALL)||(am.getRingerMode()!=AudioManager.RINGER_MODE_NORMAL)) {
+            deviceQuiet=true;
+        }
+        else{
+            deviceQuiet=false;
+        }
+
 
          /*
         Override    ON  ON  OFF OFF
-        DND State   ON  OFF ON  OFF
+        deviceQuiet ON  OFF ON  OFF
         Result      T   T   F   T
         True: Ring Device
         False: Dont Ring device
@@ -347,10 +364,10 @@ public class utilityHelpers {
         if (overridednd_bool) {
             ring = true;
         } else if ((!overridednd_bool)) {
-            if (dndstatus == NotificationManager.INTERRUPTION_FILTER_ALL) {
-                ring = true;
-            } else {
+            if (deviceQuiet) {
                 ring = false;
+            } else {
+                ring = true;
             }
         }
         return ring;
@@ -379,5 +396,31 @@ public class utilityHelpers {
         Gson gson = new Gson();
         String String_requestedPermissions = gson.toJson(requestedPermissions);
         return String_requestedPermissions;
+    }
+
+
+    public static void saveKeyToMemory(Context context, String memcodeMcNotikey, String notiKey) {
+        String notikeylist_String_in=loadStringFromMemory(context,memcodeMcNotikey);
+        ArrayList<String> notiKeyList=convertGsonStringToArrayList(notikeylist_String_in);
+        notiKeyList.add(notiKey);
+        saveArrayListToMemory(context,memcodeMcNotikey,notiKeyList);
+    }
+public static void saveArrayListToMemory(Context context,String memCode,ArrayList<String> listToStore){
+    String notikeylist_String_out=convertArrayListToGson(listToStore);
+    saveStringToMemory(context,memCode,notikeylist_String_out);
+}
+    private static String convertArrayListToGson(ArrayList<String> notiKeyList) {
+        Gson gson = new Gson();
+        String String_requestedPermissions = gson.toJson(notiKeyList);
+        return String_requestedPermissions;
+    }
+
+    private static ArrayList<String> convertGsonStringToArrayList(String notikeylist_string) {
+        Gson gson = new Gson();
+        ArrayList<String> storedKeys=new ArrayList<>();
+        if(!notikeylist_string.equals("null")) {
+            storedKeys = gson.fromJson(notikeylist_string, new TypeToken<List<String>>() {}.getType());
+        }
+        return storedKeys;
     }
 }

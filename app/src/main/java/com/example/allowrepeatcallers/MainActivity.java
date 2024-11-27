@@ -15,6 +15,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     public final int SoftwareType=1;
     public DrawerLayout drawerLayout;
     MyPagerAdapter adapter;
+    View leftLine;
+    View rightLine;
     ImageView share;
     ImageView rateapp;
     public ActionBarDrawerToggle actionBarDrawerToggle;
@@ -56,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Context context = getApplicationContext();
+
+        leftLine = (View) findViewById(R.id.leftLine);
+        rightLine = (View) findViewById(R.id.rightLine);
         /*NotificationManager tap_notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if ((!isNotificationServiceEnabled()) || (!tap_notificationManager.isNotificationPolicyAccessGranted())) {
@@ -63,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }*/
+
+        Animation anima_scaleleft = AnimationUtils.loadAnimation(context, R.anim.scale_fromleft);
+        Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
+        leftLine.startAnimation(anima_scaleleft);
+        rightLine.startAnimation(anima_scaleright);
+
         Boolean continuePressed=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_CONTINUEPRESSED);
 
         //if not continued, launch startup permissions,
@@ -190,13 +203,16 @@ public class MainActivity extends AppCompatActivity {
                     switch (currentFragmentPosition) {
                         case 0:
 
-                            description = feat_tempdnd.getDescription();
+                            description = feat_AnyTextMatch.getDescription();
                             break;
                         case 1:
-                            description = feat_SMSAlarm.getDescription();
+                            description = feat_AlertMissedCalls.getDescription();
                             break;
                         case 2:
-                            description = feat_AlertMissedCalls.getDescription();
+                            description = feat_tempdnd.getDescription();
+                            break;
+                        case 3:
+                            description = feat_SMSAlarm.getDescription();
                             break;
                     }
                     postInfoDialog(description);

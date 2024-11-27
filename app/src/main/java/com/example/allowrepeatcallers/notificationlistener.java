@@ -14,6 +14,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -30,6 +31,7 @@ public class notificationlistener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         String pack = sbn.getPackageName();
+        String notiKey=sbn.getKey();
         Bundle extras = sbn.getNotification().extras;
         String ErrorFlow = "notificationListener:Start";
         Context context = getApplicationContext();
@@ -54,69 +56,18 @@ public class notificationlistener extends NotificationListenerService {
                     if (callStateManager.notificationWindow) {
                         ErrorFlow = "notificationListener:Inside Notification Window";
 
-                        try {
                             if (!utilityHelpers.ispermissionpending(context, feat_AlertMissedCalls.permissions)) {
                                 ErrorFlow = "NR_AMC_Permissions Provided";
                                 feat_AlertMissedCalls obj_AMC = new feat_AlertMissedCalls(context);
-                                if (obj_AMC.isFeatureActivated(context)) {
-                                    ErrorFlow = "Feature Activated";
-                                    ErrorFlow = "NR_AMC_Missed Call Detected";
-                                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                                notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                                ErrorFlow = "NR_AMC_Init Complete";
-                                boolean ringDevice = utilityHelpers.isDNDOverriden(context);
-                                if (ringDevice) {
-                                    ErrorFlow = "NR_AMC_Ring Device Activated";
-                                    if ((am.getMode() != AudioManager.MODE_IN_COMMUNICATION) && (am.getMode() != AudioManager.MODE_IN_CALL)) {
-                                        ErrorFlow = "NR_AMC_No Active calls";
-                                        if(!feat_tempdnd.isFeatureActivated(context)){
-                                            utilityHelpers.turnSpeakerON(am);
-                                            int setVolume = obj_AMC.getPingVolume(context);
-                                            am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
-                                            ringtones shorttune = new ringtones(context, 2);
-                                            if (utilityHelpers.isDeviceConnected(am)) {
-                                                ErrorFlow = "NR_AMC_Playing on connected Device";
-                                                am.setStreamVolume(AudioManager.STREAM_MUSIC, (am.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) / 2, 0);
-                                            }
-
-                                            shorttune.playShorttune(context);
-                                            ErrorFlow = "NR_AMC_PlayingTune";
-                                            //am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
-
-                                    }
-                                    else {
-                                        ErrorFlow = "NR_AMC_Tempdnd_activated";
-                                    }
-
-
-                                        }
-                                    else{
-                                        ErrorFlow = "NR_AMC_Not playing due to ongoing call";
-                                    }
-                                    }
-                                else{
-                                    ErrorFlow = "NR_AMC_Ring Device Not Active";
-                                }
-                                    //  Toast.makeText(context, "This a toast message", Toast.LENGTH_LONG).show();
-                                }
-                                else{
-                                    ErrorFlow = "NR_AMC_Feature Not Active";
-                                }
+                                obj_AMC.pingMissedCall(context,notiKey,1);
                             }
                             else{
                                 ErrorFlow = "NR_AMC_Permission Pending";
                             }
-                            saveFlowToMemory(context,ErrorFlow,feat_AlertMissedCalls.FLOW);
-
-                        } catch (Exception e) {
-                            Log.e(TAG, ErrorFlow);
-                            ErrorFlow = todaydate+"-"+currentTime+"-"+ErrorFlow;
-                            utilityHelpers.saveErrorToMemory(context, "ERROR"+ErrorFlow);
-                            throw new RuntimeException(e);
-                        }
+                            utilityHelpers.saveFlowToMemory(context,ErrorFlow,feat_AlertMissedCalls.FLOW);
 
                     }
-                } else{
+                } else if(feat_SMSAlarm.checkMessageMatch(text)){
 
 
 
@@ -138,8 +89,6 @@ public class notificationlistener extends NotificationListenerService {
                             ErrorFlow = "NR_SA_FeatureActivated";
                             if (!obj_SMSAlarm.isSilentExceptionRingActivated()) {
                                 ErrorFlow = "NR_SA_NoRingActivated";
-                                Boolean messageMatch = smsReceiver.checkMessageMatch(sender_message);
-                                if (messageMatch) {
 
                                 MatchfoundinListID=smsReceiver.checkSenderMatch(senderName);
 
@@ -177,11 +126,6 @@ public class notificationlistener extends NotificationListenerService {
                                 else{
                                     ErrorFlow = "NR_SA_SenderMatchFailed"+senderName;
                                 }
-                            }
-                                else{
-
-                                    ErrorFlow = "NR_SA_MessageMatchFailed\n"+ sender_message;
-                                }
 
                             }
                             else{
@@ -196,13 +140,19 @@ public class notificationlistener extends NotificationListenerService {
                         ErrorFlow = "NR_SA_PermissionPending";
                     }
                     Log.d(TAG,sender_message);
-                    saveFlowToMemory(context,ErrorFlow,feat_SMSAlarm.FLOW);
+                    utilityHelpers.saveFlowToMemory(context,ErrorFlow,feat_SMSAlarm.FLOW);
                 } catch (Exception e) {
                     Log.e(TAG, ErrorFlow);
                     ErrorFlow = todaydate+"-"+currentTime+"-"+ErrorFlow;
                     utilityHelpers.saveErrorToMemory(context, "ERROR "+ErrorFlow);
                     throw new RuntimeException(e);
                 }
+            }
+            else{
+                feat_AnyTextMatch obj_AnyMatch=new feat_AnyTextMatch(context);
+                obj_AnyMatch.pingifCustomTextMatch(context,text,notiKey,1);
+
+
             }
 
         }
@@ -217,12 +167,18 @@ public class notificationlistener extends NotificationListenerService {
         }
     }
 
-    void saveFlowToMemory(Context context,String flowString, String FlowCode) {
-        String DateAndTime=utilityHelpers.getDateAndTime();
-        flowString=DateAndTime+"-"+flowString;
-        utilityHelpers.saveStringToMemory(context, FlowCode, flowString);
-    }
+    @Override
+    public void onNotificationRemoved(StatusBarNotification sbn) {
+        super.onNotificationRemoved(sbn);
+        Context context=getApplicationContext();
+        feat_AnyTextMatch obj_ATM=new feat_AnyTextMatch(context);
+        feat_AlertMissedCalls obj_AMC = new feat_AlertMissedCalls(context);
+        String notiKey=sbn.getKey();
+        obj_AMC.removeMissedCall(context,notiKey);
+        obj_ATM.remove_ATM_Key(context,notiKey);
 
+
+    }
 
     private boolean checkpossibleMissedCall(Context context) {
 
