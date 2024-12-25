@@ -7,9 +7,11 @@ import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.OutOfQuotaPolicy;
 import androidx.work.WorkManager;
 
 import com.example.quietexceptional.R;
@@ -29,6 +31,8 @@ public class feat_tempdnd {
 
     private static final String MEMCODE_ACTIVATEFEAT="IS_TEMPDND_ACTIVATED";
     private static final String MEMCODE_PERMISSIONREQUESTED="TEMPDND_PERMISSIONREQUESTED";
+
+
     public feat_tempdnd(Context context) {
         featureActivated=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_ACTIVATEFEAT);
         notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -95,12 +99,14 @@ catch (Exception e){
 public boolean arePermissionsPending(Context context){
     NotificationManager tap_notificationManager =
             (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    if ((!utilityHelpers.isNotificationServiceEnabled(context)) && (!tap_notificationManager.isNotificationPolicyAccessGranted())) {
+    PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if ((!utilityHelpers.isNotificationServiceEnabled(context)) && (!tap_notificationManager.isNotificationPolicyAccessGranted())) {
         return true;
     }
     else{
         return false;
     }
+
 }
     public void setPermissionRequested(Context context) {
         utilityHelpers.saveBooleanToMemory(context,MEMCODE_PERMISSIONREQUESTED,true);
@@ -122,5 +128,15 @@ public boolean arePermissionsPending(Context context){
 
     public void savetimerChoice(Context context, String selectedItem) {
         utilityHelpers.saveStringToMemory(context,MEMCODE_TIMERCHOICE,selectedItem);
+    }
+
+    public boolean isBatteryNotoptimized(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if(!powerManager.isIgnoringBatteryOptimizations(context.getPackageName())){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

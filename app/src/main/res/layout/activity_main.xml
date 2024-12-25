@@ -17,6 +17,33 @@
         android:background="#FFFBF2">
 
 
+        <ImageView
+            android:id="@+id/smsimage"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:layout_marginStart="200dp"
+            android:layout_marginBottom="150dp"
+            android:rotation="-30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_chat_bubble_outline_24"
+            app:tint="#FFffe3a6" />
+        <ImageView
+            android:id="@+id/smsimage2"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:layout_marginStart="200dp"
+            android:layout_marginBottom="150dp"
+            android:rotation="-30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.506"
+            app:srcCompat="@drawable/baseline_chat_bubble_outline_24"
+            app:tint="#FFffebbf" />
+
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/pager"
             android:layout_width="match_parent"
@@ -30,102 +57,105 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
-        <View
-            android:id="@+id/leftLine"
-            android:layout_width="300dp"
-            android:layout_height="12dp"
-            android:background="#0C7B93"
-            android:layout_marginBottom="50dp"
-            app:layout_constraintBottom_toTopOf="@+id/pager"
-            app:layout_constraintStart_toStartOf="parent" />
-        <View
-            android:id="@+id/rightLine"
-            android:layout_width="300dp"
-            android:layout_height="12dp"
-            android:layout_marginEnd="4dp"
-            android:background="#DDE1ED"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/tablayout"
-            android:layout_marginBottom="50dp"/>
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tablayout"
-            android:layout_width="wrap_content"
-            android:layout_height="10dp"
-            android:layout_marginTop="540dp"
-            app:layout_constraintBottom_toTopOf="@+id/infoButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tabBackground="@drawable/tab_selector"
-            app:tabGravity="center"
-            app:tabIndicatorHeight="0dp" />
-        <ImageView
-            android:id="@+id/share"
-            android:layout_width="65dp"
-            android:layout_height="45dp"
-            android:layout_marginEnd="60dp"
-            android:layout_marginBottom="40dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/infoButton"
-            app:srcCompat="@drawable/baseline_share_24"
-            app:tint="#2F435A" />
+            <View
+                android:id="@+id/leftLine"
+                android:layout_width="300dp"
+                android:layout_height="12dp"
+                android:background="#0C7B93"
+                android:layout_marginBottom="50dp"
+                app:layout_constraintBottom_toTopOf="@+id/pager"
+                app:layout_constraintStart_toStartOf="parent" />
+            <View
+                android:id="@+id/rightLine"
+                android:layout_width="300dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="4dp"
+                android:background="#DDE1ED"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/tablayout"
+                android:layout_marginBottom="50dp"/>
 
-        <ImageView
-            android:id="@+id/infoButton"
-            android:layout_width="65dp"
-            android:layout_height="45dp"
-            android:layout_marginBottom="40dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/baseline_info_24"
-            app:tint="#2F435A" />
-
-        <ImageView
-            android:id="@+id/rateapp"
-            android:layout_width="65dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="60dp"
-            android:layout_marginBottom="40dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/infoButton"
-            app:srcCompat="@drawable/baseline_thumb_up_24"
-            app:tint="#2F435A" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tablayout"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                android:layout_marginTop="540dp"
+                app:layout_constraintBottom_toTopOf="@+id/infoButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp" />
 
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Allfeat_Share"
-            android:textColor="#2F435A"
-            app:layout_constraintEnd_toEndOf="@+id/share"
-            app:layout_constraintStart_toStartOf="@+id/share"
-            app:layout_constraintTop_toBottomOf="@+id/share" />
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/rate_app"
-            android:textColor="#2F435A"
-            app:layout_constraintEnd_toEndOf="@+id/rateapp"
-            app:layout_constraintStart_toStartOf="@+id/rateapp"
-            app:layout_constraintTop_toBottomOf="@+id/rateapp" />
+            <ImageView
+                android:id="@+id/share"
+                android:layout_width="65dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="60dp"
+                android:layout_marginBottom="40dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/infoButton"
+                app:srcCompat="@drawable/baseline_share_24"
+                app:tint="#2F435A" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/infoButton"
-            android:text="@string/Allfeat_Info"
-            android:textColor="#2F435A"
-            app:layout_constraintEnd_toEndOf="@+id/infoButton"
-            app:layout_constraintStart_toStartOf="@+id/infoButton"
-            app:layout_constraintTop_toBottomOf="@+id/infoButton" />
+            <ImageView
+                android:id="@+id/infoButton"
+                android:layout_width="65dp"
+                android:layout_height="45dp"
+                android:layout_marginBottom="40dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/baseline_info_24"
+                app:tint="#2F435A" />
 
+            <ImageView
+                android:id="@+id/rateapp"
+                android:layout_width="65dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="60dp"
+                android:layout_marginBottom="40dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/infoButton"
+                app:srcCompat="@drawable/baseline_thumb_up_24"
+                app:tint="#2F435A" />
+
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Allfeat_Share"
+                android:textColor="#2F435A"
+                app:layout_constraintEnd_toEndOf="@+id/share"
+                app:layout_constraintStart_toStartOf="@+id/share"
+                app:layout_constraintTop_toBottomOf="@+id/share" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rate_app"
+                android:textColor="#2F435A"
+                app:layout_constraintEnd_toEndOf="@+id/rateapp"
+                app:layout_constraintStart_toStartOf="@+id/rateapp"
+                app:layout_constraintTop_toBottomOf="@+id/rateapp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/infoButton"
+                android:text="@string/Allfeat_Info"
+                android:textColor="#2F435A"
+                app:layout_constraintEnd_toEndOf="@+id/infoButton"
+                app:layout_constraintStart_toStartOf="@+id/infoButton"
+                app:layout_constraintTop_toBottomOf="@+id/infoButton" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

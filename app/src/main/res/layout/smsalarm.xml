@@ -4,75 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFBF2"
+    android:background="@android:color/transparent"
     tools:context=".MainActivity">
-
-    <ImageView
-        android:id="@+id/smsimage"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="150dp"
-        app:srcCompat="@drawable/baseline_chat_bubble_outline_24"
-        app:tint="#FFD369" />
-    <ImageView
-        android:id="@+id/smsimage2"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="150dp"
-        app:srcCompat="@drawable/baseline_chat_bubble_outline_24"
-        app:tint="#DDE1ED" />
-
-    <TextView
-        android:id="@+id/TapToEnable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Allfeat_Tap2Permission"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/FeatTitle"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/FeatTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/SA_Title"
-        android:textColor="#424651"
-        android:textSize="45sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="200dp" />
 
     <ImageView
         android:id="@+id/manageContacts"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="60dp"
-        android:backgroundTint="#FFFBF2"
+        android:backgroundTint="@android:color/transparent"
         android:textColor="#C5C5C5"
-        app:layout_constraintEnd_toEndOf="@+id/FeatTitle"
-        app:layout_constraintHorizontal_bias="0.45"
-        app:layout_constraintStart_toStartOf="@+id/FeatTitle"
-        app:layout_constraintTop_toTopOf="@+id/TapToEnable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TapToEnable"
+        app:layout_constraintVertical_bias="0.1"
         app:srcCompat="@drawable/baseline_add_24" />
+
+
 
     <TextView
         android:id="@+id/manageContacts_text"
@@ -84,5 +33,47 @@
         app:layout_constraintEnd_toEndOf="@+id/manageContacts"
         app:layout_constraintStart_toStartOf="@+id/manageContacts"
         app:layout_constraintTop_toBottomOf="@+id/manageContacts" />
+
+
+    <TextView
+        android:id="@+id/TapToEnable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Allfeat_Tap2Permission"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/FeatTitle" />
+
+    <TextView
+        android:id="@+id/FeatTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="350dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/SA_Title"
+        android:textColor="#424651"
+        android:textSize="40sp"
+        android:padding="10dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/desctext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="descText"
+        android:padding="10dp"
+        android:textColor="#808080"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/manageContacts_text"
+        app:layout_constraintVertical_bias="0.1" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

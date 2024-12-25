@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.media.AudioManager;
+import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.work.Data;
@@ -24,6 +25,8 @@ import java.util.Locale;
 public class feat_AlertMissedCalls{
 
     private static final String MEMCODE_MC_NOTIKEY = "MC_NOTIKEY";
+    private static final String MEMCODE_CUSTOMTEXT_MISSEDCALL = "MAP_CUSTOMTEXT_MISSEDCALL";
+    private static final String MEMCODE_AMC_RINGTONE = "MC_AMC_RINGTONE";
     public OneTimeWorkRequest twoSecondPause;
     public OneTimeWorkRequest work_additionalPing;
     private static final String TAG = "QuietExceptional";
@@ -97,7 +100,7 @@ private static  final String MEMCODE_OVERRIDEDND="AMC_OVERRIDE_DND";
                                 utilityHelpers.turnSpeakerON(am);
                                 int setVolume = getPingVolume(context);
                                 am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
-                                ringtones shorttune = new ringtones(context, 2);
+                                ringtones shorttune = new ringtones(context, 2,getRingtoneUri(context));
                                 if (utilityHelpers.isDeviceConnected(am)) {
                                     ErrorFlow = "NR_AMC_Playing on connected Device";
                                     am.setStreamVolume(AudioManager.STREAM_MUSIC, (am.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) / 2, 0);
@@ -221,5 +224,47 @@ private static  final String MEMCODE_OVERRIDEDND="AMC_OVERRIDE_DND";
             storedKeys = gson.fromJson(String_KeyList, new TypeToken<List<String>>() {}.getType());
         }
         return storedKeys;
+    }
+
+
+    public void saveRingInDND(Context context, boolean ringInDND) {
+        utilityHelpers.saveBooleanToMemory(context,MEMCODE_OVERRIDEDND,ringInDND);
+    }
+    public boolean loadRingInDND(Context context) {
+        return utilityHelpers.loadBooleanFromMemory(context,MEMCODE_OVERRIDEDND);
+    }
+
+
+    public ArrayList<class_setting> getSettingsList(Context context) {
+        boolean isRingInDND = loadRingInDND(context);
+        int volume = getPingVolume(context);
+        String timerChoice = getSelectedTimerChoice(context);
+        String ringtoneuri=getRingtoneUri(context);
+        class_setting setting = new class_setting(timerChoice, volume, isRingInDND,ringtoneuri);
+        ArrayList<class_setting> settingList = new ArrayList<>();
+        settingList.add(setting);
+        return settingList;
+    }
+
+
+    public ArrayList<String> loadCustomTextFromMemory(Context context) {
+        Gson gson = new Gson();
+        ArrayList<String> customTextList=new ArrayList<>();
+        String String_ctl = utilityHelpers.loadStringFromMemory(context,MEMCODE_CUSTOMTEXT_MISSEDCALL);
+        if(!String_ctl.equals("null")) {
+            customTextList = gson.fromJson(String_ctl, new TypeToken<List<String>>() {}.getType());
+        }
+        return customTextList;
+    }
+
+    public void saveCustomTextList(Context context, ArrayList<String> outputList) {
+        utilityHelpers.saveArrayListToMemory(context,MEMCODE_CUSTOMTEXT_MISSEDCALL,outputList);
+    }
+
+    public void saveRingtoneUri(Context context, String ringtoneUri) {
+        utilityHelpers.saveStringToMemory(context,MEMCODE_AMC_RINGTONE,ringtoneUri);
+    }
+    public String getRingtoneUri(Context context){
+        return utilityHelpers.loadStringFromMemory(context,MEMCODE_AMC_RINGTONE);
     }
 }

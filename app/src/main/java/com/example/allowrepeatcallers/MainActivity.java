@@ -4,6 +4,9 @@ import static android.app.AlertDialog.THEME_HOLO_DARK;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -49,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     View rightLine;
     ImageView share;
     ImageView rateapp;
+    ImageView smsimage;
+    ImageView smsimage2;
     public ActionBarDrawerToggle actionBarDrawerToggle;
     public static int currentFragmentPosition;
     public static final String MEMCODE_ERRORMEMORY = "ERRORMEMORY";
@@ -63,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         leftLine = (View) findViewById(R.id.leftLine);
         rightLine = (View) findViewById(R.id.rightLine);
+        smsimage = (ImageView) findViewById(R.id.smsimage);
+        smsimage2 = (ImageView) findViewById(R.id.smsimage2);
         /*NotificationManager tap_notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if ((!isNotificationServiceEnabled()) || (!tap_notificationManager.isNotificationPolicyAccessGranted())) {
@@ -75,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
         leftLine.startAnimation(anima_scaleleft);
         rightLine.startAnimation(anima_scaleright);
+        animateScalePan(smsimage, 1.2f, 0);
 
         Boolean continuePressed=utilityHelpers.loadBooleanFromMemory(context,MEMCODE_CONTINUEPRESSED);
 
@@ -271,7 +280,29 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
         }
     }
+    private void animateScalePan(View v,float scale,long startDelay) {
+        AnimatorSet animSetXY = new AnimatorSet();
 
+        ObjectAnimator scaleanimY = ObjectAnimator.ofFloat(v,
+                "ScaleY",1f, scale);
+        scaleanimY.setRepeatCount(ValueAnimator.INFINITE);
+        //scaleanimY.setRepeatMode(ValueAnimator.REVERSE);
+        ObjectAnimator scaleanimX = ObjectAnimator.ofFloat(v,
+                "ScaleX", 1f, scale);
+        ObjectAnimator fade = ObjectAnimator.ofFloat(v,
+                "alpha", 1f, 0f);
+        fade.setRepeatCount(ValueAnimator.INFINITE);
+
+
+        scaleanimX.setRepeatCount(ValueAnimator.INFINITE);
+        //scaleanimX.setRepeatMode(ValueAnimator.REVERSE);
+        animSetXY.playTogether(scaleanimX, scaleanimY,fade);
+        animSetXY.setInterpolator(new LinearInterpolator());
+        animSetXY.setDuration(1500);
+        animSetXY.setStartDelay(startDelay);
+        animSetXY.start();
+
+    }
 
     private boolean isNotificationServiceEnabled() {
         // Check if the notification listener service is enabled

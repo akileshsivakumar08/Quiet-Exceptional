@@ -63,7 +63,7 @@ public class LoadContactsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context=getApplicationContext();
-        getSupportActionBar().setTitle( "Your Contacts");
+        getSupportActionBar().setTitle( R.string.your_contacts);
 
         ContactsList=new ArrayList<class_Buddy>();
         diffList=new ArrayList<class_Buddy>();
@@ -113,10 +113,10 @@ public class LoadContactsActivity extends AppCompatActivity {
 
         popupmenu.getMenuInflater().inflate(popupmenu_loadedlist,popupmenu.getMenu());
         if(ContactsList.get(i).isFavourite()){
-            popupmenu.getMenu().getItem(1).setTitle("Remove Favourite");
+            popupmenu.getMenu().getItem(1).setTitle(R.string.remove_favourite);
         }
         else{
-            popupmenu.getMenu().getItem(1).setTitle("Make Favourite");
+            popupmenu.getMenu().getItem(1).setTitle(R.string.make_favourite);
         }
 
         popupmenu.show();
@@ -229,7 +229,7 @@ public class LoadContactsActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         if(changesmade) {
-            postQuestionDialog("Exit Without Saving?");
+            postQuestionDialog(getString(R.string.exit_without_saving));
         }
         else{
             super.onBackPressed();

@@ -14,6 +14,14 @@ import com.example.quietexceptional.R;
 public class ringtones {
 
     Ringtone ringtone;
+
+    public ringtones(Context context, String string_ringtone_uri) {
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        Uri notificationUri;
+        notificationUri = Uri.parse(string_ringtone_uri);
+        mp = MediaPlayer.create(context, notificationUri);
+    }
+
     public void setMyRingerisplaying(boolean myRingerisplaying) {
         this.myRingerisplaying = myRingerisplaying;
     }
@@ -33,10 +41,18 @@ public class ringtones {
         return ringtone.isPlaying();
        // return myRingerisplaying;
     }
-    public ringtones(Context context,int feat_ID) {
+    public ringtones(Context context,int feat_ID,String ringtone_uri) {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        Uri notificationUri;
+        if(!ringtone_uri.equals("null")) {
+            notificationUri = Uri.parse(ringtone_uri);
+        }
+        else{
+            notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        }
         if(feat_ID==0){
-            mp = MediaPlayer.create(context, R.raw.wednesdayedited);
+            //Uri notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            mp = MediaPlayer.create(context, notificationUri);
 
         }
         else if(feat_ID==1) {
@@ -45,7 +61,8 @@ public class ringtones {
             mp = MediaPlayer.create(context, ringtoneUri);
         }
         else if(feat_ID==2){
-            mp = MediaPlayer.create(context, R.raw.wednesdayedited);
+            //Uri notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            mp = MediaPlayer.create(context, notificationUri);
         }
 
     }
@@ -79,7 +96,7 @@ public class ringtones {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 mp.stop();
-              //  am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
+                am.setStreamVolume(AudioManager.STREAM_MUSIC,Current_MediaVolume,0);
             }
         });
     }

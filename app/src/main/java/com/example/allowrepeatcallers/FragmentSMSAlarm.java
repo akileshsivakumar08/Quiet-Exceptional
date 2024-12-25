@@ -36,6 +36,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.quietexceptional.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 
@@ -63,6 +65,7 @@ public class FragmentSMSAlarm extends Fragment {
     int start_length;
     int differenceContactLength;
     private String settingscolor_enabled="#2F435A";
+    TextView descText;
     private String settingscolor_disabled="#E4E5E8";
 
     @Override
@@ -106,14 +109,12 @@ public class FragmentSMSAlarm extends Fragment {
             TapToEnable = (TextView) getView().findViewById(R.id.TapToEnable);
             manageContacts = (ImageView) getView().findViewById(R.id.manageContacts);
             manageContacts_text = (TextView) getView().findViewById(R.id.manageContacts_text);
-            smsimage = (ImageView) getView().findViewById(R.id.smsimage);
-            smsimage2 = (ImageView) getView().findViewById(R.id.smsimage2);
-            //load managers
 
+            //load managers
+            descText=(TextView) getView().findViewById(R.id.desctext);
             //load from memory
 
             //initiate GUI Elements
-            animateScalePan(smsimage, 1.2f, 0);
             //animateScalePan(smsimage2,1.1f,500);
         }
         catch (Exception e) {
@@ -140,6 +141,8 @@ public class FragmentSMSAlarm extends Fragment {
         if (utilityHelpers.ispermissionpending(context, feat_SMSAlarm.permissions)) {
             process_featureState(false, context);
         }
+            descText.setText(feat_SMSAlarm.getDescription());
+        descText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
     }
     catch (Exception e) {
         //Throw feature state Exception
@@ -231,7 +234,7 @@ public class FragmentSMSAlarm extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
-                        Toast.makeText(context, " Select Quiet Exceptional from the list ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.select_quiet_exceptional_from_the_list, Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     }
                 },

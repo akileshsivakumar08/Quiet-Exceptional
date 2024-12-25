@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFBF2"
+    android:background="@android:color/transparent"
     tools:context=".MainActivity">
 
 
@@ -13,16 +13,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
-        android:text="Temporary\nDND"
+        android:text="Temporary DND"
         android:textColor="#F79489"
-        android:textSize="50sp"
+        android:textSize="40sp"
+        android:padding="10dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="280dp" />
+        android:layout_marginBottom="350dp" />
+
+    <TextView
+        android:id="@+id/desctext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="descText"
+        android:padding="10dp"
+        android:textColor="#808080"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timechoices"
+        app:layout_constraintVertical_bias="0.1" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/TapToEnable"
@@ -30,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="@string/Allfeat_Tap2Enable"
+        android:textSize="20sp"
         android:textColor="#D8A7B1"
         app:layout_constraintStart_toStartOf="@+id/FeatTitle"
         app:layout_constraintTop_toBottomOf="@+id/FeatTitle" />
@@ -38,22 +54,11 @@
         android:id="@+id/timechoices"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/TapToEnable"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.85"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/TapToEnable"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/taptotestvolume"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:textAlignment="center"
-        android:text="@string/addCustomtile_suggestion"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/TapToEnable"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/TapToEnable"
         app:layout_constraintTop_toBottomOf="@+id/TapToEnable" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

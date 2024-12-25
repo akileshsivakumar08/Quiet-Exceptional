@@ -106,7 +106,7 @@ public class FragmentPrioContacts extends Fragment {
         int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         seekBar_PrioContacts.setMax(maxMusicVolume);
         seekBar_PrioContacts.setProgress(lastSetMediaVolume);
-        utilityHelpers.adjustTitleTextSize(FeatTitle,context,75);
+       // utilityHelpers.adjustTitleTextSize(FeatTitle,context,75);
 
         if (utilityHelpers.ispermissionpending(context, feat_PrioContacts.permissions)) {
             process_featureState(false,context);
@@ -116,7 +116,7 @@ public class FragmentPrioContacts extends Fragment {
         taptotestvolume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ringtones testSound = new ringtones(context, 0);
+                ringtones testSound = new ringtones(context, 0,"null");
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 int seekbarVolume = GUIobj_PrioContacts.getPrioContactsVolume(context);
                 am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);

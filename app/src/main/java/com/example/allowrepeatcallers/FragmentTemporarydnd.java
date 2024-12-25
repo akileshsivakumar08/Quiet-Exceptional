@@ -62,6 +62,7 @@ public class FragmentTemporarydnd extends Fragment {
     feat_tempdnd obj_tempDND;
 
     TextView taptotestvolume;
+    TextView descText;
     BroadcastReceiver workOverBroadcast;
     Spinner timechoices;
     permissionhandler OBJ_Permissions;
@@ -126,10 +127,10 @@ public class FragmentTemporarydnd extends Fragment {
             timechoices = (Spinner) getView().findViewById(R.id.timechoices);
             adapter = ArrayAdapter.createFromResource(context,
                     R.array.time_options, android.R.layout.simple_spinner_item);
-
+            descText=(TextView) getView().findViewById(R.id.desctext);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             timechoices.setAdapter(adapter);
-            utilityHelpers.adjustTitleTextSize(FeatTitle, context,50);
+           // utilityHelpers.adjustTitleTextSize(FeatTitle, context,50);
 
 
             //animateScalePan(leftLine,  0);
@@ -164,6 +165,8 @@ try {
     if(obj_tempDND.arePermissionsPending(context)){
         process_featureState(0, context);
     }
+    descText.setText(feat_tempdnd.getDescription());
+    descText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 }
 catch (Exception e) {
     String ErrorFlow="TempDND_frag_Throw feature state Exception";
@@ -290,9 +293,13 @@ catch (Exception e) {
 
         if (obj_tempDND.arePermissionsPending(context)) {
             postPermissionDialog(context);
-        }
+        } else if (obj_tempDND.isBatteryNotoptimized(context)) {
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            startActivity(intent);
 
-        else {
+        } else {
             if (obj_tempDND.isFeatureActivated(context)) {
                 //startCustomTileService
                 tileServiceIntent.putExtra("isActive", false);
@@ -331,7 +338,7 @@ catch (Exception e) {
 
 
                         Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-                        Toast.makeText(context, " Select Quiet Exceptional from the list ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.select_quiet_exceptional_from_the_list, Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     }
                 },

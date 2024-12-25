@@ -16,6 +16,7 @@ import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,16 +58,17 @@ public class FragmentAnyTextMatch extends Fragment {
     ImageView share;
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
-    SeekBar seekbar;
+
     feat_AnyTextMatch obj_ATM;
+    ImageView settings_ATM;
     ImageView managecustomText;
 
-    TextView taptotestvolume;
+
     permissionhandler OBJ_Permissions;
-    Switch overridednd;
+    TextView descText;
+
     private String settingscolor_enabled="#2F435A";
     private String settingscolor_disabled="#E4E5E8";
-    Spinner timechoices;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -116,18 +118,11 @@ public class FragmentAnyTextMatch extends Fragment {
         try {
             //utilityHelpers.createNotificationChannel(context);
             TapToEnable = (SwitchCompat) getView().findViewById(R.id.TapToEnable);
-            taptotestvolume = (TextView) getView().findViewById(R.id.taptotestvolume);
             FeatTitle = (TextView) getView().findViewById(R.id.FeatTitle);
-            seekbar = (SeekBar) getView().findViewById(R.id.seekBar);
-            overridednd=(Switch) getView().findViewById(R.id.overridednd);
-            utilityHelpers.adjustTitleTextSize(FeatTitle, context,75);
+            settings_ATM = (ImageView) getView().findViewById(R.id.settings_ATM);
+            //utilityHelpers.adjustTitleTextSize(FeatTitle, context,75);
             managecustomText=(ImageView) getView().findViewById(R.id.managecustomText);
-            timechoices = (Spinner) getView().findViewById(R.id.timechoices);
-            adapter = ArrayAdapter.createFromResource(context,
-                    R.array.extraping_options, android.R.layout.simple_spinner_item);
-
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            timechoices.setAdapter(adapter);
+            descText=(TextView) getView().findViewById(R.id.desctext);
 
         } catch (Exception e) {
             String ErrorFlow="ATM_frag_Throw GUI INIT Exception";
@@ -137,21 +132,11 @@ public class FragmentAnyTextMatch extends Fragment {
             throw new RuntimeException(e);
         }
         try{
-        AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
-        int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        seekbar.setMax(maxMusicVolume);
+
         obj_ATM=new feat_AnyTextMatch(context);
         OBJ_Permissions=new permissionhandler(context);
-        Boolean bool_pinginSilent=obj_ATM.getpinginSilentMode(context);
-            overridednd.setChecked(bool_pinginSilent);
-            String choice=obj_ATM.getSelectedTimerChoice(context);
-            int position=adapter.getPosition(choice);
-            timechoices.setSelection(position);
-
-
-        // Set the current volume of the SeekBar to the current volume of the MediaPlayer:
-        int lastSetMediaVolume=obj_ATM.getPingVolume(context);
-        seekbar.setProgress(lastSetMediaVolume);
+        descText.setText(feat_AnyTextMatch.getDescription());
+        descText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             //Animation anima_scaleright = AnimationUtils.loadAnimation(context, R.anim.scale_fromright);
             ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 1.0f, 1.0f, Animation.RELATIVE_TO_SELF,1.0f, Animation.RELATIVE_TO_SELF, 0.5f);
             anim.setDuration(1000);
@@ -172,6 +157,14 @@ try {
     } else {
         process_featureState(1, context);
     }
+
+   /* PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+    if(!powerManager.isIgnoringBatteryOptimizations(context.getPackageName())){
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        intent.setData(Uri.parse("package:" + context.getPackageName()));
+        startActivity(intent);
+    }*/
     /*if (utilityHelpers.ispermissionpending(context, feat_AnyTextMatch.permissions)) {
         process_featureState(0, context);
         TapToEnable.setText(R.string.Allfeat_Tap2Permission);
@@ -185,42 +178,6 @@ catch (Exception e) {
     throw new RuntimeException(e);
 }
 
-        timechoices.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = parent.getItemAtPosition(position).toString();
-                obj_ATM.savetimerChoice(context,selectedItem);
-                // Handle the item selection here
-                // For example, display a toast message
-                // Toast.makeText(context, "Selected: " + selectedItem, Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Handle the case where nothing is selected
-            }
-        });
-
-        overridednd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!overridednd.isChecked()){
-                    obj_ATM.setOverrideDND(context,false);
-                }
-                else{
-                    obj_ATM.setOverrideDND(context,true);
-                }
-            }
-        });
-        taptotestvolume.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ringtones testSound = new ringtones(context, 0);
-                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                int seekbarVolume = obj_ATM.getPingVolume(context);
-                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
-                testSound.playShorttune(context);
-            }
-        });
 
 managecustomText.setOnClickListener(new View.OnClickListener() {
     @Override
@@ -236,21 +193,17 @@ managecustomText.setOnClickListener(new View.OnClickListener() {
     }
 });
 
-
-        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        settings_ATM.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int pingvolume=i;
-                obj_ATM.saveVolume(context,pingvolume);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onClick(View view) {
+                if(obj_ATM.isFeatureActivated(context)) {
+                    Intent intent = new Intent(context, settings.class);
+                    intent.putParcelableArrayListExtra("settingList_input",obj_ATM.getSettingsList(context));
+                    settingsActivityResultLauncher.launch(intent);
+                }
+                else{
+                    Toast.makeText(context, R.string.enable_feature_to_access_settings, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -282,8 +235,6 @@ managecustomText.setOnClickListener(new View.OnClickListener() {
             }
             obj_ATM.setFeatureActivated(context, bool_state);
             TapToEnable.setChecked(bool_state);
-            seekbar.setEnabled(bool_state);
-            taptotestvolume.setEnabled(bool_state);
             //settings_ATM.setEnabled(bool_state);
             if (state == 2) {
                 adjustInterfaceButton(EnabledColor, getString(R.string.tap_to_disable));
@@ -300,32 +251,6 @@ managecustomText.setOnClickListener(new View.OnClickListener() {
             //errror processing feature state
             throw new RuntimeException(e);
         }
-
-    }
-
-    private void animateScalePan(View v,float scale,long startDelay) {
-        AnimatorSet animSetXY = new AnimatorSet();
-
-       /* ObjectAnimator scaleanimY = ObjectAnimator.ofFloat(v,
-                "ScaleY",1f, scale);
-        scaleanimY.setRepeatCount(ValueAnimator.INFINITE);*/
-        //scaleanimY.setRepeatMode(ValueAnimator.REVERSE);
-        v.setPivotX(1f);
-        v.setScaleX(0f);
-        ObjectAnimator scaleanimX = ObjectAnimator.ofFloat(v,
-                "ScaleX", 0f, scale);
-        ObjectAnimator fade = ObjectAnimator.ofFloat(v,
-                "alpha", 1f, 0f);
-        fade.setRepeatCount(ValueAnimator.INFINITE);
-
-
-        scaleanimX.setRepeatCount(ValueAnimator.INFINITE);
-        //scaleanimX.setRepeatMode(ValueAnimator.REVERSE);
-        animSetXY.playTogether(scaleanimX, fade);
-        animSetXY.setInterpolator(new LinearInterpolator());
-        animSetXY.setDuration(1500);
-        animSetXY.setStartDelay(startDelay);
-        animSetXY.start();
 
     }
 
@@ -352,31 +277,7 @@ managecustomText.setOnClickListener(new View.OnClickListener() {
             else {
                 process_featureState(2, context);
 
-            } /* else {
-                String[] pend = utilityHelpers.getpendingpermissions_All(context, feat_AnyTextMatch.permissions,feat_AnyTextMatch.addedPermissions);
-
-                Boolean permission_already_requested = OBJ_Permissions.werePermissionsRequested(pend);
-                if (permission_already_requested == false) {
-
-                    requestPermissionLauncher.launch(pend);
-                } else if (permission_already_requested == true) {
-                    try {
-                        //start a dialog box
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogStyle);
-                        builder.setMessage(R.string.permission_already_requested).setPositiveButton(R.string.continue_menu, dialogClickListener)
-                                .setNegativeButton(R.string.cancel_menu, dialogClickListener);
-                        builder.setTitle(getString(R.string.permissions_needed_title));
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-                    } catch (Exception e) {
-                        String ErrorFlow=" ATM_frag_Exception on dialog  ";
-                        utilityHelpers.saveErrorToMemory(requireContext(),ErrorFlow);
-                        Log.e(TAG, " Exception on dialog  " + e);
-                        Toast.makeText(context, " Exception on dialog ", Toast.LENGTH_SHORT).show();
-                    }
-                }
             }
-            */
         }
     }
     catch (Exception e) {
@@ -397,7 +298,7 @@ managecustomText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
-                        Toast.makeText(context, " Select Quiet Exceptional from the list ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.select_quiet_exceptional_from_the_list, Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     }
                 },
@@ -447,6 +348,8 @@ managecustomText.setOnClickListener(new View.OnClickListener() {
         }
     };
 
+
+
     ActivityResultLauncher<Intent> LoadCTLActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -458,6 +361,46 @@ managecustomText.setOnClickListener(new View.OnClickListener() {
                 }
             });
 
+    ActivityResultLauncher<Intent> settingsActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // Here, no request code
+                    Intent data = result.getData();
+                    ArrayList<class_setting> outputList= new ArrayList<class_setting>();
+                    outputList = data.getParcelableArrayListExtra("settingList");
+                    class_setting setting_out=outputList.get(0);
+
+                    obj_ATM.savetimerChoice(getContext(),setting_out.getExtraPing());
+                    obj_ATM.saveVolume(getContext(),setting_out.getVolume());
+                    obj_ATM.saveRingInDND(getContext(),setting_out.isRingInDND());
+                    obj_ATM.saveRingtoneUri(getContext(),setting_out.getRingtoneUri());
+                }
+            });
+
+    private void animateScalePan(View v,float scale,long startDelay) {
+        AnimatorSet animSetXY = new AnimatorSet();
+
+        ObjectAnimator fadeout = ObjectAnimator.ofFloat(v,
+                "alpha", 1f, 0f);
+        fadeout.setDuration(1000);
+
+        fadeout.setRepeatCount(ValueAnimator.INFINITE);
+        ObjectAnimator fadein = ObjectAnimator.ofFloat(v,
+                "alpha", 0f, 1f);
+        fadein.setDuration(1000);
+
+        fadeout.setRepeatCount(ValueAnimator.INFINITE);
+
+        //scaleanimX.setRepeatMode(ValueAnimator.REVERSE);
+        animSetXY.playSequentially(fadeout,fadein);
+        animSetXY.setInterpolator(new LinearInterpolator());
+        animSetXY.setStartDelay(startDelay);
+        animSetXY.start();
+
+    }
 
 }
+
+
 

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -151,7 +152,7 @@ public class custom_text_list extends AppCompatActivity {
     public void onBackPressed() {
 
         if(changesmade) {
-            postQuestionDialog("Exit Without Saving?");
+            postQuestionDialog(getString(R.string.exit_without_saving));
         }
         else{
             super.onBackPressed();
@@ -177,13 +178,15 @@ public class custom_text_list extends AppCompatActivity {
             //start a dialog box
             AlertDialog.Builder builder = new AlertDialog.Builder(custom_text_list.this,R.style.AlertDialogStyle);
             final EditText textInput=new EditText(context);
-            builder.setTitle("Enter Custom Text");
-            builder.setMessage("Device pings upon detecting this text in a notification");
+            textInput.setHintTextColor(Color.parseColor("#808080"));
+            textInput.setTextColor(Color.parseColor("#808080"));
+            builder.setTitle(R.string.enter_custom_text);
+            builder.setMessage(R.string.device_pings_upon_detecting_this_text_in_a_notification);
             textInput.setInputType(InputType.TYPE_CLASS_TEXT);
-            String HintText="Enter text here";
+            String HintText=getString(R.string.enter_text_here);
             textInput.setHint(HintText);
             builder.setView(textInput);
-            builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     String input= textInput.getText().toString();
@@ -191,9 +194,10 @@ public class custom_text_list extends AppCompatActivity {
                         CustomTextList.add(textInput.getText().toString());
                         textView_emptylist.setVisibility(View.GONE);
                         refreshlistview(CustomTextList);
+                        changesmade=true;
                     }
                     else{
-                        Toast.makeText(context, " Text is empty ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.text_is_empty, Toast.LENGTH_SHORT).show();
                     }
                 }
             });

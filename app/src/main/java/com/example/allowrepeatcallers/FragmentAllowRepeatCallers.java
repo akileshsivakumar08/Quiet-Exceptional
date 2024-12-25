@@ -103,7 +103,7 @@ public class FragmentAllowRepeatCallers extends Fragment {
         taptotestvolume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ringtones testSound = new ringtones(context, 0);
+                ringtones testSound = new ringtones(context, 0,"null");
                 AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 int seekbarVolume = GUIobj_RepeatCaller.getPingVolume(context);
                 am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
@@ -159,6 +159,8 @@ public class FragmentAllowRepeatCallers extends Fragment {
 
 
     }
+
+
 
 
     private void Dialog_requestDND() {

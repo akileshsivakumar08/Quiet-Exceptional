@@ -3,6 +3,7 @@ package com.example.allowrepeatcallers;
 import static android.content.ContentValues.TAG;
 import static android.content.Context.AUDIO_SERVICE;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,7 @@ import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +39,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.quietexceptional.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -54,15 +57,14 @@ public class FragmentAlertMissedCalls extends Fragment {
     String EnabledText="Tap To Disable";
     String DisabledText="Tap To Enable";
 
-    SeekBar seekbar;
     feat_AlertMissedCalls obj_AMC;
 
-    TextView taptotestvolume;
     permissionhandler OBJ_Permissions;
+    ImageView managemissedText;
     private String settingscolor_enabled="#2F435A";
     private String settingscolor_disabled="#E4E5E8";
     TextView settings_text;
-    Spinner timechoices;
+    TextView descText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -112,23 +114,12 @@ public class FragmentAlertMissedCalls extends Fragment {
         try {
             //utilityHelpers.createNotificationChannel(context);
             TapToEnable = (SwitchCompat) getView().findViewById(R.id.TapToEnable);
-            taptotestvolume = (TextView) getView().findViewById(R.id.taptotestvolume);
             FeatTitle = (TextView) getView().findViewById(R.id.FeatTitle);
             settings_AMC = (ImageView) getView().findViewById(R.id.settings_AMC);
             settings_text = (TextView) getView().findViewById(R.id.settings_text);
-            seekbar = (SeekBar) getView().findViewById(R.id.seekBar);
-
-
-            utilityHelpers.adjustTitleTextSize(FeatTitle, context,75);
-
-
-            timechoices = (Spinner) getView().findViewById(R.id.timechoices);
-            adapter = ArrayAdapter.createFromResource(context,
-                    R.array.extraping_options, android.R.layout.simple_spinner_item);
-
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            timechoices.setAdapter(adapter);
-
+            managemissedText=(ImageView) getView().findViewById(R.id.managemissedText);
+            //utilityHelpers.adjustTitleTextSize(FeatTitle, context,75);
+            descText=(TextView) getView().findViewById(R.id.desctext);
 
 
         } catch (Exception e) {
@@ -139,20 +130,9 @@ public class FragmentAlertMissedCalls extends Fragment {
             throw new RuntimeException(e);
         }
         try{
-        AudioManager audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
-        int maxMusicVolume=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        seekbar.setMax(maxMusicVolume);
         obj_AMC=new feat_AlertMissedCalls(context);
         OBJ_Permissions=new permissionhandler(context);
 
-            String choice=obj_AMC.getSelectedTimerChoice(context);
-            int position=adapter.getPosition(choice);
-            timechoices.setSelection(position);
-
-
-        // Set the current volume of the SeekBar to the current volume of the MediaPlayer:
-        int lastSetMediaVolume=obj_AMC.getPingVolume(context);
-        seekbar.setProgress(lastSetMediaVolume);
     } catch (Exception e) {
             String ErrorFlow="AMC_frag_Throw Feature Variables INIT Exception";
             Log.e(TAG,"AMC_frag_Throw Feature Variables INIT Exception");
@@ -171,6 +151,8 @@ try {
         process_featureState(0, context);
         TapToEnable.setText(R.string.Allfeat_Tap2Permission);
     }
+    descText.setText(feat_AlertMissedCalls.getDescription());
+    descText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 }
 catch (Exception e) {
     String ErrorFlow="AMC_frag_Throw feature state Exception";
@@ -179,50 +161,6 @@ catch (Exception e) {
     //Throw feature state Exception
     throw new RuntimeException(e);
 }
-
-        timechoices.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = parent.getItemAtPosition(position).toString();
-                obj_AMC.savetimerChoice(context,selectedItem);
-                // Handle the item selection here
-                // For example, display a toast message
-                // Toast.makeText(context, "Selected: " + selectedItem, Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Handle the case where nothing is selected
-            }
-        });
-
-
-        taptotestvolume.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ringtones testSound = new ringtones(context, 0);
-                AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                int seekbarVolume = obj_AMC.getPingVolume(context);
-                am.setStreamVolume(AudioManager.STREAM_MUSIC, seekbarVolume, 0);
-                testSound.playShorttune(context);
-            }
-        });
-
-        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int pingvolume=i;
-                obj_AMC.saveVolume(context,pingvolume);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
 
         FeatTitle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,14 +181,27 @@ catch (Exception e) {
             public void onClick(View view) {
                 if(obj_AMC.isFeatureActivated(context)) {
                     Intent intent = new Intent(context, settings.class);
-                    startActivity(intent);
+                    intent.putParcelableArrayListExtra("settingList_input",obj_AMC.getSettingsList(context));
+                    settingsActivityResultLauncher.launch(intent);
                 }
                 else{
                     Toast.makeText(context, R.string.enable_feature_to_access_settings, Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
+        managemissedText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(obj_AMC.isFeatureActivated(context)) {
+                    Intent intent = new Intent(context, custom_text_list.class);
+                    intent.putStringArrayListExtra("CustomTextList_Parcel", obj_AMC.loadCustomTextFromMemory(context));
+                    LoadmissedText_ActivityResultLauncher.launch(intent);
+                }
+                else{
+                    Toast.makeText(context, R.string.enable_feature_to_access_settings, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
     }
@@ -265,9 +216,6 @@ catch (Exception e) {
             }
             obj_AMC.setFeatureActivated(context, bool_state);
             TapToEnable.setChecked(bool_state);
-            seekbar.setEnabled(bool_state);
-            taptotestvolume.setEnabled(bool_state);
-            //settings_AMC.setEnabled(bool_state);
             if (state == 2) {
                 adjustInterfaceButton(EnabledColor, getString(R.string.tap_to_disable));
             } else if (state == 1) {
@@ -354,7 +302,7 @@ catch (Exception e) {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
-                        Toast.makeText(context, " Select Quiet Exceptional from the list ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.select_quiet_exceptional_from_the_list, Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                     }
                 },
@@ -381,6 +329,33 @@ catch (Exception e) {
                 }
             });
 
+    ActivityResultLauncher<Intent> settingsActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // Here, no request code
+                    Intent data = result.getData();
+                    ArrayList<class_setting> outputList= new ArrayList<class_setting>();
+                    outputList = data.getParcelableArrayListExtra("settingList");
+                    class_setting setting_out=outputList.get(0);
+
+                    obj_AMC.savetimerChoice(getContext(),setting_out.getExtraPing());
+                    obj_AMC.saveVolume(getContext(),setting_out.getVolume());
+                    obj_AMC.saveRingInDND(getContext(),setting_out.isRingInDND());
+                    obj_AMC.saveRingtoneUri(getContext(),setting_out.getRingtoneUri());
+                }
+            });
+
+    ActivityResultLauncher<Intent> LoadmissedText_ActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // Here, no request code
+                    Intent data = result.getData();
+                    ArrayList<String> outputList=data.getStringArrayListExtra("outputList");
+                    obj_AMC.saveCustomTextList(getContext(), outputList);
+                }
+            });
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override

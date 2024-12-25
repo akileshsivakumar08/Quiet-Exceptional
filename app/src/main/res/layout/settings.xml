@@ -43,11 +43,31 @@
                 android:text="@string/RingInDND"
                 android:textColor="#525252" />
 
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#808080" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#808080" />
+
+            <Spinner
+                android:id="@+id/timechoices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="MissingConstraints"/>
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@string/RingInDND_desc"
+                android:padding="10dp"
+                android:text="Schedule an additional alert after this duration"
                 android:textColor="#808080"
                 android:textSize="14sp" />
 
@@ -56,14 +76,43 @@
                 android:layout_height="1dp"
                 android:background="#808080" />
             <TextView
-                android:id="@+id/configuretext"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="Configure Missed Call Text"
+                android:padding="10dp"
+                android:text="Volume"
                 android:textColor="#525252"
                 android:textSize="14sp" />
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="253dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/TapToEnable"
+                app:layout_constraintVertical_bias="0.0" />
+            <TextView
+                android:id="@+id/taptotestvolume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Tap this text to test Volume"
+                android:textColor="#808080"
+                android:textSize="14sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#808080" />
 
+            <TextView
+                android:id="@+id/change_ringtone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Change ringtone"
+                android:textColor="#525252"
+                android:textSize="15sp" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

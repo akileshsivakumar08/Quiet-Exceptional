@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.CallLog;
 import android.telephony.TelephonyManager;
@@ -54,9 +55,9 @@ public class callReceiver_RepeatCaller extends BroadcastReceiver {
                 String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
                 String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
 
-
+                Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                 if (number != null) {
-                    repeatCaller_Ringtone = new ringtones(context, obj_RepeatCaller.getFeat_ID());
+                    repeatCaller_Ringtone = new ringtones(context, obj_RepeatCaller.getFeat_ID(),ringtoneUri.toString());
                     mLastState = state;
                     Log.e(TAG, state);
 

@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -30,8 +32,9 @@ public class callReceiver_PrioContacts extends BroadcastReceiver {
                 String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
                 String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
                 //if (!state.equals(mLastState)) {
+                Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                 if (number != null) {
-                    exceptionally_Ringtone = new ringtones(context, obj_silentExceptions.getFeat_ID());
+                    exceptionally_Ringtone = new ringtones(context, obj_silentExceptions.getFeat_ID(),ringtoneUri.toString());
 
                     if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                         if ((AudioManager.RINGER_MODE_NORMAL != am.getRingerMode())) {

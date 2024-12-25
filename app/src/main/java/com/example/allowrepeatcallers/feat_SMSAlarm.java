@@ -10,6 +10,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -110,7 +112,8 @@ public class_Buddy getContact(int ID){
         loadsilExceptListFromMemory(context);
         description=context.getString(R.string.SA_description);
         createNotificationChannel(context);
-        AlarmSound= new ringtones(context,1);
+        Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        AlarmSound= new ringtones(context,1,ringtoneUri.toString());
      }
 
     public boolean isFeatureActivated(Context context) {

@@ -23,6 +23,7 @@ import java.util.SplittableRandom;
 public class feat_AnyTextMatch {
 
     private static final String MEMCODE_MC_NOTIKEY = "ATM_MC_NOTIKEY";
+    private static final String MEMCODE_ATM_RINGTONE ="MC_ATM_RINGTONE" ;
     public OneTimeWorkRequest twoSecondPause;
     public OneTimeWorkRequest work_additionalPing;
     private static final String TAG = "QuietExceptional";
@@ -123,8 +124,9 @@ return false;
                             if (!feat_tempdnd.isFeatureActivated(context)) {
                                 utilityHelpers.turnSpeakerON(am);
                                 int setVolume = getPingVolume(context);
+                                int currentVolume=am.getStreamVolume(AudioManager.STREAM_MUSIC);
                                 am.setStreamVolume(AudioManager.STREAM_MUSIC, setVolume, 0);
-                                ringtones shorttune = new ringtones(context, 2);
+                                ringtones shorttune = new ringtones(context, 2,getRingtoneUri(context));
                                 if (utilityHelpers.isDeviceConnected(am)) {
                                     ErrorFlow = "NR_ATM_Playing on connected Device";
                                     am.setStreamVolume(AudioManager.STREAM_MUSIC, (am.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) / 2, 0);
@@ -254,7 +256,27 @@ return false;
         return utilityHelpers.loadBooleanFromMemory(context,MEMCODE_OVERRIDEDND);
     }
 
-    public void setOverrideDND(Context context,boolean b) {
-        utilityHelpers.saveBooleanToMemory(context,MEMCODE_OVERRIDEDND,b);
+
+    public void saveRingInDND(Context context, boolean ringInDND) {
+        utilityHelpers.saveBooleanToMemory(context,MEMCODE_OVERRIDEDND,ringInDND);
+    }
+
+    public ArrayList<class_setting> getSettingsList(Context context) {
+        boolean isRingInDND = getpinginSilentMode(context);
+        int volume = getPingVolume(context);
+        String timerChoice = getSelectedTimerChoice(context);
+        String ringtoneuri=getRingtoneUri(context);
+        class_setting setting = new class_setting(timerChoice, volume, isRingInDND,ringtoneuri);
+        ArrayList<class_setting> settingList = new ArrayList<>();
+        settingList.add(setting);
+        return settingList;
+    }
+
+    private String getRingtoneUri(Context context) {
+        return utilityHelpers.loadStringFromMemory(context,MEMCODE_ATM_RINGTONE);
+    }
+
+    public void saveRingtoneUri(Context context, String ringtoneUri) {
+        utilityHelpers.saveStringToMemory(context,MEMCODE_ATM_RINGTONE,ringtoneUri);
     }
 }
